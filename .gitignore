@@ -1,0 +1,39 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+
+# 가상환경
+venv/
+.venv/
+env/
+ENV/
+
+# ── OS ────────────────────────────────────────────────────────
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── IDE / 에디터 ───────────────────────────────────────────────
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ── 로그 / 임시 ───────────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+
+# ── 보안 ──────────────────────────────────────────────────────
+# FRED API 키 등 민감 정보를 별도 파일로 관리할 경우
+.env
+secrets.json

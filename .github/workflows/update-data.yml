@@ -1,0 +1,39 @@
+name: Update Dashboard Data
+
+on:
+  schedule:
+    # 매일 UTC 01:00 (KST 10:00) 실행
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    # 수동 실행 허용 (Actions 탭에서 Run workflow 클릭)
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas openpyxl xlrd yfinance
+
+      - name: Update all data files
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python scripts/update_data.py --all --key "$FRED_API_KEY"
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "chore: update dashboard data [$(date -u '+%Y-%m-%d')]"
+          git push
