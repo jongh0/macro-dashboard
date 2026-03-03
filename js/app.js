@@ -71,10 +71,7 @@ class MacroDashboard {
           <button class="norm-btn ${config.defaultNormalize === 'raw' || !config.defaultNormalize ? 'active' : ''}" data-mode="raw" onclick="app.setNormalize('${config.id}','raw',this)">Raw</button>
           <button class="norm-btn ${config.defaultNormalize === 'zscore' ? 'active' : ''}" data-mode="zscore" onclick="app.setNormalize('${config.id}','zscore',this)">Z-Score</button>
           <button class="norm-btn ${config.defaultNormalize === 'pct' ? 'active' : ''}" data-mode="pct" onclick="app.setNormalize('${config.id}','pct',this)">%변화</button>
-        </div>` : '<div></div>'}
-        <div class="footer-right">
-          <button class="icon-btn" title="새로고침" onclick="app.refreshChart('${config.id}')">↻</button>
-        </div>
+        </div>` : ''}
       </div>
     `;
     return card;
@@ -265,10 +262,7 @@ class MacroDashboard {
     this._renderChart(chartId);
   }
 
-  /** 단일 차트 재렌더링 */
-  refreshChart(chartId) {
-    this._renderChart(chartId);
-  }
+
 }
 
 // ──────────────────────────────────
