@@ -16,7 +16,7 @@ const CnnAPI = {
     // CNN 주식 시장 Fear & Greed (cnn_fg.json) 우선
     for (const filename of ['cnn_fg.json', 'fg.json']) {
       try {
-        const resp = await fetch(`./data/${filename}`);
+        const resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
         if (!resp.ok) continue;
         const json = await resp.json();
         const result = {
@@ -46,7 +46,7 @@ const StaticAPI = {
   async fetch(filename) {
     if (this._cache[filename]) return this._cache[filename];
 
-    const resp = await fetch(`./data/${filename}`);
+    const resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
     if (!resp.ok) throw new Error(`Static file not found: ${filename}`);
     const json = await resp.json();
 

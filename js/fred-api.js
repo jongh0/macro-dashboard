@@ -19,7 +19,7 @@ const FredAPI = {
     const filename = this._staticName(seriesId, units);
     if (!filename) throw new Error(`No static file mapped for ${seriesId}/${units}`);
 
-    const resp = await fetch(`./data/${filename}`);
+    const resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
     if (!resp.ok) throw new Error(`Static file not found: ${filename}`);
     const json = await resp.json();
 
