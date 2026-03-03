@@ -65,14 +65,14 @@ class MacroDashboard {
         <ul>${config.reading.map(t => `<li>${t}</li>`).join('')}</ul>
       </div>` : ''}
 
+      ${hasModes ? `
       <div class="card-footer">
-        ${hasModes ? `
         <div class="normalize-group" id="norm-${config.id}">
           <button class="norm-btn ${config.defaultNormalize === 'raw' || !config.defaultNormalize ? 'active' : ''}" data-mode="raw" onclick="app.setNormalize('${config.id}','raw',this)">Raw</button>
           <button class="norm-btn ${config.defaultNormalize === 'zscore' ? 'active' : ''}" data-mode="zscore" onclick="app.setNormalize('${config.id}','zscore',this)">Z-Score</button>
           <button class="norm-btn ${config.defaultNormalize === 'pct' ? 'active' : ''}" data-mode="pct" onclick="app.setNormalize('${config.id}','pct',this)">%변화</button>
-        </div>` : ''}
-      </div>
+        </div>
+      </div>` : ''}
     `;
     return card;
   }

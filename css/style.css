@@ -357,7 +357,6 @@ body {
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
 }
 
@@ -385,11 +384,6 @@ body {
 .norm-btn:hover { color: var(--text); background: var(--surface-2); }
 .norm-btn.active { background: var(--accent); color: white; }
 
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
 .updated-label {
   font-size: 10px;
