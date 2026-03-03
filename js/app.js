@@ -88,6 +88,21 @@ class MacroDashboard {
       this._loadChart(config.id).catch(e => console.error(`차트 로드 실패 [${config.id}]:`, e))
     );
     await Promise.allSettled(promises);
+    this._updateDataDate();
+  }
+
+  _updateDataDate() {
+    let maxFetchedAt = 0;
+    for (const entry of Object.values(this.charts)) {
+      if (!entry.seriesData) continue;
+      for (const s of entry.seriesData) {
+        if (s.fetchedAt && s.fetchedAt > maxFetchedAt) maxFetchedAt = s.fetchedAt;
+      }
+    }
+    const el = document.getElementById('data-date');
+    if (!el || !maxFetchedAt) return;
+    const d = new Date(maxFetchedAt);
+    el.textContent = `${d.getUTCFullYear()}.${String(d.getUTCMonth() + 1).padStart(2, '0')}.${String(d.getUTCDate()).padStart(2, '0')}`;
   }
 
   async _loadChart(chartId) {
