@@ -55,6 +55,7 @@ class MacroDashboard {
         <div class="card-value-row">
           <span class="card-current" id="current-${config.id}">—</span>
           <span class="card-change" id="change-${config.id}"></span>
+          <span class="card-market-status" id="market-status-${config.id}" style="display:none"></span>
         </div>
       </div>
 
@@ -99,7 +100,12 @@ class MacroDashboard {
     const el = document.getElementById('data-date');
     if (!el || !maxFetchedAt) return;
     const d = new Date(maxFetchedAt);
-    el.textContent = `${d.getUTCFullYear()}.${String(d.getUTCMonth() + 1).padStart(2, '0')}.${String(d.getUTCDate()).padStart(2, '0')}`;
+    const year  = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day   = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const mins  = String(d.getMinutes()).padStart(2, '0');
+    el.textContent = `${year}.${month}.${day} ${hours}:${mins}`;
   }
 
   async _loadChart(chartId) {
@@ -206,6 +212,56 @@ class MacroDashboard {
 
     const el = document.getElementById(`status-${chartId}`);
     if (el) { el.style.display = 'none'; }
+
+    this._computeStatus(chartId);
+  }
+
+  // ──────────────────────────────────────────
+  // 시장 상태 라벨 계산 및 표시
+  // ──────────────────────────────────────────
+  _computeStatus(chartId) {
+    const entry = this.charts[chartId];
+    if (!entry || !entry.config.statusConfig || !entry.seriesData) return;
+
+    const primary = entry.seriesData[0];
+    if (!primary || primary.values.length === 0) return;
+
+    const statusEl = document.getElementById(`market-status-${chartId}`);
+    if (!statusEl) return;
+
+    const lastVal = this._lastValid(primary.values);
+    if (lastVal === null) return;
+
+    const sc = entry.config.statusConfig;
+    let label = null, color = null;
+
+    if (sc.type === 'threshold') {
+      for (const t of sc.thresholds) {
+        if (t.max === undefined || lastVal <= t.max) {
+          label = t.label; color = t.color; break;
+        }
+      }
+    } else if (sc.type === 'drawdown') {
+      const lookback = sc.window || 252;
+      const start  = Math.max(0, primary.values.length - lookback);
+      const slice  = primary.values.slice(start).filter(v => v !== null && !isNaN(v));
+      if (!slice.length) return;
+      const high     = Math.max(...slice);
+      const drawdown = high > 0 ? (lastVal - high) / high : 0;
+      for (const t of sc.thresholds) {
+        if (t.max === undefined || drawdown <= t.max) {
+          label = t.label; color = t.color; break;
+        }
+      }
+    }
+
+    if (label && color) {
+      statusEl.style.display = '';
+      statusEl.textContent   = label;
+      statusEl.style.background = color + '22';
+      statusEl.style.color      = color;
+      statusEl.style.border     = `1px solid ${color}55`;
+    }
   }
 
   _lastValid(values, nth = 1) {
@@ -221,8 +277,18 @@ class MacroDashboard {
 
   _formatDisplay(val, config) {
     if (val === null || isNaN(val)) return '—';
-    if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + 'M ' + (config.unit || '');
-    return val.toLocaleString(undefined, { maximumFractionDigits: 2 }) + (config.unit ? ' ' + config.unit : '');
+    const unit = config.unit || '';
+    // 한국어 단위 (건, 명 등 카운트 단위)
+    if (config.koUnit) {
+      const abs  = Math.abs(val);
+      const sign = val < 0 ? '-' : '';
+      if (abs >= 1e8) return sign + (abs / 1e8).toFixed(1) + '억 ' + unit;
+      if (abs >= 1e4) return sign + (abs / 1e4).toFixed(1) + '만 ' + unit;
+      if (abs >= 1e3) return sign + (abs / 1e3).toFixed(1) + '천 ' + unit;
+      return val.toLocaleString() + (unit ? ' ' + unit : '');
+    }
+    if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + 'M ' + unit;
+    return val.toLocaleString(undefined, { maximumFractionDigits: 2 }) + (unit ? ' ' + unit : '');
   }
 
   _setStatus(chartId, type, text) {

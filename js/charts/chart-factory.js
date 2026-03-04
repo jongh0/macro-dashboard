@@ -134,7 +134,7 @@ const ChartFactory = {
       axisLabel: {
         color,
         fontSize: 10,
-        formatter: val => this._formatAxisLabel(val, config.format),
+        formatter: val => this._formatAxisLabel(val, config.format, config.koUnit),
       },
     });
 
@@ -151,12 +151,16 @@ const ChartFactory = {
       scale: true,
       min: config.yMin !== undefined ? config.yMin : undefined,
       max: config.yMax !== undefined ? config.yMax : undefined,
+      name: unitLabel || '',
+      nameLocation: 'end',
+      nameTextStyle: { color: '#475569', fontSize: 10, padding: [0, 0, 2, -4] },
+      nameGap: 6,
       axisLine: { show: false },
       axisTick: { show: false },
       splitLine: { lineStyle: { color: '#1e293b', type: 'solid' } },
       axisLabel: {
         color: '#94a3b8', fontSize: 11,
-        formatter: val => this._formatAxisLabel(val, config.format) + (unitLabel ? ' ' + unitLabel : ''),
+        formatter: val => this._formatAxisLabel(val, config.format, config.koUnit),
       },
     };
   },
@@ -222,8 +226,16 @@ const ChartFactory = {
     };
   },
 
-  _formatAxisLabel(val, format) {
+  _formatAxisLabel(val, format, koUnit = false) {
     if (val === null || val === undefined || isNaN(val)) return '';
+    if (koUnit) {
+      const abs  = Math.abs(val);
+      const sign = val < 0 ? '-' : '';
+      if (abs >= 1e8) return sign + (abs / 1e8).toFixed(0) + '억';
+      if (abs >= 1e4) return sign + (abs / 1e4).toFixed(0) + '만';
+      if (abs >= 1e3) return sign + (abs / 1e3).toFixed(0) + '천';
+      return val.toLocaleString();
+    }
     if (Math.abs(val) >= 1e12) return (val / 1e12).toFixed(1) + 'T';
     if (Math.abs(val) >= 1e9)  return (val / 1e9).toFixed(1) + 'B';
     if (Math.abs(val) >= 1e6)  return (val / 1e6).toFixed(1) + 'M';

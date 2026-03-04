@@ -31,6 +31,16 @@ const CHART_CONFIGS = [
     updateInterval: 15 * 60 * 1000,
     unit: 'pts',
     format: 'number',
+    statusConfig: {
+      type: 'drawdown',
+      window: 252,
+      thresholds: [
+        { max: -0.20, label: '베어마켓',  color: '#ef4444' },
+        { max: -0.10, label: '조정',      color: '#f97316' },
+        { max: -0.05, label: '약세장',    color: '#fbbf24' },
+        {             label: '강세장',    color: '#22c55e' },
+      ],
+    },
     reading: [
       '200일 이동평균선 위 = 강세장, 아래 = 약세장.',
       '고점 대비 -10% = 조정, -20% 이상 = 베어마켓 진입.',
@@ -39,7 +49,85 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 2. VIX 변동성 지수
+  // 2. NASDAQ 종합지수
+  // ──────────────────────────────────────────
+  {
+    id: 'nasdaq',
+    title: 'NASDAQ 종합지수',
+    description: 'NASDAQ Composite Index (일별) | FRED NASDAQCOM',
+    category: 'market',
+    series: [
+      {
+        id: 'nasdaq',
+        label: 'NASDAQ',
+        type: 'fred',
+        seriesId: 'NASDAQCOM',
+        units: 'lin',
+        color: '#818cf8',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 15 * 60 * 1000,
+    unit: 'pts',
+    format: 'number',
+    statusConfig: {
+      type: 'drawdown',
+      window: 252,
+      thresholds: [
+        { max: -0.20, label: '베어마켓', color: '#ef4444' },
+        { max: -0.10, label: '조정',     color: '#f97316' },
+        { max: -0.05, label: '약세장',   color: '#fbbf24' },
+        {             label: '강세장',   color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '기술주 비중이 높아 S&P 500보다 변동성이 큼. 성장주 장세 판단에 유용.',
+      '고점 대비 -10% = 조정, -20% 이상 = 베어마켓 진입.',
+      'S&P 500 대비 NASDAQ 강세 = 성장주·기술주 선호 국면.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 3. 다우존스 산업평균지수
+  // ──────────────────────────────────────────
+  {
+    id: 'dow-jones',
+    title: '다우존스 산업평균',
+    description: 'Dow Jones Industrial Average (일별) | FRED DJIA — 2016년부터 제공',
+    category: 'market',
+    series: [
+      {
+        id: 'djia',
+        label: '다우존스',
+        type: 'fred',
+        seriesId: 'DJIA',
+        units: 'lin',
+        color: '#34d399',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 15 * 60 * 1000,
+    unit: 'pts',
+    format: 'number',
+    statusConfig: {
+      type: 'drawdown',
+      window: 252,
+      thresholds: [
+        { max: -0.20, label: '베어마켓', color: '#ef4444' },
+        { max: -0.10, label: '조정',     color: '#f97316' },
+        { max: -0.05, label: '약세장',   color: '#fbbf24' },
+        {             label: '강세장',   color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '30개 대형 우량주 구성. 전통 산업·금융주 비중 높아 경기 방어주 흐름 파악에 유용.',
+      '고점 대비 -10% = 조정, -20% 이상 = 베어마켓 진입.',
+      'NASDAQ 대비 다우 강세 = 가치주·전통 산업주 선호 국면.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 4. VIX 변동성 지수
   // ──────────────────────────────────────────
   {
     id: 'vix',
@@ -61,6 +149,14 @@ const CHART_CONFIGS = [
     updateInterval: 15 * 60 * 1000,
     unit: '',
     format: 'number',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 20, label: '안정', color: '#22c55e' },
+        { max: 30, label: '불안', color: '#f59e0b' },
+        {          label: '공포', color: '#ef4444' },
+      ],
+    },
     refLines: [
       { value: 20, label: '불안', color: '#fbbf24' },
       { value: 30, label: '공포', color: '#ef4444' },
@@ -97,6 +193,16 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '',
     format: 'number',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 25, label: '극도 공포', color: '#ef4444' },
+        { max: 45, label: '공포',      color: '#f97316' },
+        { max: 55, label: '중립',      color: '#eab308' },
+        { max: 75, label: '탐욕',      color: '#84cc16' },
+        {          label: '극도 탐욕', color: '#22c55e' },
+      ],
+    },
     yMin: 0,
     yMax: 100,
     bands: [
@@ -125,7 +231,8 @@ const CHART_CONFIGS = [
       {
         id: 'fg-crypto',
         label: 'F&G (크립토)',
-        type: 'cnn',
+        type: 'static',
+        file: 'fg.json',
         color: '#f59e0b',
       },
     ],
@@ -133,6 +240,16 @@ const CHART_CONFIGS = [
     updateInterval: 30 * 60 * 1000,
     unit: '',
     format: 'number',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 25, label: '극도 공포', color: '#ef4444' },
+        { max: 45, label: '공포',      color: '#f97316' },
+        { max: 55, label: '중립',      color: '#eab308' },
+        { max: 75, label: '탐욕',      color: '#84cc16' },
+        {          label: '극도 탐욕', color: '#22c55e' },
+      ],
+    },
     yMin: 0,
     yMax: 100,
     bands: [
@@ -171,6 +288,14 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '',
     format: 'number',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 65, label: '위축', color: '#ef4444' },
+        { max: 80, label: '보통', color: '#f59e0b' },
+        {          label: '양호', color: '#22c55e' },
+      ],
+    },
     reading: [
       '하락 추세 = 소비 위축 전망. 70 이하 지속 시 경기침체 우려.',
       '고용·인플레이션·금리 방향에 민감. 선행 지표로 활용.',
@@ -206,6 +331,15 @@ const CHART_CONFIGS = [
     unit: '%',
     format: 'percent',
     zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,   label: '침체', color: '#ef4444' },
+        { max: 2,   label: '둔화', color: '#f97316' },
+        { max: 3.5, label: '성장', color: '#22c55e' },
+        {           label: '과열', color: '#f59e0b' },
+      ],
+    },
     reading: [
       '연속 2분기 마이너스 = 공식 경기침체 기준.',
       '2~3% = 건강한 성장. 0% 근처 = 침체 경계.',
@@ -235,6 +369,14 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '%',
     format: 'percent',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 4,   label: '완전고용', color: '#22c55e' },
+        { max: 5,   label: '정상',     color: '#f59e0b' },
+        {           label: '약화',     color: '#ef4444' },
+      ],
+    },
     reading: [
       '상승 추세 전환 시 주목. 최저점 대비 +0.5%p 이상 = Sahm Rule 침체 신호.',
       '4% 이하 = 완전고용. 5% 이상 지속 = 노동시장 약화 신호.',
@@ -266,7 +408,17 @@ const CHART_CONFIGS = [
     unit: '명',
     valueMultiplier: 1000,   // FRED PAYEMS 단위: 천명 → 명 변환
     format: 'number',
+    koUnit: true,
     zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,      label: '위축', color: '#ef4444' },
+        { max: 75000,  label: '주의', color: '#f97316' },
+        { max: 150000, label: '완만', color: '#f59e0b' },
+        {              label: '견조', color: '#22c55e' },
+      ],
+    },
     reading: [
       '15만명 이상 = 건강한 고용. 마이너스 연속 = 침체 신호.',
       '전망치 대비 실제치 서프라이즈가 당일 시장 반응을 결정.',
@@ -298,6 +450,7 @@ const CHART_CONFIGS = [
     unit: '건',
     valueMultiplier: 1000,   // FRED JTSJOL 단위: 천건 → 건 변환
     format: 'number',
+    koUnit: true,
     reading: [
       '채용공고 수 > 실업자 수 = 노동시장 타이트(임금 상승 압력).',
       '급감 = 기업들이 채용 수요를 줄이는 신호. 실업률 상승 선행.',
@@ -328,6 +481,15 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '건',
     format: 'number',
+    koUnit: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 220000, label: '견조', color: '#22c55e' },
+        { max: 280000, label: '주의', color: '#f59e0b' },
+        {              label: '악화', color: '#ef4444' },
+      ],
+    },
     reading: [
       '25만건 이상 지속 = 노동시장 약화 신호. 급등 = 해고 증가.',
       '주별 발표라 경기 변화를 가장 빠르게 감지하는 지표 중 하나.',
@@ -371,6 +533,15 @@ const CHART_CONFIGS = [
     format: 'percent',
     zeroLine: true,
     normalizeModes: ['raw', 'zscore'],
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 1.5, label: '디플레 우려', color: '#60a5fa' },
+        { max: 2.5, label: '목표 근접',   color: '#22c55e' },
+        { max: 4.0, label: '과열',        color: '#f59e0b' },
+        {           label: '고물가',      color: '#ef4444' },
+      ],
+    },
     reading: [
       '코어(식품·에너지 제외)가 연준 판단의 핵심 지표.',
       '헤드라인 > 코어 = 에너지·식품 주도(일시적). 코어 > 헤드라인 = 구조적 인플레.',
@@ -409,6 +580,15 @@ const CHART_CONFIGS = [
     unit: '%',
     format: 'percent',
     normalizeModes: ['raw', 'zscore'],
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 1.5, label: '디플레 우려', color: '#60a5fa' },
+        { max: 2.5, label: '목표 근접',   color: '#22c55e' },
+        { max: 4.0, label: '과열',        color: '#f59e0b' },
+        {           label: '고물가',      color: '#ef4444' },
+      ],
+    },
     reading: [
       '연준의 공식 물가 목표 지표(CPI보다 중시). 코어 PCE 2% = 금리 결정 기준.',
       'CPI보다 낮게 측정되는 경향. 소비 바구니 구성·가중치가 다름.',
@@ -439,6 +619,14 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '%',
     format: 'percent',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 1.8, label: '디플레 우려', color: '#60a5fa' },
+        { max: 2.5, label: '안정',        color: '#22c55e' },
+        {           label: '기대 고착',   color: '#f59e0b' },
+      ],
+    },
     refLines: [
       { value: 2, label: 'Fed 목표 2%', color: '#22c55e' },
     ],
@@ -545,6 +733,14 @@ const CHART_CONFIGS = [
     format: 'percent',
     zeroLine: true,
     recessionShading: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,   label: '역전',      color: '#ef4444' },
+        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
+        {           label: '정상',      color: '#22c55e' },
+      ],
+    },
     reading: [
       '음수(역전) = 과거 7번 연속 침체 선행. 신뢰도 높은 경기침체 예측 지표.',
       '역전 지속 기간이 길수록 침체 심도가 깊은 경향.',
@@ -576,6 +772,14 @@ const CHART_CONFIGS = [
     unit: '%p',
     format: 'percent',
     zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,   label: '역전',      color: '#ef4444' },
+        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
+        {           label: '정상',      color: '#22c55e' },
+      ],
+    },
     reading: [
       '뉴욕 연준 침체 예측 모델의 핵심 변수. 10Y-2Y보다 예측력 높다고 평가.',
       '역전 후 12~18개월 내 침체 확률 급상승.',
@@ -636,6 +840,14 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '%',
     format: 'percent',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 4, label: '안정', color: '#22c55e' },
+        { max: 7, label: '주의', color: '#f59e0b' },
+        {         label: '위기', color: '#ef4444' },
+      ],
+    },
     refLines: [
       { value: 4,  label: '주의(4%)',  color: '#fbbf24' },
       { value: 7,  label: '위기(7%)',  color: '#ef4444' },
@@ -657,14 +869,14 @@ const CHART_CONFIGS = [
   {
     id: 'm2',
     title: 'M2 통화량 증가율',
-    description: 'M2 통화량 전년 대비 변화율 (유동성 지표)',
+    description: 'M2 통화량 전년 대비 변화율 (유동성 지표) | WM2NS 주간 비계절조정 — M2SL 월간 대비 약 2~3주 빠른 데이터',
     category: 'macro',
     series: [
       {
         id: 'm2',
         label: 'M2 YoY',
         type: 'fred',
-        seriesId: 'M2SL',
+        seriesId: 'WM2NS',
         units: 'pc1',
         color: '#a855f7',
         areaStyle: true,
@@ -675,6 +887,15 @@ const CHART_CONFIGS = [
     unit: '%',
     format: 'percent',
     zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,  label: '역성장', color: '#ef4444' },
+        { max: 5,  label: '둔화',   color: '#f59e0b' },
+        { max: 10, label: '정상',   color: '#22c55e' },
+        {          label: '급증',   color: '#60a5fa' },
+      ],
+    },
     reading: [
       'M2 증가 = 유동성 확대(주가 상승 동력). 감소·마이너스 = 유동성 회수.',
       '주가에 약 6~12개월 선행하는 경향. M2 감소 후 주가 조정 패턴 관찰.',

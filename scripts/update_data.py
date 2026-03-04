@@ -30,7 +30,7 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 
 FRED_API_KEY = os.environ.get("FRED_API_KEY", "")
 HEADERS = {"User-Agent": "Mozilla/5.0 MacroDashboard/1.0"}
-TODAY = date.today().isoformat()
+TODAY = datetime.now().strftime("%Y-%m-%dT%H:%M:00")
 
 
 def to_json_dates(df_series, round_digits=4):
@@ -322,11 +322,17 @@ FRED_SERIES = {
     "gdp":        ("GDPC1",           "pc1"),   # 실질 GDP YoY 성장률
     "jolts":      ("JTSJOL",          "lin"),   # JOLTS 채용공고
     # ── 환율 / 원자재 (FRED A안) ──────────────
-    "dgs30":      ("DGS30",           "lin"),   # 30년물 국채 수익률
-    "natgas":     ("DHHNGSP",         "lin"),   # 천연가스 Henry Hub
-    "usdjpy":     ("DEXJPUS",         "lin"),   # USD/JPY 환율
-    "eurusd":     ("DEXUSEU",         "lin"),   # EUR/USD 환율
-    "usdkrw":     ("DEXKOUS",         "lin"),   # USD/KRW 원달러 환율
+    "dgs30":           ("DGS30",       "lin"),   # 30년물 국채 수익률
+    "natgas":          ("DHHNGSP",     "lin"),   # 천연가스 Henry Hub
+    "usdjpy":          ("DEXJPUS",     "lin"),   # USD/JPY 환율
+    "eurusd":          ("DEXUSEU",     "lin"),   # EUR/USD 환율
+    "usdkrw":          ("DEXKOUS",     "lin"),   # USD/KRW 원달러 환율
+    # ── 주가 지수 ──────────────────────────────
+    "nasdaq":          ("NASDAQCOM",   "lin"),   # NASDAQ 종합지수
+    "djia":            ("DJIA",        "lin"),   # 다우존스 산업평균
+    # ── M2 주간 (WM2NS: 비계절조정, 최신 데이터) ──
+    "m2_weekly":       ("WM2NS",       "pc1"),   # M2 주간 YoY 변화율
+    "m2_weekly_level": ("WM2NS",       "lin"),   # M2 주간 절대값
 }
 
 FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"

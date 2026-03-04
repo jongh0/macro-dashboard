@@ -19,7 +19,12 @@ const FredAPI = {
     const filename = this._staticName(seriesId, units);
     if (!filename) throw new Error(`No static file mapped for ${seriesId}/${units}`);
 
-    const resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
+    let resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
+    // WM2NS 주간 파일 없을 시 M2SL 월간 파일로 폴백
+    if (!resp.ok && seriesId === 'WM2NS') {
+      const fallback = this._staticName('WM2NS_fallback', units);
+      if (fallback) resp = await fetch(`./data/${fallback}`, { cache: 'no-cache' });
+    }
     if (!resp.ok) throw new Error(`Static file not found: ${filename}`);
     const json = await resp.json();
 
@@ -67,6 +72,11 @@ const FredAPI = {
       'DEXJPUS':          { lin: 'fred_usdjpy.json' },
       'DEXUSEU':          { lin: 'fred_eurusd.json' },
       'DEXKOUS':          { lin: 'fred_usdkrw.json' },
+      'NASDAQCOM':        { lin: 'fred_nasdaq.json' },
+      'DJIA':             { lin: 'fred_djia.json' },
+      'WM2NS':            { pc1: 'fred_m2_weekly.json',       lin: 'fred_m2_weekly_level.json' },
+      // WM2NS 폴백: 주간 파일 없을 시 M2SL 사용
+      'WM2NS_fallback':   { pc1: 'fred_m2.json',             lin: 'fred_m2_level.json' },
     };
     return map[seriesId]?.[units] || null;
   },

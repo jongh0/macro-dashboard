@@ -344,6 +344,16 @@ body {
 .card-change.positive { color: var(--positive); }
 .card-change.negative { color: var(--negative); }
 
+.card-market-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  align-self: center;
+  letter-spacing: 0.2px;
+}
+
 /* 차트 영역 */
 .chart-area {
   height: 200px;

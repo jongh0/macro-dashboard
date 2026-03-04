@@ -16,7 +16,7 @@ const CONFIG = {
 // ============================================================
 const CATEGORIES = {
   market:    { label: '시장',     color: '#3b82f6' },
-  sentiment: { label: '심리/수급', color: '#8b5cf6' },
+  sentiment: { label: '심리',     color: '#8b5cf6' },
   rates:     { label: '금리',     color: '#06b6d4' },
   macro:     { label: '거시경제', color: '#22c55e' },
   commodity: { label: '원자재',   color: '#f59e0b' },
