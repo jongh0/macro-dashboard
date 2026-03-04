@@ -56,6 +56,7 @@ class MacroDashboard {
           <span class="card-current" id="current-${config.id}">—</span>
           <span class="card-change" id="change-${config.id}"></span>
           <span class="card-market-status" id="market-status-${config.id}" style="display:none"></span>
+          <span class="card-mdd" id="mdd-${config.id}" style="display:none"></span>
         </div>
       </div>
 
@@ -252,6 +253,16 @@ class MacroDashboard {
         if (t.max === undefined || drawdown <= t.max) {
           label = t.label; color = t.color; break;
         }
+      }
+      // MDD 별도 라벨
+      const mddEl = document.getElementById(`mdd-${chartId}`);
+      if (mddEl && drawdown < -0.001) {
+        const pct = (drawdown * 100).toFixed(1);
+        mddEl.style.display = '';
+        mddEl.textContent   = `MDD ${pct}%`;
+        mddEl.dataset.negative = drawdown < -0.10 ? 'severe'
+                               : drawdown < -0.05 ? 'moderate'
+                               : 'mild';
       }
     }
 

@@ -219,30 +219,35 @@ def download_shiller():
 # 4. Yahoo Finance 데이터 (yfinance 라이브러리 필요)
 #    pip install yfinance
 # ──────────────────────────────────────────────────────
+def _download_yahoo_ohlc(ticker, filename, label):
+    """Yahoo Finance에서 일별 종가를 받아 JSON으로 저장하는 공통 헬퍼."""
+    import yfinance as yf
+    df = yf.download(ticker, start='2000-01-01', progress=False, auto_adjust=True)
+    if df.empty:
+        raise ValueError(f"{ticker} 데이터 비어 있음")
+    close = df['Close']
+    if isinstance(close, pd.DataFrame):
+        close = close.iloc[:, 0]
+    close = close.dropna()
+    dates  = [d.strftime('%Y-%m-%d') for d in close.index]
+    values = [round(float(v), 2) for v in close.values]
+    data = {
+        "updated": TODAY,
+        "dates":   dates,
+        "values":  values,
+        "source":  f"Yahoo Finance {ticker} ({label})",
+    }
+    save_json(data, filename)
+    print(f"  -> {ticker}: {len(dates)}개 ({dates[0]} ~ {dates[-1]})")
+    return True
+
+
 def download_gold():
     """금 가격 - FRED GOLDAMGBD228NLBM 폐기(2022)로 Yahoo Finance GC=F 사용"""
     print("\n[4a] 금 가격 다운로드 중 (Yahoo Finance: GC=F)...")
     try:
-        import yfinance as yf
-        df = yf.download('GC=F', start='2000-01-01', progress=False, auto_adjust=True)
-        if df.empty:
-            raise ValueError("GC=F 데이터 비어 있음")
-        # yfinance >= 0.2 는 MultiIndex 컬럼 반환
-        close = df['Close']
-        if isinstance(close, pd.DataFrame):
-            close = close.iloc[:, 0]
-        close = close.dropna()
-        dates  = [d.strftime('%Y-%m-%d') for d in close.index]
-        values = [round(float(v), 2) for v in close.values]
-        data = {
-            "updated": TODAY,
-            "dates":   dates,
-            "values":  values,
-            "source":  "Yahoo Finance GC=F (Gold Futures Continuous)",
-        }
-        save_json(data, "gold.json")
-        print(f"  -> {len(dates)}개 ({dates[0]} ~ {dates[-1]})")
-        return True
+        import yfinance  # noqa: F401 – ImportError 체크용
+        return _download_yahoo_ohlc('GC=F', 'gold.json', 'Gold Futures Continuous')
     except ImportError:
         print("  FAIL - yfinance 미설치: pip install yfinance")
         return False
@@ -251,44 +256,83 @@ def download_gold():
         return False
 
 
-def compute_krwjpy():
-    """원/엔 환율 = DEXKOUS / DEXJPUS × 100 (100엔당 원화) — FRED 교차 계산"""
-    print("\n[4b] 원/엔 환율 계산 중 (DEXKOUS ÷ DEXJPUS × 100)...")
-    krw_path = OUTPUT_DIR / "fred_usdkrw.json"
-    jpy_path = OUTPUT_DIR / "fred_usdjpy.json"
+def download_silver():
+    """은 가격 - Yahoo Finance SI=F (Silver Futures Continuous)"""
+    print("\n[4b] 은 가격 다운로드 중 (Yahoo Finance: SI=F)...")
     try:
-        with open(krw_path, encoding='utf-8') as f:
-            krw_data = json.load(f)
-        with open(jpy_path, encoding='utf-8') as f:
-            jpy_data = json.load(f)
-
-        krw_map = dict(zip(krw_data['dates'], krw_data['values']))
-        jpy_map = dict(zip(jpy_data['dates'], jpy_data['values']))
-
-        common_dates = sorted(set(krw_map.keys()) & set(jpy_map.keys()))
-        dates, values = [], []
-        for d in common_dates:
-            krw = krw_map[d]
-            jpy = jpy_map[d]
-            if krw and jpy and jpy != 0:
-                dates.append(d)
-                values.append(round(krw / jpy * 100, 2))  # 100엔당 원화
-
-        data = {
-            "updated": TODAY,
-            "dates":   dates,
-            "values":  values,
-            "source":  "FRED DEXKOUS / DEXJPUS × 100 (100엔당 원화)",
-        }
-        save_json(data, "krwjpy.json")
-        print(f"  -> {len(dates)}개 ({dates[0]} ~ {dates[-1]})")
-        return True
-    except FileNotFoundError as e:
-        print(f"  FAIL - 필요 파일 없음 ({e.filename}). 먼저 --fred 실행 필요.")
+        import yfinance  # noqa: F401
+        return _download_yahoo_ohlc('SI=F', 'silver.json', 'Silver Futures Continuous')
+    except ImportError:
+        print("  FAIL - yfinance 미설치: pip install yfinance")
         return False
     except Exception as e:
         print(f"  FAIL: {e}")
         return False
+
+
+# ──────────────────────────────────────────────────────
+# 5. Yahoo Finance 환율 데이터 (yfinance 라이브러리 필요)
+#    FRED H.10 주간 발표 대비 약 1주 빠른 전일 종가 기준
+# ──────────────────────────────────────────────────────
+FOREX_PAIRS = {
+    "usdkrw": "USDKRW=X",   # 원/달러
+    "usdjpy":  "USDJPY=X",  # 달러/엔
+    "eurusd":  "EURUSD=X",  # 유로/달러
+}
+
+def download_forex_yahoo():
+    """환율 데이터 — Yahoo Finance (전일 종가, FRED H.10 대비 약 1주 빠름)"""
+    print("\n[5] 환율 다운로드 중 (Yahoo Finance)...")
+    try:
+        import yfinance as yf
+    except ImportError:
+        print("  FAIL - yfinance 미설치: pip install yfinance")
+        return False
+
+    fetched = {}
+    for name, ticker in FOREX_PAIRS.items():
+        try:
+            df = yf.download(ticker, start='2000-01-01', progress=False, auto_adjust=True)
+            if df.empty:
+                raise ValueError(f"{ticker} 데이터 비어 있음")
+            close = df['Close']
+            if isinstance(close, pd.DataFrame):
+                close = close.iloc[:, 0]
+            close = close.dropna()
+            dates  = [d.strftime('%Y-%m-%d') for d in close.index]
+            values = [round(float(v), 4) for v in close.values]
+            data = {
+                "updated": TODAY,
+                "dates":   dates,
+                "values":  values,
+                "source":  f"Yahoo Finance {ticker} (전일 종가 기준)",
+            }
+            save_json(data, f"yahoo_{name}.json")
+            print(f"  -> {ticker}: {len(dates)}개 ({dates[0]} ~ {dates[-1]})")
+            fetched[name] = {"dates": dates, "values": values}
+        except Exception as e:
+            print(f"  FAIL [{ticker}]: {e}")
+
+    # KRW/JPY 교차 계산 (USDKRW / USDJPY × 100 = 100엔당 원화)
+    if "usdkrw" in fetched and "usdjpy" in fetched:
+        krw_map = dict(zip(fetched["usdkrw"]["dates"], fetched["usdkrw"]["values"]))
+        jpy_map = dict(zip(fetched["usdjpy"]["dates"], fetched["usdjpy"]["values"]))
+        common  = sorted(set(krw_map) & set(jpy_map))
+        dates_out, vals_out = [], []
+        for d in common:
+            k, j = krw_map[d], jpy_map[d]
+            if k and j and j != 0:
+                dates_out.append(d)
+                vals_out.append(round(k / j * 100, 2))
+        save_json({
+            "updated": TODAY,
+            "dates":   dates_out,
+            "values":  vals_out,
+            "source":  "Yahoo Finance USDKRW=X / USDJPY=X × 100 (100엔당 원화)",
+        }, "krwjpy.json")
+        print(f"  -> KRW/JPY (100엔): {len(dates_out)}개 ({dates_out[-1]}까지)")
+
+    return True
 
 
 # ──────────────────────────────────────────────────────
@@ -321,12 +365,10 @@ FRED_SERIES = {
     "icsa":       ("ICSA",            "lin"),   # 초기 실업수당 청구
     "gdp":        ("GDPC1",           "pc1"),   # 실질 GDP YoY 성장률
     "jolts":      ("JTSJOL",          "lin"),   # JOLTS 채용공고
-    # ── 환율 / 원자재 (FRED A안) ──────────────
+    # ── 환율 / 원자재 ─────────────────────────
     "dgs30":           ("DGS30",       "lin"),   # 30년물 국채 수익률
     "natgas":          ("DHHNGSP",     "lin"),   # 천연가스 Henry Hub
-    "usdjpy":          ("DEXJPUS",     "lin"),   # USD/JPY 환율
-    "eurusd":          ("DEXUSEU",     "lin"),   # EUR/USD 환율
-    "usdkrw":          ("DEXKOUS",     "lin"),   # USD/KRW 원달러 환율
+    # USD/JPY, EUR/USD, USD/KRW → Yahoo Finance로 이전 (download_forex_yahoo)
     # ── 주가 지수 ──────────────────────────────
     "nasdaq":          ("NASDAQCOM",   "lin"),   # NASDAQ 종합지수
     "djia":            ("DJIA",        "lin"),   # 다우존스 산업평균
@@ -392,6 +434,7 @@ if __name__ == "__main__":
     parser.add_argument("--fred",    action="store_true", help="FRED 데이터만")
     parser.add_argument("--shiller", action="store_true", help="Shiller P/E + CAPE만")
     parser.add_argument("--yahoo",   action="store_true", help="Yahoo Finance 데이터만 (금 등)")
+    parser.add_argument("--forex",   action="store_true", help="Yahoo Finance 환율 데이터만")
     parser.add_argument("--all",     action="store_true", help="모두 (기본)")
     parser.add_argument("--key",     type=str,            help="FRED API 키 직접 지정")
     args = parser.parse_args()
@@ -399,7 +442,7 @@ if __name__ == "__main__":
     if args.key:
         FRED_API_KEY = args.key
 
-    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo])
+    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.forex])
 
     print("=" * 50)
     print("매크로 대시보드 데이터 업데이트")
@@ -413,9 +456,11 @@ if __name__ == "__main__":
         download_cnn_fear_greed()
     if run_all or args.yahoo:
         download_gold()
+        download_silver()
+    if run_all or args.forex:
+        download_forex_yahoo()
     if run_all or args.fred:
         download_all_fred()
-        compute_krwjpy()
     if run_all or args.shiller:
         download_shiller()
 

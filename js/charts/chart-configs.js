@@ -993,7 +993,36 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 22. 천연가스 가격 (Henry Hub)
+  // 22. 은 가격
+  // ──────────────────────────────────────────
+  {
+    id: 'silver-price',
+    title: '은 가격',
+    description: '은 선물 현물 환산가 (USD/트로이온스) – 산업·귀금속 이중 성격 | 출처: Yahoo Finance SI=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'silver',
+        label: '은 가격',
+        type: 'static',
+        file: 'silver.json',
+        color: '#94a3b8',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/oz',
+    format: 'number',
+    reading: [
+      '금·은 비율(Gold/Silver Ratio)이 80 이상이면 역사적으로 은이 저평가된 구간.',
+      '은은 산업 수요(태양광·전자 등) 비중이 높아 경기 둔화 시 금보다 더 하락하는 경향.',
+      '귀금속 랠리에서 은이 금보다 늦게, 그러나 더 강하게 상승하는 패턴 자주 관찰됨.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 23. 천연가스 가격 (Henry Hub)
   // ──────────────────────────────────────────
   {
     id: 'natural-gas',
@@ -1092,15 +1121,14 @@ const CHART_CONFIGS = [
   {
     id: 'usd-krw',
     title: '원/달러 환율',
-    description: '달러 대비 원화 환율 (수치 상승 = 원화 약세) | FRED DEXKOUS',
+    description: '달러 대비 원화 환율 (수치 상승 = 원화 약세) | Yahoo Finance USDKRW=X · 전일 종가',
     category: 'forex',
     series: [
       {
         id: 'usdkrw',
         label: '원/달러',
-        type: 'fred',
-        seriesId: 'DEXKOUS',
-        units: 'lin',
+        type: 'static',
+        file: 'yahoo_usdkrw.json',
         color: '#22d3ee',
         areaStyle: true,
       },
@@ -1122,7 +1150,7 @@ const CHART_CONFIGS = [
   {
     id: 'krw-jpy',
     title: '원/엔 환율',
-    description: '100엔당 원화 환율 (수치 상승 = 원화 약세 / 엔 강세) | DEXKOUS ÷ DEXJPUS × 100',
+    description: '100엔당 원화 환율 (수치 상승 = 원화 약세 / 엔 강세) | USDKRW=X ÷ USDJPY=X × 100 · 전일 종가',
     category: 'forex',
     series: [
       {
@@ -1151,15 +1179,14 @@ const CHART_CONFIGS = [
   {
     id: 'usd-jpy',
     title: 'USD/JPY 환율',
-    description: '달러 대비 엔화 환율 (수치 상승 = 엔 약세) – 캐리 트레이드·위험 선호 바로미터',
+    description: '달러 대비 엔화 환율 (수치 상승 = 엔 약세) – 캐리 트레이드·위험 선호 바로미터 | Yahoo Finance USDJPY=X · 전일 종가',
     category: 'forex',
     series: [
       {
         id: 'usdjpy',
         label: 'USD/JPY',
-        type: 'fred',
-        seriesId: 'DEXJPUS',
-        units: 'lin',
+        type: 'static',
+        file: 'yahoo_usdjpy.json',
         color: '#f43f5e',
         areaStyle: true,
       },
@@ -1181,15 +1208,14 @@ const CHART_CONFIGS = [
   {
     id: 'eur-usd',
     title: 'EUR/USD 환율',
-    description: '유로 대비 달러 환율 (수치 하락 = 달러 강세) – Fed vs ECB 정책 차이 반영',
+    description: '유로 대비 달러 환율 (수치 하락 = 달러 강세) – Fed vs ECB 정책 차이 반영 | Yahoo Finance EURUSD=X · 전일 종가',
     category: 'forex',
     series: [
       {
         id: 'eurusd',
         label: 'EUR/USD',
-        type: 'fred',
-        seriesId: 'DEXUSEU',
-        units: 'lin',
+        type: 'static',
+        file: 'yahoo_eurusd.json',
         color: '#818cf8',
         areaStyle: true,
       },

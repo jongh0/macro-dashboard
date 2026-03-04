@@ -354,6 +354,22 @@ body {
   letter-spacing: 0.2px;
 }
 
+.card-mdd {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  align-self: center;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-muted);
+}
+.card-mdd[data-negative="moderate"] { color: #f97316; border-color: #f9731655; }
+.card-mdd[data-negative="severe"]   { color: var(--negative); border-color: #ef444455; }
+
 /* 차트 영역 */
 .chart-area {
   height: 200px;
