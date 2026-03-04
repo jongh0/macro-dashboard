@@ -569,6 +569,55 @@ body {
   gap: 6px;
 }
 
+/* ── 테마 버튼 ─────────────────────── */
+.theme-btn {
+  background: none;
+  border: 1px solid var(--border-2);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.theme-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ── 라이트 테마 ────────────────────── */
+[data-theme="light"] {
+  --bg:         #f8fafc;
+  --surface:    #ffffff;
+  --surface-2:  #f1f5f9;
+  --border:     #e2e8f0;
+  --border-2:   #cbd5e1;
+  --text:       #0f172a;
+  --text-muted: #475569;
+  --text-faint: #94a3b8;
+  --shadow:     0 4px 24px rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .header {
+  background: rgba(248, 250, 252, 0.92);
+}
+
+[data-theme="light"] .controls {
+  background: rgba(248, 250, 252, 0.96);
+}
+
+[data-theme="light"] .reading-panel {
+  background: rgba(241, 245, 249, 0.8);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track { background: #f8fafc; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+
 /* ── 푸터 ─────────────────────────── */
 .site-footer {
   border-top: 1px solid var(--border);

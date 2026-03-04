@@ -7,6 +7,21 @@
 const ChartFactory = {
   instances: {},
 
+  // ── 테마 색상 (CSS 변수 실시간 읽기) ────────────────────
+  _c() {
+    const s = getComputedStyle(document.documentElement);
+    const g = v => s.getPropertyValue(v).trim();
+    return {
+      text:      g('--text'),
+      textMuted: g('--text-muted'),
+      textFaint: g('--text-faint'),
+      surface:   g('--surface'),
+      surface2:  g('--surface-2'),
+      border:    g('--border'),
+      border2:   g('--border-2'),
+    };
+  },
+
   getOrCreate(containerId) {
     const el = document.getElementById(containerId);
     if (!el) return null;
@@ -26,6 +41,7 @@ const ChartFactory = {
   },
 
   _buildOption(config, seriesData, normalizeMode, startDate) {
+    const c = this._c();
     const hasMultiple = seriesData.length > 1;
 
     // ── 이중 Y축 여부 결정 ──────────────────────────
@@ -51,7 +67,7 @@ const ChartFactory = {
     if (config.zeroLine && echartsSeriesList[0]) {
       echartsSeriesList[0].markLine = {
         silent: true, symbol: 'none',
-        lineStyle: { color: '#6b7280', type: 'dashed', width: 1 },
+        lineStyle: { color: c.border2, type: 'dashed', width: 1 },
         data: [{ yAxis: 0 }], label: { show: false },
       };
     }
@@ -68,13 +84,13 @@ const ChartFactory = {
 
     // ── Y축 설정 ──────────────────────────────────────
     const yAxis = useDualAxis
-      ? this._buildDualYAxis(processed, config)
-      : this._buildSingleYAxis(config, unitLabel);
+      ? this._buildDualYAxis(processed, config, c)
+      : this._buildSingleYAxis(config, unitLabel, c);
 
     // ── 범례 ──────────────────────────────────────────
     const legend = hasMultiple ? {
       top: 6, right: 12,
-      textStyle: { color: '#94a3b8', fontSize: 11 },
+      textStyle: { color: c.textMuted, fontSize: 11 },
       itemWidth: 14, itemHeight: 4, icon: 'rect',
     } : { show: false };
 
@@ -94,11 +110,11 @@ const ChartFactory = {
       xAxis: {
         type: 'time',
         min: startDate,
-        axisLine: { lineStyle: { color: '#334155' } },
+        axisLine: { lineStyle: { color: c.border2 } },
         axisTick: { show: false },
         splitLine: { show: false },
         axisLabel: {
-          color: '#94a3b8', fontSize: 11,
+          color: c.textMuted, fontSize: 11,
           formatter: val => {
             const d = new Date(val);
             return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -109,16 +125,16 @@ const ChartFactory = {
 
       yAxis,
       legend,
-      tooltip: this._buildTooltipConfig(config, processed, useDualAxis),
+      tooltip: this._buildTooltipConfig(config, processed, useDualAxis, c),
       dataZoom: [{ type: 'inside', startValue: startDate }],
       series: echartsSeriesList,
     };
   },
 
   // ── 이중 Y축 (Raw 모드) ──────────────────────────────
-  _buildDualYAxis(seriesData, config) {
-    const leftColor  = seriesData[0]?.color || '#94a3b8';
-    const rightColor = seriesData[1]?.color || '#94a3b8';
+  _buildDualYAxis(seriesData, config, c) {
+    const leftColor  = seriesData[0]?.color || c.textMuted;
+    const rightColor = seriesData[1]?.color || c.textMuted;
 
     const makeAxis = (color, position, showSplit, min, max) => ({
       type: 'value',
@@ -129,7 +145,7 @@ const ChartFactory = {
       axisLine: { show: true, lineStyle: { color, width: 1 } },
       axisTick: { show: false },
       splitLine: showSplit
-        ? { lineStyle: { color: '#1e293b', type: 'solid' } }
+        ? { lineStyle: { color: c.surface2, type: 'solid' } }
         : { show: false },
       axisLabel: {
         color,
@@ -145,7 +161,7 @@ const ChartFactory = {
   },
 
   // ── 단일 Y축 (Z-Score / %변화) ──────────────────────
-  _buildSingleYAxis(config, unitLabel) {
+  _buildSingleYAxis(config, unitLabel, c) {
     return {
       type: 'value',
       scale: true,
@@ -153,13 +169,13 @@ const ChartFactory = {
       max: config.yMax !== undefined ? config.yMax : undefined,
       name: unitLabel || '',
       nameLocation: 'end',
-      nameTextStyle: { color: '#475569', fontSize: 10, padding: [0, 0, 2, -4] },
+      nameTextStyle: { color: c.textFaint, fontSize: 10, padding: [0, 0, 2, -4] },
       nameGap: 6,
       axisLine: { show: false },
       axisTick: { show: false },
-      splitLine: { lineStyle: { color: '#1e293b', type: 'solid' } },
+      splitLine: { lineStyle: { color: c.surface2, type: 'solid' } },
       axisLabel: {
-        color: '#94a3b8', fontSize: 11,
+        color: c.textMuted, fontSize: 11,
         formatter: val => this._formatAxisLabel(val, config.format, config.koUnit),
       },
     };
@@ -193,32 +209,32 @@ const ChartFactory = {
     return base;
   },
 
-  _buildTooltipConfig(config, seriesData, useDualAxis) {
+  _buildTooltipConfig(config, seriesData, useDualAxis, c) {
     return {
       trigger: 'axis',
       axisPointer: {
         type: 'cross',
-        crossStyle: { color: '#475569' },
-        lineStyle: { color: '#475569', type: 'dashed' },
+        crossStyle: { color: c.textFaint },
+        lineStyle: { color: c.textFaint, type: 'dashed' },
       },
-      backgroundColor: '#1e293b',
-      borderColor: '#334155',
+      backgroundColor: c.surface2,
+      borderColor: c.border2,
       borderWidth: 1,
-      textStyle: { color: '#f1f5f9', fontSize: 12 },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.4);',
+      textStyle: { color: c.text, fontSize: 12 },
+      extraCssText: 'box-shadow: 0 4px 16px rgba(0,0,0,0.2);',
       formatter: params => {
         if (!params || !params.length) return '';
         const d = new Date(params[0].axisValue);
         const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
-        let html = `<div style="margin-bottom:4px;color:#64748b;font-size:11px">${dateStr}</div>`;
+        let html = `<div style="margin-bottom:4px;color:${c.textFaint};font-size:11px">${dateStr}</div>`;
         params.forEach(p => {
           const val = Array.isArray(p.value) ? p.value[1] : p.value;
           const unit = useDualAxis ? (config.unit || '') : '';
           const formatted = this._formatValue(val, config.format, unit);
           html += `<div style="display:flex;align-items:center;gap:8px;margin:2px 0">
             <span style="display:inline-block;width:10px;height:3px;border-radius:2px;background:${p.color}"></span>
-            <span style="color:#94a3b8;font-size:11px">${p.seriesName}</span>
-            <span style="margin-left:auto;font-weight:600;font-size:12px">${formatted}</span>
+            <span style="color:${c.textMuted};font-size:11px">${p.seriesName}</span>
+            <span style="margin-left:auto;font-weight:600;font-size:12px;color:${c.text}">${formatted}</span>
           </div>`;
         });
         return html;
