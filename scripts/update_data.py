@@ -272,6 +272,61 @@ def download_silver():
 
 
 # ──────────────────────────────────────────────────────
+# 4c. 주요 시장 지수 & 원자재 (yfinance — FRED 대비 1~2일 빠름)
+# ──────────────────────────────────────────────────────
+MARKET_TICKERS = {
+    "sp500":   ("^GSPC",  "S&P 500 Index"),
+    "nasdaq":  ("^IXIC",  "NASDAQ Composite"),
+    "djia":    ("^DJI",   "Dow Jones Industrial Average"),
+    "vix":     ("^VIX",   "CBOE Volatility Index"),
+    "wti":     ("CL=F",   "WTI Crude Oil Futures"),
+    "copper":  ("HG=F",   "Copper Futures (USD/lb → USD/mt 변환)"),
+    "natgas":  ("NG=F",   "Henry Hub Natural Gas Futures"),
+}
+
+def download_market_tickers():
+    """주요 지수·원자재 — Yahoo Finance (FRED 대비 1~2일 빠른 전일 종가)"""
+    print("\n[4c] 시장 지수 & 원자재 다운로드 중 (Yahoo Finance)...")
+    try:
+        import yfinance as yf
+    except ImportError:
+        print("  FAIL - yfinance 미설치: pip install yfinance")
+        return False
+
+    results = {}
+    for name, (ticker, label) in MARKET_TICKERS.items():
+        try:
+            df = yf.download(ticker, start='2000-01-01', progress=False, auto_adjust=True)
+            if df.empty:
+                raise ValueError(f"{ticker} 데이터 비어 있음")
+            close = df['Close']
+            if isinstance(close, pd.DataFrame):
+                close = close.iloc[:, 0]
+            close = close.dropna()
+            dates  = [d.strftime('%Y-%m-%d') for d in close.index]
+            values = [round(float(v), 4) for v in close.values]
+
+            # 구리: Yahoo Finance HG=F는 USD/lb → USD/mt 변환 (×2204.62)
+            if name == 'copper':
+                values = [round(v * 2204.62, 2) for v in values]
+
+            data = {
+                "updated": TODAY,
+                "dates":   dates,
+                "values":  values,
+                "source":  f"Yahoo Finance {ticker} ({label})",
+            }
+            save_json(data, f"{name}.json")
+            print(f"  -> {ticker}: {len(dates)}개 ({dates[0]} ~ {dates[-1]})")
+            results[name] = True
+        except Exception as e:
+            print(f"  FAIL [{ticker}]: {e}")
+            results[name] = False
+
+    return all(results.values())
+
+
+# ──────────────────────────────────────────────────────
 # 5. Yahoo Finance 환율 데이터 (yfinance 라이브러리 필요)
 #    FRED H.10 주간 발표 대비 약 1주 빠른 전일 종가 기준
 # ──────────────────────────────────────────────────────
@@ -340,42 +395,39 @@ def download_forex_yahoo():
 # 5. FRED 데이터 (API 키 필요)
 # ──────────────────────────────────────────────────────
 FRED_SERIES = {
-    "sp500":      ("SP500",     "lin"),
-    "vix":        ("VIXCLS",    "lin"),
-    "fedfunds":   ("FEDFUNDS",  "lin"),
-    "t10y2y":     ("T10Y2Y",    "lin"),
-    "dgs10":      ("DGS10",     "lin"),
-    "dgs2":       ("DGS2",      "lin"),
-    "cpi":        ("CPIAUCSL",  "pc1"),
-    "core_cpi":   ("CPILFESL",  "pc1"),
-    "m2":         ("M2SL",      "pc1"),
-    "m2_level":   ("M2SL",      "lin"),   # 실수치 (십억달러)
-    "unrate":     ("UNRATE",    "lin"),
-    "pce":        ("PCEPI",     "pc1"),
-    "core_pce":   ("PCEPILFE",  "pc1"),
-    "umcsent":    ("UMCSENT",   "lin"),
-    # ── 신규 추가 ─────────────────────────────
-    "dxy":        ("DTWEXBGS",        "lin"),   # 달러 지수
-    "wti":        ("DCOILWTICO",      "lin"),   # WTI 원유
-    "copper":     ("PCOPPUSDM",       "lin"),   # 구리 가격 (IMF, 월별)
-    "housing":    ("CSUSHPINSA",      "lin"),   # 케이스-실러 주택가격지수
-    "hyspread":   ("BAMLH0A0HYM2",    "lin"),   # 하이일드 OAS 스프레드
-    "t10y3m":     ("T10Y3M",          "lin"),   # 10Y-3M 금리차
-    "t10yie":     ("T10YIE",          "lin"),   # 10년 기대인플레이션
-    "payems_chg": ("PAYEMS",          "chg"),   # NFP 전월 대비 변화 (천명)
-    "icsa":       ("ICSA",            "lin"),   # 초기 실업수당 청구
-    "gdp":        ("GDPC1",           "pc1"),   # 실질 GDP YoY 성장률
-    "jolts":      ("JTSJOL",          "lin"),   # JOLTS 채용공고
-    # ── 환율 / 원자재 ─────────────────────────
-    "dgs30":           ("DGS30",       "lin"),   # 30년물 국채 수익률
-    "natgas":          ("DHHNGSP",     "lin"),   # 천연가스 Henry Hub
-    # USD/JPY, EUR/USD, USD/KRW → Yahoo Finance로 이전 (download_forex_yahoo)
-    # ── 주가 지수 ──────────────────────────────
-    "nasdaq":          ("NASDAQCOM",   "lin"),   # NASDAQ 종합지수
-    "djia":            ("DJIA",        "lin"),   # 다우존스 산업평균
-    # ── M2 주간 (WM2NS: 비계절조정, 최신 데이터) ──
-    "m2_weekly":       ("WM2NS",       "pc1"),   # M2 주간 YoY 변화율
-    "m2_weekly_level": ("WM2NS",       "lin"),   # M2 주간 절대값
+    # ── 금리 ──────────────────────────────────
+    "fedfunds":        ("FEDFUNDS",       "lin"),   # 연방기금금리
+    "t10y2y":          ("T10Y2Y",         "lin"),   # 10Y-2Y 금리차
+    "dgs10":           ("DGS10",          "lin"),   # 10년물 국채 수익률
+    "dgs2":            ("DGS2",           "lin"),   # 2년물 국채 수익률
+    "dgs30":           ("DGS30",          "lin"),   # 30년물 국채 수익률
+    "t10y3m":          ("T10Y3M",         "lin"),   # 10Y-3M 금리차
+    "t10yie":          ("T10YIE",         "lin"),   # 10년 기대인플레이션
+    "hyspread":        ("BAMLH0A0HYM2",   "lin"),   # 하이일드 OAS 스프레드
+    # ── 물가 ──────────────────────────────────
+    "cpi":             ("CPIAUCSL",       "pc1"),   # CPI YoY
+    "core_cpi":        ("CPILFESL",       "pc1"),   # Core CPI YoY
+    "pce":             ("PCEPI",          "pc1"),   # PCE YoY
+    "core_pce":        ("PCEPILFE",       "pc1"),   # Core PCE YoY
+    # ── 고용 ──────────────────────────────────
+    "unrate":          ("UNRATE",         "lin"),   # 실업률
+    "payems_chg":      ("PAYEMS",         "chg"),   # NFP 전월 대비 변화
+    "icsa":            ("ICSA",           "lin"),   # 초기 실업수당 청구
+    "jolts":           ("JTSJOL",         "lin"),   # JOLTS 채용공고
+    # ── 거시경제 ──────────────────────────────
+    "gdp":             ("GDPC1",          "pc1"),   # 실질 GDP YoY 성장률
+    "umcsent":         ("UMCSENT",        "lin"),   # 미시간대 소비자심리
+    "housing":         ("CSUSHPINSA",     "lin"),   # 케이스-실러 주택가격지수
+    # ── 유동성 ────────────────────────────────
+    "m2":              ("M2SL",           "pc1"),   # M2 YoY (월별 폴백용)
+    "m2_level":        ("M2SL",           "lin"),   # M2 실수치 (십억달러)
+    "m2_weekly":       ("WM2NS",          "pc1"),   # M2 주간 YoY 변화율
+    "m2_weekly_level": ("WM2NS",          "lin"),   # M2 주간 절대값
+    # ── 달러 지수 (연준 Broad — ICE DXY와 다른 지수) ──
+    "dxy":             ("DTWEXBGS",       "lin"),
+    # ── SP500·VIX·NASDAQ·DJIA·WTI·구리·천연가스 →
+    #    Yahoo Finance로 이전 (download_market_tickers)
+    # ── 환율 → Yahoo Finance로 이전 (download_forex_yahoo)
 }
 
 FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"
@@ -434,7 +486,8 @@ if __name__ == "__main__":
     parser.add_argument("--fg",      action="store_true", help="Fear & Greed 둘 다 (크립토 + CNN 주식)")
     parser.add_argument("--fred",    action="store_true", help="FRED 데이터만")
     parser.add_argument("--shiller", action="store_true", help="Shiller P/E + CAPE만")
-    parser.add_argument("--yahoo",   action="store_true", help="Yahoo Finance 데이터만 (금 등)")
+    parser.add_argument("--yahoo",   action="store_true", help="Yahoo Finance 데이터만 (금, 은)")
+    parser.add_argument("--market",  action="store_true", help="Yahoo Finance 시장 지수·원자재 (S&P·NASDAQ·DJIA·VIX·WTI·구리·천연가스)")
     parser.add_argument("--forex",   action="store_true", help="Yahoo Finance 환율 데이터만")
     parser.add_argument("--all",     action="store_true", help="모두 (기본)")
     parser.add_argument("--key",     type=str,            help="FRED API 키 직접 지정")
@@ -443,7 +496,7 @@ if __name__ == "__main__":
     if args.key:
         FRED_API_KEY = args.key
 
-    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.forex])
+    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.market, args.forex])
 
     print("=" * 50)
     print("매크로 대시보드 데이터 업데이트")
@@ -458,6 +511,8 @@ if __name__ == "__main__":
     if run_all or args.yahoo:
         download_gold()
         download_silver()
+    if run_all or args.market:
+        download_market_tickers()
     if run_all or args.forex:
         download_forex_yahoo()
     if run_all or args.fred:

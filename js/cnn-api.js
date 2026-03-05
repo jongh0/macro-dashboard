@@ -46,7 +46,12 @@ const StaticAPI = {
   async fetch(filename) {
     if (this._cache[filename]) return this._cache[filename];
 
-    const resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
+    let resp = await fetch(`./data/${filename}`, { cache: 'no-cache' });
+    // yfinance 파일 미생성 시 fred_ 접두사 파일로 폴백
+    if (!resp.ok) {
+      const fallback = `fred_${filename}`;
+      resp = await fetch(`./data/${fallback}`, { cache: 'no-cache' });
+    }
     if (!resp.ok) throw new Error(`Static file not found: ${filename}`);
     const json = await resp.json();
 

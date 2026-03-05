@@ -21,10 +21,10 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
     ],
     defaultNormalize: 'raw',
@@ -60,10 +60,10 @@ const CHART_CONFIGS = [
       {
         id: 'nasdaq',
         label: 'NASDAQ',
-        type: 'fred',
-        seriesId: 'NASDAQCOM',
-        units: 'lin',
+        type: 'static',
+        file: 'nasdaq.json',
         color: '#818cf8',
+        noDecimal: true,
       },
     ],
     defaultNormalize: 'raw',
@@ -99,10 +99,10 @@ const CHART_CONFIGS = [
       {
         id: 'djia',
         label: '다우존스',
-        type: 'fred',
-        seriesId: 'DJIA',
-        units: 'lin',
+        type: 'static',
+        file: 'djia.json',
         color: '#34d399',
+        noDecimal: true,
       },
     ],
     defaultNormalize: 'raw',
@@ -138,9 +138,8 @@ const CHART_CONFIGS = [
       {
         id: 'vix',
         label: 'VIX',
-        type: 'fred',
-        seriesId: 'VIXCLS',
-        units: 'lin',
+        type: 'static',
+        file: 'vix.json',
         color: '#f43f5e',
         areaStyle: true,
       },
@@ -934,37 +933,7 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 20. WTI 원유 가격
-  // ──────────────────────────────────────────
-  {
-    id: 'wti-oil',
-    title: 'WTI 원유 가격',
-    description: '서부 텍사스산 중질유(WTI) 현물 가격 (경기 수요·인플레이션 선행지표)',
-    category: 'commodity',
-    series: [
-      {
-        id: 'wti',
-        label: 'WTI 원유',
-        type: 'fred',
-        seriesId: 'DCOILWTICO',
-        units: 'lin',
-        color: '#84cc16',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/bbl',
-    format: 'number',
-    reading: [
-      '$60 이하 = 수요 우려(경기 둔화). $100 이상 = 인플레이션 압력 및 소비 위축.',
-      '공급 충격(OPEC 감산·지정학)과 수요 신호를 구분해 해석.',
-      '원유 급등은 CPI 헤드라인을 밀어올려 금리 인하를 제약.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 21. 금 가격
+  // 금 가격
   // ──────────────────────────────────────────
   {
     id: 'gold-price',
@@ -993,7 +962,7 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 22. 은 가격
+  // 은 가격
   // ──────────────────────────────────────────
   {
     id: 'silver-price',
@@ -1022,50 +991,19 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 23. 천연가스 가격 (Henry Hub)
-  // ──────────────────────────────────────────
-  {
-    id: 'natural-gas',
-    title: '천연가스 가격 (Henry Hub)',
-    description: 'Henry Hub 천연가스 현물 가격 – 에너지 비용·계절성 인플레이션 지표',
-    category: 'commodity',
-    series: [
-      {
-        id: 'natgas',
-        label: '천연가스',
-        type: 'fred',
-        seriesId: 'DHHNGSP',
-        units: 'lin',
-        color: '#34d399',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/MMBtu',
-    format: 'number',
-    reading: [
-      '겨울철 수요·이상 기온에 극도로 민감. 계절성이 강해 YoY 비교가 중요.',
-      '천연가스 급등 = 전력·난방 비용 상승 → CPI 에너지 항목 압박.',
-      '미국 LNG 수출 확대로 유럽 가스 가격과 상관관계 증가 중.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 23. 구리 가격 (Dr. Copper)
+  // 구리 가격 (Dr. Copper)
   // ──────────────────────────────────────────
   {
     id: 'copper-price',
     title: '구리 가격 (Dr. Copper)',
-    description: 'IMF 글로벌 구리 가격 – 경제 활동 선행지표 (경기 확장 시 수요 증가)',
+    description: '구리 선물 가격 (USD/mt) – 경제 활동 선행지표 (경기 확장 시 수요 증가) | 출처: Yahoo Finance HG=F',
     category: 'commodity',
     series: [
       {
         id: 'copper',
         label: '구리 가격',
-        type: 'fred',
-        seriesId: 'PCOPPUSDM',
-        units: 'lin',
+        type: 'static',
+        file: 'copper.json',
         color: '#fb923c',
         areaStyle: true,
       },
@@ -1078,6 +1016,64 @@ const CHART_CONFIGS = [
       'Dr. Copper: 전기차·건설·인프라 수요에 민감해 경기 선행성 높음.',
       '상승 = 글로벌 제조업 확장. 하락 = 경기 둔화, 특히 중국 경기 반영.',
       '최근 급등은 AI 데이터센터·에너지전환 수요와 공급 부족이 복합 작용.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // WTI 원유 가격
+  // ──────────────────────────────────────────
+  {
+    id: 'wti-oil',
+    title: 'WTI 원유 가격',
+    description: '서부 텍사스산 중질유(WTI) 선물 가격 (경기 수요·인플레이션 선행지표) | 출처: Yahoo Finance CL=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'wti',
+        label: 'WTI 원유',
+        type: 'static',
+        file: 'wti.json',
+        color: '#84cc16',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/bbl',
+    format: 'number',
+    reading: [
+      '$60 이하 = 수요 우려(경기 둔화). $100 이상 = 인플레이션 압력 및 소비 위축.',
+      '공급 충격(OPEC 감산·지정학)과 수요 신호를 구분해 해석.',
+      '원유 급등은 CPI 헤드라인을 밀어올려 금리 인하를 제약.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 천연가스 가격 (Henry Hub)
+  // ──────────────────────────────────────────
+  {
+    id: 'natural-gas',
+    title: '천연가스 가격 (Henry Hub)',
+    description: 'Henry Hub 천연가스 선물 가격 – 에너지 비용·계절성 인플레이션 지표 | 출처: Yahoo Finance NG=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'natgas',
+        label: '천연가스',
+        type: 'static',
+        file: 'natgas.json',
+        color: '#34d399',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/MMBtu',
+    format: 'number',
+    reading: [
+      '겨울철 수요·이상 기온에 극도로 민감. 계절성이 강해 YoY 비교가 중요.',
+      '천연가스 급등 = 전력·난방 비용 상승 → CPI 에너지 항목 압박.',
+      '미국 LNG 수출 확대로 유럽 가스 가격과 상관관계 증가 중.',
     ],
   },
 
@@ -1247,18 +1243,19 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'vix',
-        label: 'VIX (공포지수)',
-        type: 'fred',
-        seriesId: 'VIXCLS',
-        units: 'lin',
+        label: 'VIX',
+        type: 'static',
+        file: 'vix.json',
         color: '#f43f5e',
+        unit: '',
+        decimals: 1,
       },
     ],
     defaultNormalize: 'raw',         // 이중축: 각각 다른 스케일 독립 표시
@@ -1285,10 +1282,10 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'margin',
@@ -1322,17 +1319,19 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'pe',
-        label: 'P/E Ratio',
+        label: 'P/E',
         type: 'static',
         file: 'shiller_pe_ratio.json',
         color: '#f59e0b',
+        unit: 'x',
+        decimals: 1,
       },
     ],
     defaultNormalize: 'raw',         // 이중축: 스케일이 다른 두 지표 비교
@@ -1350,44 +1349,6 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 26. S&P 500 vs Shiller CAPE
-  // ──────────────────────────────────────────
-  {
-    id: 'sp500-cape',
-    title: 'S&P 500 vs Shiller CAPE',
-    description: '경기조정 주가수익비율 (10년 실질이익 기준 P/E) | 출처: Robert Shiller, Yale',
-    category: 'market',
-    series: [
-      {
-        id: 'sp500',
-        label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
-        color: '#3b82f6',
-      },
-      {
-        id: 'cape',
-        label: 'Shiller CAPE',
-        type: 'static',
-        file: 'shiller_cape.json',
-        color: '#e879f9',
-      },
-    ],
-    defaultNormalize: 'raw',
-    defaultRange: 'MAX',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '',
-    format: 'number',
-    normalizeModes: ['raw', 'zscore', 'pct'],
-    reading: [
-      '10년 실질이익 기준. 역사적 평균 ~17배. 30 이상 = 고평가 구간.',
-      '단기 예측보다 향후 7~10년 수익률 예측에 유용한 장기 지표.',
-      '현재 CAPE가 높아도 유동성·저금리 환경에선 정당화되는 경향.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
   // 27. S&P 500 vs M2 통화량
   // ──────────────────────────────────────────
   {
@@ -1399,10 +1360,10 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'm2',
@@ -1437,18 +1398,20 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'dxy',
-        label: '달러 지수',
+        label: '달러지수',
         type: 'fred',
         seriesId: 'DTWEXBGS',
         units: 'lin',
         color: '#22d3ee',
+        unit: '',
+        decimals: 1,
       },
     ],
     defaultNormalize: 'raw',
@@ -1475,10 +1438,10 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'hyspread',
@@ -1487,6 +1450,8 @@ const CHART_CONFIGS = [
         seriesId: 'BAMLH0A0HYM2',
         units: 'lin',
         color: '#f97316',
+        unit: '%',
+        decimals: 2,
       },
     ],
     defaultNormalize: 'raw',
@@ -1513,18 +1478,20 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'dgs10',
-        label: '10년물 금리',
+        label: '10Y 금리',
         type: 'fred',
         seriesId: 'DGS10',
         units: 'lin',
         color: '#818cf8',
+        unit: '%',
+        decimals: 2,
       },
     ],
     defaultNormalize: 'raw',
@@ -1551,18 +1518,20 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'fedfunds',
-        label: '연방기금금리',
+        label: '기준금리',
         type: 'fred',
         seriesId: 'FEDFUNDS',
         units: 'lin',
         color: '#22c55e',
+        unit: '%',
+        decimals: 2,
       },
     ],
     defaultNormalize: 'raw',
@@ -1589,18 +1558,20 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'spread',
-        label: '10Y-2Y 금리차',
+        label: '10Y-2Y',
         type: 'fred',
         seriesId: 'T10Y2Y',
         units: 'lin',
         color: '#06b6d4',
+        unit: '%p',
+        decimals: 2,
       },
     ],
     defaultNormalize: 'raw',
@@ -1627,17 +1598,19 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'gold',
-        label: '금 가격',
+        label: '금',
         type: 'static',
         file: 'gold.json',
         color: '#fbbf24',
+        unit: '$',
+        decimals: 0,
       },
     ],
     defaultNormalize: 'raw',
@@ -1664,18 +1637,19 @@ const CHART_CONFIGS = [
       {
         id: 'sp500',
         label: 'S&P 500',
-        type: 'fred',
-        seriesId: 'SP500',
-        units: 'lin',
+        type: 'static',
+        file: 'sp500.json',
         color: '#3b82f6',
+        noDecimal: true,
       },
       {
         id: 'wti',
-        label: 'WTI 원유',
-        type: 'fred',
-        seriesId: 'DCOILWTICO',
-        units: 'lin',
+        label: 'WTI',
+        type: 'static',
+        file: 'wti.json',
         color: '#84cc16',
+        unit: '$',
+        decimals: 1,
       },
     ],
     defaultNormalize: 'raw',

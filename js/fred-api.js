@@ -40,11 +40,12 @@ const FredAPI = {
     return result;
   },
 
-  /** FRED 시리즈 ID → 정적 파일 이름 맵핑 */
+  /** FRED 시리즈 ID → 정적 파일 이름 맵핑
+   * SP500·VIXCLS·NASDAQCOM·DJIA·DCOILWTICO·PCOPPUSDM·DHHNGSP는
+   * Yahoo Finance로 이전 → chart-configs.js에서 type:'static'으로 직접 참조
+   */
   _staticName(seriesId, units) {
     const map = {
-      'SP500':    { lin: 'fred_sp500.json' },
-      'VIXCLS':   { lin: 'fred_vix.json' },
       'FEDFUNDS': { lin: 'fred_fedfunds.json' },
       'T10Y2Y':   { lin: 'fred_t10y2y.json' },
       'DGS10':    { lin: 'fred_dgs10.json' },
@@ -52,31 +53,23 @@ const FredAPI = {
       'CPIAUCSL': { pc1: 'fred_cpi.json' },
       'CPILFESL': { pc1: 'fred_core_cpi.json' },
       'M2SL':     { pc1: 'fred_m2.json', lin: 'fred_m2_level.json' },
-      'UNRATE':           { lin: 'fred_unrate.json' },
-      'PCEPI':            { pc1: 'fred_pce.json' },
-      'PCEPILFE':         { pc1: 'fred_core_pce.json' },
-      'UMCSENT':          { lin: 'fred_umcsent.json' },
-      'DTWEXBGS':         { lin: 'fred_dxy.json' },
-      'DCOILWTICO':       { lin: 'fred_wti.json' },
-      'PCOPPUSDM':        { lin: 'fred_copper.json' },
-      'CSUSHPINSA':       { lin: 'fred_housing.json' },
-      'BAMLH0A0HYM2':     { lin: 'fred_hyspread.json' },
-      'T10Y3M':           { lin: 'fred_t10y3m.json' },
-      'T10YIE':           { lin: 'fred_t10yie.json' },
-      'PAYEMS':           { chg: 'fred_payems_chg.json', lin: 'fred_payems.json' },
-      'ICSA':             { lin: 'fred_icsa.json' },
-      'GDPC1':            { pc1: 'fred_gdp.json' },
-      'JTSJOL':           { lin: 'fred_jolts.json' },
-      'DGS30':            { lin: 'fred_dgs30.json' },
-      'DHHNGSP':          { lin: 'fred_natgas.json' },
-      'DEXJPUS':          { lin: 'fred_usdjpy.json' },
-      'DEXUSEU':          { lin: 'fred_eurusd.json' },
-      'DEXKOUS':          { lin: 'fred_usdkrw.json' },
-      'NASDAQCOM':        { lin: 'fred_nasdaq.json' },
-      'DJIA':             { lin: 'fred_djia.json' },
-      'WM2NS':            { pc1: 'fred_m2_weekly.json',       lin: 'fred_m2_weekly_level.json' },
+      'UNRATE':         { lin: 'fred_unrate.json' },
+      'PCEPI':          { pc1: 'fred_pce.json' },
+      'PCEPILFE':       { pc1: 'fred_core_pce.json' },
+      'UMCSENT':        { lin: 'fred_umcsent.json' },
+      'DTWEXBGS':       { lin: 'fred_dxy.json' },
+      'CSUSHPINSA':     { lin: 'fred_housing.json' },
+      'BAMLH0A0HYM2':   { lin: 'fred_hyspread.json' },
+      'T10Y3M':         { lin: 'fred_t10y3m.json' },
+      'T10YIE':         { lin: 'fred_t10yie.json' },
+      'PAYEMS':         { chg: 'fred_payems_chg.json', lin: 'fred_payems.json' },
+      'ICSA':           { lin: 'fred_icsa.json' },
+      'GDPC1':          { pc1: 'fred_gdp.json' },
+      'JTSJOL':         { lin: 'fred_jolts.json' },
+      'DGS30':          { lin: 'fred_dgs30.json' },
+      'WM2NS':          { pc1: 'fred_m2_weekly.json', lin: 'fred_m2_weekly_level.json' },
       // WM2NS 폴백: 주간 파일 없을 시 M2SL 사용
-      'WM2NS_fallback':   { pc1: 'fred_m2.json',             lin: 'fred_m2_level.json' },
+      'WM2NS_fallback': { pc1: 'fred_m2.json', lin: 'fred_m2_level.json' },
     };
     return map[seriesId]?.[units] || null;
   },

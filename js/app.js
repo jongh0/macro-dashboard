@@ -55,6 +55,7 @@ class MacroDashboard {
         <div class="card-value-row">
           <span class="card-current" id="current-${config.id}">—</span>
           <span class="card-change" id="change-${config.id}"></span>
+          ${config.series && config.series.length > 1 ? `<span class="card-secondary" id="secondary-${config.id}" style="display:none"></span>` : ''}
           <span class="card-market-status" id="market-status-${config.id}" style="display:none"></span>
           <span class="card-mdd" id="mdd-${config.id}" style="display:none"></span>
         </div>
@@ -196,8 +197,11 @@ class MacroDashboard {
     const currentEl = document.getElementById(`current-${chartId}`);
     const changeEl  = document.getElementById(`change-${chartId}`);
 
+    const primarySeriesCfg = config.series?.[0];
+    const noDecimal = primarySeriesCfg?.noDecimal || false;
+
     if (currentEl && lastVal !== null) {
-      currentEl.textContent = this._formatDisplay(lastVal, config);
+      currentEl.textContent = this._formatDisplay(lastVal, config, noDecimal);
     }
 
     if (changeEl && lastVal !== null && prevVal !== null) {
@@ -206,6 +210,19 @@ class MacroDashboard {
       const sign = diff >= 0 ? '+' : '';
       changeEl.textContent = `${sign}${pct.toFixed(2)}%`;
       changeEl.className = 'card-change ' + (diff >= 0 ? 'positive' : 'negative');
+    }
+
+    // 두 번째 시리즈 값 표시 (비교 차트, series.unit이 정의된 경우만)
+    const secondaryEl = document.getElementById(`secondary-${chartId}`);
+    if (secondaryEl && seriesDataList.length > 1 && config.series?.[1]?.unit !== undefined) {
+      const s2Data = seriesDataList[1];
+      const s2Cfg  = config.series[1];
+      const val2   = this._lastValid(s2Data.values);
+      if (val2 !== null) {
+        secondaryEl.style.display = '';
+        secondaryEl.style.color = s2Data.color;
+        secondaryEl.textContent = `· ${s2Data.label} ${this._formatSeriesValue(val2, s2Cfg)}`;
+      }
     }
 
     const el = document.getElementById(`status-${chartId}`);
@@ -283,7 +300,7 @@ class MacroDashboard {
     return null;
   }
 
-  _formatDisplay(val, config) {
+  _formatDisplay(val, config, noDecimal = false) {
     if (val === null || isNaN(val)) return '—';
     const unit = config.unit || '';
     // 한국어 단위 (건, 명 등 카운트 단위)
@@ -296,8 +313,21 @@ class MacroDashboard {
       return val.toLocaleString() + (unit ? ' ' + unit : '');
     }
     if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + 'M ' + unit;
-    const frac = config.format === 'integer' ? 0 : 2;
-    return val.toLocaleString(undefined, { maximumFractionDigits: frac }) + (unit ? ' ' + unit : '');
+    const decimals = noDecimal ? 0 : 2;
+    return val.toLocaleString(undefined, { maximumFractionDigits: decimals }) + (unit ? ' ' + unit : '');
+  }
+
+  _formatSeriesValue(val, seriesCfg) {
+    if (val === null || isNaN(val)) return '—';
+    const dec  = seriesCfg.decimals !== undefined ? seriesCfg.decimals : 2;
+    const unit = seriesCfg.unit || '';
+    let str;
+    const abs = Math.abs(val);
+    if (abs >= 1e12)     str = (val / 1e12).toFixed(1) + 'T';
+    else if (abs >= 1e9) str = (val / 1e9).toFixed(1)  + 'B';
+    else if (abs >= 1e6) str = (val / 1e6).toFixed(1)  + 'M';
+    else str = val.toLocaleString(undefined, { maximumFractionDigits: dec, minimumFractionDigits: dec });
+    return str + (unit ? ' ' + unit : '');
   }
 
   _setStatus(chartId, type, text) {

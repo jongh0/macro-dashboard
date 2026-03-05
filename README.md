@@ -10,12 +10,12 @@
 
 | 카테고리 | 지표 |
 |---|---|
-| **시장** | S&P 500, NASDAQ, 다우존스, VIX, Shiller P/E, CAPE |
+| **시장** | S&P 500, NASDAQ, 다우존스, VIX, Shiller P/E |
 | **심리** | CNN Fear & Greed (주식), Crypto Fear & Greed, 소비자심리지수, FINRA 마진 부채 |
 | **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 기대인플레이션, 하이일드 OAS |
 | **거시경제** | CPI, PCE, M2 통화량(주간), 실업률, NFP, JOLTS, 실질 GDP, 주택가격지수 |
-| **원자재** | WTI 원유, 금, 은, 천연가스(Henry Hub), 구리 |
-| **환율** | 달러지수(DXY Broad), USD/KRW, USD/JPY, EUR/USD, KRW/JPY |
+| **원자재** | 금, 은, 구리, WTI 원유, 천연가스(Henry Hub) |
+| **환율** | 달러지수(Broad), USD/KRW, USD/JPY, EUR/USD, KRW/JPY |
 
 ---
 
@@ -56,10 +56,11 @@ pip install requests pandas openpyxl yfinance xlrd
 python scripts/update_data.py --key YOUR_FRED_API_KEY
 
 # 개별 실행
+python scripts/update_data.py --market   # S&P 500·NASDAQ·DJIA·VIX·WTI·구리·천연가스 (Yahoo Finance)
 python scripts/update_data.py --yahoo    # 금, 은 (Yahoo Finance)
 python scripts/update_data.py --forex    # 환율 USD/KRW, USD/JPY, EUR/USD
 python scripts/update_data.py --fg       # Fear & Greed (CNN + 크립토)
-python scripts/update_data.py --shiller  # Shiller P/E, CAPE
+python scripts/update_data.py --shiller  # Shiller P/E
 python scripts/update_data.py --finra    # FINRA 마진 부채
 python scripts/update_data.py --fred     # FRED 전체 (API 키 필요)
 ```
@@ -95,11 +96,13 @@ macro-dashboard/
 
 ## 데이터 출처
 
-- [FRED](https://fred.stlouisfed.org) — 금리·GDP·물가·고용 등
-- [CNN Fear & Greed](https://www.cnn.com/markets/fear-and-greed) — 주식 시장 심리
-- [alternative.me](https://alternative.me/crypto/fear-and-greed-index/) — 크립토 공포·탐욕
-- [FINRA](https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics) — 마진 부채
-- [Robert Shiller / Yale](http://www.econ.yale.edu/~shiller/data/) — P/E, CAPE
-- [Yahoo Finance](https://finance.yahoo.com) — 금(GC=F), 은(SI=F), 환율
+| 소스 | 지표 | 비고 |
+|---|---|---|
+| [Yahoo Finance](https://finance.yahoo.com) | S&P 500(^GSPC), NASDAQ(^IXIC), DJIA(^DJI), VIX(^VIX), WTI(CL=F), 구리(HG=F), 천연가스(NG=F), 금(GC=F), 은(SI=F), 환율 | FRED 대비 1~2일 빠른 전일 종가 |
+| [FRED](https://fred.stlouisfed.org) | 금리·GDP·물가·고용·M2·달러지수(Broad)·하이일드 스프레드·주택가격 등 | API 키 필요 |
+| [CNN Fear & Greed](https://www.cnn.com/markets/fear-and-greed) | 주식 시장 심리 | |
+| [alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | 크립토 공포·탐욕 | |
+| [FINRA](https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics) | 마진 부채 | |
+| [Robert Shiller / Yale](http://www.econ.yale.edu/~shiller/data/) | P/E | 약 1~2개월 지연 |
 
 본 대시보드는 투자 조언이 아닙니다.

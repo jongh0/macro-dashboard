@@ -28,28 +28,12 @@ if "%FRED_API_KEY%"=="" (
 
 echo ============================================
 echo  Macro Dashboard Data Update
-echo  FRED + Yahoo Finance + CNN + FINRA + Shiller
+echo  Yahoo Finance + FRED + CNN + FINRA + Shiller
 echo ============================================
 echo.
 
-echo [1/4] Yahoo Finance - Gold, Silver ^(GC=F, SI=F^)...
-python scripts/update_data.py --yahoo
-if errorlevel 1 echo   WARNING: Yahoo Finance download partially failed
-echo.
-
-echo [2/4] Yahoo Finance - Forex ^(USDKRW, USDJPY, EURUSD, KRWJPY^)...
-python scripts/update_data.py --forex
-if errorlevel 1 echo   WARNING: Forex download partially failed
-echo.
-
-echo [3/4] CNN Fear ^& Greed + Shiller P/E + FINRA Margin Debt...
-python scripts/update_data.py --fg --shiller --finra
+python scripts/update_data.py --all
 if errorlevel 1 echo   WARNING: Some downloads partially failed
-echo.
-
-echo [4/4] FRED economic data ^(SP500, rates, CPI, employment...^)
-python scripts/update_data.py --fred
-if errorlevel 1 echo   WARNING: FRED download partially failed
 echo.
 
 echo ============================================
