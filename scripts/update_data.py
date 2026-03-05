@@ -9,7 +9,7 @@ update_data.py - 정적 데이터 파일 업데이트 스크립트
 import json
 import os
 import sys
-from datetime import datetime, date
+from datetime import datetime, date, timezone, timedelta
 from pathlib import Path
 
 # Windows 터미널 UTF-8 출력
@@ -30,7 +30,8 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 
 FRED_API_KEY = os.environ.get("FRED_API_KEY", "")
 HEADERS = {"User-Agent": "Mozilla/5.0 MacroDashboard/1.0"}
-TODAY = datetime.now().strftime("%Y-%m-%dT%H:%M:00")
+KST = timezone(timedelta(hours=9))
+TODAY = datetime.now(KST).strftime("%Y-%m-%dT%H:%M:00")
 
 
 def to_json_dates(df_series, round_digits=4):
