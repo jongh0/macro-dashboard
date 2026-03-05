@@ -299,7 +299,8 @@ class MacroDashboard {
       return val.toLocaleString() + (unit ? ' ' + unit : '');
     }
     if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + 'M ' + unit;
-    return val.toLocaleString(undefined, { maximumFractionDigits: 2 }) + (unit ? ' ' + unit : '');
+    const frac = config.format === 'integer' ? 0 : 2;
+    return val.toLocaleString(undefined, { maximumFractionDigits: frac }) + (unit ? ' ' + unit : '');
   }
 
   _setStatus(chartId, type, text) {

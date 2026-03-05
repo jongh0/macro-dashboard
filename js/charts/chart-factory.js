@@ -255,18 +255,20 @@ const ChartFactory = {
     if (Math.abs(val) >= 1e12) return (val / 1e12).toFixed(1) + 'T';
     if (Math.abs(val) >= 1e9)  return (val / 1e9).toFixed(1) + 'B';
     if (Math.abs(val) >= 1e6)  return (val / 1e6).toFixed(1) + 'M';
-    return format === 'percent' ? val.toFixed(1) : val.toLocaleString(undefined, { maximumFractionDigits: 1 });
+    const frac = format === 'integer' ? 0 : 1;
+    return format === 'percent' ? val.toFixed(1) : val.toLocaleString(undefined, { maximumFractionDigits: frac });
   },
 
   _formatValue(val, format, unit) {
     if (val === null || val === undefined || isNaN(val)) return 'N/A';
+    const frac = format === 'integer' ? 0 : 2;
     let str;
-    if (Math.abs(val) >= 1e12)      str = (val / 1e12).toFixed(2) + 'T';
-    else if (Math.abs(val) >= 1e9)  str = (val / 1e9).toFixed(2)  + 'B';
-    else if (Math.abs(val) >= 1e6)  str = (val / 1e6).toFixed(2)  + 'M';
+    if (Math.abs(val) >= 1e12)      str = (val / 1e12).toFixed(frac) + 'T';
+    else if (Math.abs(val) >= 1e9)  str = (val / 1e9).toFixed(frac)  + 'B';
+    else if (Math.abs(val) >= 1e6)  str = (val / 1e6).toFixed(frac)  + 'M';
     else str = format === 'percent'
       ? val.toFixed(2)
-      : val.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      : val.toLocaleString(undefined, { maximumFractionDigits: frac });
     return unit ? str + ' ' + unit : str;
   },
 

@@ -30,7 +30,7 @@ const CHART_CONFIGS = [
     defaultNormalize: 'raw',
     updateInterval: 15 * 60 * 1000,
     unit: 'pts',
-    format: 'number',
+    format: 'integer',
     statusConfig: {
       type: 'drawdown',
       window: 252,
@@ -69,7 +69,7 @@ const CHART_CONFIGS = [
     defaultNormalize: 'raw',
     updateInterval: 15 * 60 * 1000,
     unit: 'pts',
-    format: 'number',
+    format: 'integer',
     statusConfig: {
       type: 'drawdown',
       window: 252,
@@ -108,7 +108,7 @@ const CHART_CONFIGS = [
     defaultNormalize: 'raw',
     updateInterval: 15 * 60 * 1000,
     unit: 'pts',
-    format: 'number',
+    format: 'integer',
     statusConfig: {
       type: 'drawdown',
       window: 252,
