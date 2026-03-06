@@ -10,12 +10,13 @@
 
 | 카테고리 | 지표 |
 |---|---|
-| **시장** | S&P 500, NASDAQ, 다우존스, VIX, Shiller P/E |
-| **심리** | CNN Fear & Greed (주식), Crypto Fear & Greed, 소비자심리지수, FINRA 마진 부채 |
-| **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 기대인플레이션, 하이일드 OAS |
-| **거시경제** | CPI, PCE, M2 통화량(주간), 실업률, NFP, JOLTS, 실질 GDP, 주택가격지수 |
+| **시장** | S&P 500, NASDAQ, 다우존스, VIX |
+| **심리** | CNN Fear & Greed (주식), Crypto Fear & Greed |
+| **환율** | USD/KRW, KRW/JPY, USD/JPY, EUR/USD |
 | **원자재** | 금, 은, 구리, WTI 원유, 천연가스(Henry Hub) |
-| **환율** | 달러지수(Broad), USD/KRW, USD/JPY, EUR/USD, KRW/JPY |
+| **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 하이일드 OAS |
+| **거시경제** | 달러지수(Broad), 소비자심리지수, 실질 GDP, 실업률, NFP, JOLTS, 실업수당 청구, CPI, PCE, 기대인플레이션(BEI), M2 통화량(주간), 주택가격지수 |
+| **S&P 비교** | S&P vs VIX, 마진 부채, P/E, M2, 달러지수, HY 스프레드, 10년물 금리, 기준금리, 장단기 금리차, 금, WTI |
 
 ---
 
@@ -53,7 +54,7 @@ update.bat
 pip install requests pandas openpyxl yfinance xlrd
 
 # 전체 업데이트
-python scripts/update_data.py --key YOUR_FRED_API_KEY
+python scripts/update_data.py --all --key YOUR_FRED_API_KEY
 
 # 개별 실행
 python scripts/update_data.py --market   # S&P 500·NASDAQ·DJIA·VIX·WTI·구리·천연가스 (Yahoo Finance)
@@ -65,7 +66,7 @@ python scripts/update_data.py --finra    # FINRA 마진 부채
 python scripts/update_data.py --fred     # FRED 전체 (API 키 필요)
 ```
 
-GitHub Actions로 2시간마다 자동 갱신 (`.github/workflows/update-data.yml`).
+GitHub Actions로 1시간마다 자동 갱신 (`.github/workflows/update-data.yml`).
 
 ---
 
@@ -76,14 +77,14 @@ macro-dashboard/
 ├── index.html
 ├── css/style.css
 ├── js/
-│   ├── config.js           # 전역 설정
+│   ├── config.js           # 전역 설정 및 카테고리 정의
 │   ├── app.js              # 메인 앱
 │   ├── cache.js            # 브라우저 캐시
 │   ├── normalizer.js       # 데이터 정규화
 │   ├── fred-api.js         # FRED 정적 파일 로더
 │   ├── cnn-api.js          # CNN/Static 로더
 │   └── charts/
-│       ├── chart-configs.js  # 차트 정의
+│       ├── chart-configs.js  # 차트 정의 (전체 지표 + S&P 비교)
 │       └── chart-factory.js  # ECharts 렌더러
 ├── data/                   # 정적 JSON (스크립트로 갱신)
 ├── scripts/update_data.py  # 데이터 업데이트
