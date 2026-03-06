@@ -4,14 +4,6 @@
 // ============================================================
 
 const CHART_CONFIGS = [
-
-  // ══════════════════════════════════════════
-  // ▶ 시장 (Market) — 핵심 지수
-  // ══════════════════════════════════════════
-
-  // ──────────────────────────────────────────
-  // 1. S&P 500 지수
-  // ──────────────────────────────────────────
   {
     id: 'sp500',
     title: 'S&P 500',
@@ -50,7 +42,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 2. NASDAQ 종합지수
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'nasdaq',
     title: 'NASDAQ 종합지수',
@@ -89,7 +81,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 3. 다우존스 산업평균지수
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'dow-jones',
     title: '다우존스 산업평균',
@@ -128,7 +120,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 4. VIX 변동성 지수
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'vix',
     title: 'VIX 변동성 지수',
@@ -173,7 +165,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 3. Fear & Greed Index (주식 시장, CNN)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'fear-greed-stock',
     title: 'Fear & Greed (주식)',
@@ -220,7 +212,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 4. Fear & Greed Index (크립토, alternative.me)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'fear-greed-crypto',
     title: 'Fear & Greed (크립토)',
@@ -267,12 +259,529 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 4. 소비자심리지수
+  // ──────────────────────────────────────────,
+  {
+    id: 'usd-krw',
+    title: '원/달러 환율',
+    description: '달러 대비 원화 환율 (수치 상승 = 원화 약세) | Yahoo Finance USDKRW=X · 전일 종가',
+    category: 'forex',
+    series: [
+      {
+        id: 'usdkrw',
+        label: '원/달러',
+        type: 'static',
+        file: 'yahoo_usdkrw.json',
+        color: '#22d3ee',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '₩/$',
+    format: 'number',
+    reading: [
+      '원화 약세(수치↑) = 수출 기업 유리, 수입 물가 상승, 외국인 자금 이탈 신호.',
+      '1,300원 이상 고착 = 원화 약세 구조화. 1,200원 이하 = 원화 강세 안정 국면.',
+      '달러 강세·글로벌 위기 시 원화는 신흥국 통화 중 변동성이 큰 편.',
+    ],
+  },
+
   // ──────────────────────────────────────────
+  // 원/엔 환율 (KRW/JPY)
+  // ──────────────────────────────────────────,
+  {
+    id: 'krw-jpy',
+    title: '원/엔 환율',
+    description: '100엔당 원화 환율 (수치 상승 = 원화 약세 / 엔 강세) | USDKRW=X ÷ USDJPY=X × 100 · 전일 종가',
+    category: 'forex',
+    series: [
+      {
+        id: 'krwjpy',
+        label: '원/엔 (100엔)',
+        type: 'static',
+        file: 'krwjpy.json',
+        color: '#fb923c',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '₩/¥100',
+    format: 'number',
+    reading: [
+      '100엔당 원화 기준. 수치 상승 = 원화 약세(엔 대비), 하락 = 원화 강세.',
+      '일본과 교역·관광 의존도가 높아 원/엔 환율은 한국 경제에 직접 영향.',
+      '800원대 이하 = 엔화 약세 극단 구간. 엔화 반등 시 원화도 동반 영향.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // USD/JPY 환율
+  // ──────────────────────────────────────────,
+  {
+    id: 'usd-jpy',
+    title: 'USD/JPY 환율',
+    description: '달러 대비 엔화 환율 (수치 상승 = 엔 약세) – 캐리 트레이드·위험 선호 바로미터 | Yahoo Finance USDJPY=X · 전일 종가',
+    category: 'forex',
+    series: [
+      {
+        id: 'usdjpy',
+        label: 'USD/JPY',
+        type: 'static',
+        file: 'yahoo_usdjpy.json',
+        color: '#f43f5e',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '¥/$',
+    format: 'number',
+    reading: [
+      '엔 약세(수치↑) = 글로벌 위험 선호, 캐리 트레이드 활성화. 엔 강세(수치↓) = 리스크 오프, 캐리 청산.',
+      '일본은행(BOJ) 금리 인상 시 엔 강세 압력 → 글로벌 자산 변동성 증폭 가능.',
+      '엔화 급격한 강세 전환은 과거 글로벌 위험자산 동반 하락의 전조.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // EUR/USD 환율
+  // ──────────────────────────────────────────,
+  {
+    id: 'eur-usd',
+    title: 'EUR/USD 환율',
+    description: '유로 대비 달러 환율 (수치 하락 = 달러 강세) – Fed vs ECB 정책 차이 반영 | Yahoo Finance EURUSD=X · 전일 종가',
+    category: 'forex',
+    series: [
+      {
+        id: 'eurusd',
+        label: 'EUR/USD',
+        type: 'static',
+        file: 'yahoo_eurusd.json',
+        color: '#818cf8',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$/€',
+    format: 'number',
+    reading: [
+      '달러 강세(수치↓) = 글로벌 위험 회피, 신흥국 자금 이탈. 달러 약세(수치↑) = 위험 선호.',
+      'Fed 금리 > ECB 금리 → 달러 강세 압력. 격차 축소 시 달러 약세 전환 경향.',
+      '1.00 하회(달러 패리티) = 유럽 경기 위기 신호. 역사적으로 드문 구간.',
+    ],
+  },
+
+  // ══════════════════════════════════════════
+  // ▶ S&P 500 비교 차트
+  // ══════════════════════════════════════════
+
+  // ──────────────────────────────────────────
+  // 23. S&P 500 vs VIX
+  // ──────────────────────────────────────────,
+  {
+    id: 'gold-price',
+    title: '금 가격',
+    description: '금 선물 현물 환산가 (USD/트로이온스) – 안전자산·인플레이션 헤지 대표 지표 | 출처: Yahoo Finance GC=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'gold',
+        label: '금 가격',
+        type: 'static',
+        file: 'gold.json',
+        color: '#fbbf24',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/oz',
+    format: 'number',
+    reading: [
+      '달러 약세·실질금리 하락·지정학 리스크 고조 시 상승 경향.',
+      '주가 급락 구간에서 금이 오르면 안전자산 선호 확인. 동반 하락이면 마진콜 청산.',
+      '금 가격 ÷ S&P 500 비율로 위험자산 대비 안전자산 선호도 파악 가능.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 은 가격
+  // ──────────────────────────────────────────,
+  {
+    id: 'silver-price',
+    title: '은 가격',
+    description: '은 선물 현물 환산가 (USD/트로이온스) – 산업·귀금속 이중 성격 | 출처: Yahoo Finance SI=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'silver',
+        label: '은 가격',
+        type: 'static',
+        file: 'silver.json',
+        color: '#94a3b8',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/oz',
+    format: 'number',
+    reading: [
+      '금·은 비율(Gold/Silver Ratio)이 80 이상이면 역사적으로 은이 저평가된 구간.',
+      '은은 산업 수요(태양광·전자 등) 비중이 높아 경기 둔화 시 금보다 더 하락하는 경향.',
+      '귀금속 랠리에서 은이 금보다 늦게, 그러나 더 강하게 상승하는 패턴 자주 관찰됨.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 구리 가격 (Dr. Copper)
+  // ──────────────────────────────────────────,
+  {
+    id: 'copper-price',
+    title: '구리 가격 (Dr. Copper)',
+    description: '구리 선물 가격 (USD/mt) – 경제 활동 선행지표 (경기 확장 시 수요 증가) | 출처: Yahoo Finance HG=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'copper',
+        label: '구리 가격',
+        type: 'static',
+        file: 'copper.json',
+        color: '#fb923c',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/mt',
+    format: 'number',
+    reading: [
+      'Dr. Copper: 전기차·건설·인프라 수요에 민감해 경기 선행성 높음.',
+      '상승 = 글로벌 제조업 확장. 하락 = 경기 둔화, 특히 중국 경기 반영.',
+      '최근 급등은 AI 데이터센터·에너지전환 수요와 공급 부족이 복합 작용.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // WTI 원유 가격
+  // ──────────────────────────────────────────,
+  {
+    id: 'wti-oil',
+    title: 'WTI 원유 가격',
+    description: '서부 텍사스산 중질유(WTI) 선물 가격 (경기 수요·인플레이션 선행지표) | 출처: Yahoo Finance CL=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'wti',
+        label: 'WTI 원유',
+        type: 'static',
+        file: 'wti.json',
+        color: '#84cc16',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/bbl',
+    format: 'number',
+    reading: [
+      '$60 이하 = 수요 우려(경기 둔화). $100 이상 = 인플레이션 압력 및 소비 위축.',
+      '공급 충격(OPEC 감산·지정학)과 수요 신호를 구분해 해석.',
+      '원유 급등은 CPI 헤드라인을 밀어올려 금리 인하를 제약.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 천연가스 가격 (Henry Hub)
+  // ──────────────────────────────────────────,
+  {
+    id: 'natural-gas',
+    title: '천연가스 가격 (Henry Hub)',
+    description: 'Henry Hub 천연가스 선물 가격 – 에너지 비용·계절성 인플레이션 지표 | 출처: Yahoo Finance NG=F',
+    category: 'commodity',
+    series: [
+      {
+        id: 'natgas',
+        label: '천연가스',
+        type: 'static',
+        file: 'natgas.json',
+        color: '#34d399',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: 'USD/MMBtu',
+    format: 'number',
+    reading: [
+      '겨울철 수요·이상 기온에 극도로 민감. 계절성이 강해 YoY 비교가 중요.',
+      '천연가스 급등 = 전력·난방 비용 상승 → CPI 에너지 항목 압박.',
+      '미국 LNG 수출 확대로 유럽 가스 가격과 상관관계 증가 중.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 22. 케이스-실러 주택가격지수
+  // ──────────────────────────────────────────,
+  {
+    id: 'fed-rate',
+    title: '연방기금금리',
+    description: 'Federal Funds Rate (FOMC 금리 결정)',
+    category: 'rates',
+    series: [
+      {
+        id: 'fedfunds',
+        label: '연방기금금리',
+        type: 'fred',
+        seriesId: 'FEDFUNDS',
+        units: 'lin',
+        color: '#22c55e',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    reading: [
+      '인상 = 긴축(주가·채권 하락 압력). 인하 = 완화(위험자산 선호).',
+      '현재 사이클 방향(인상/동결/인하)과 속도가 핵심.',
+      '시장은 FOMC 결정 전부터 선반영. 금리 선물 시장 확인 병행 추천.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 14. 미국채 수익률 (2Y / 10Y)
+  // ──────────────────────────────────────────,
+  {
+    id: 'treasury-yields',
+    title: '미국채 수익률',
+    description: '2년물·10년물 국채 수익률',
+    category: 'rates',
+    series: [
+      {
+        id: 'dgs2',
+        label: '2년물',
+        type: 'fred',
+        seriesId: 'DGS2',
+        units: 'lin',
+        color: '#38bdf8',
+      },
+      {
+        id: 'dgs10',
+        label: '10년물',
+        type: 'fred',
+        seriesId: 'DGS10',
+        units: 'lin',
+        color: '#818cf8',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    normalizeModes: ['raw', 'zscore'],
+    reading: [
+      '2년물 = 금리 정책 민감. 10년물 = 장기 경기 기대치 반영.',
+      '10Y > 2Y = 정상적 우상향 곡선. 역전 = 침체 선행 신호.',
+      '두 선이 가까워지는(평탄화) 구간이 역전 전 경고 단계.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 15. 장단기 금리차 (10Y - 2Y)
+  // ──────────────────────────────────────────,
+  {
+    id: 'yield-spread',
+    title: '장단기 금리차 (10Y-2Y)',
+    description: '미국채 수익률 역전: 음수 → 경기침체 선행지표',
+    category: 'rates',
+    series: [
+      {
+        id: 'spread',
+        label: '10Y-2Y 스프레드',
+        type: 'fred',
+        seriesId: 'T10Y2Y',
+        units: 'lin',
+        color: '#06b6d4',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%p',
+    format: 'percent',
+    zeroLine: true,
+    recessionShading: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,   label: '역전',      color: '#ef4444' },
+        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
+        {           label: '정상',      color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '음수(역전) = 과거 7번 연속 침체 선행. 신뢰도 높은 경기침체 예측 지표.',
+      '역전 지속 기간이 길수록 침체 심도가 깊은 경향.',
+      '역전 해소(양전환) 직후 실제 침체가 시작되는 패턴을 보임.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 16. 장단기 금리차 (10Y-3M) – 경기침체 최고 예측 지표
+  // ──────────────────────────────────────────,
+  {
+    id: 'yield-spread-10y3m',
+    title: '금리차 (10Y-3M)',
+    description: '10년-3개월 국채 금리차: 역전 시 12~18개월 후 침체 예측 (뉴욕연준 모델)',
+    category: 'rates',
+    series: [
+      {
+        id: 't10y3m',
+        label: '10Y-3M 스프레드',
+        type: 'fred',
+        seriesId: 'T10Y3M',
+        units: 'lin',
+        color: '#a78bfa',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%p',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,   label: '역전',      color: '#ef4444' },
+        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
+        {           label: '정상',      color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '뉴욕 연준 침체 예측 모델의 핵심 변수. 10Y-2Y보다 예측력 높다고 평가.',
+      '역전 후 12~18개월 내 침체 확률 급상승.',
+      '역전 해소 시점이 실제 침체 시작과 근접하는 경향.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 17. 30년물 국채 수익률
+  // ──────────────────────────────────────────,
+  {
+    id: 'treasury-30y',
+    title: '30년물 국채 수익률',
+    description: '미국채 30년물 수익률 – 장기 인플레이션 기대 및 모기지 금리 연동',
+    category: 'rates',
+    series: [
+      {
+        id: 'dgs30',
+        label: '30년물',
+        type: 'fred',
+        seriesId: 'DGS30',
+        units: 'lin',
+        color: '#c084fc',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    reading: [
+      '30년물은 시장의 장기 인플레이션 기대와 성장 전망을 가장 잘 반영.',
+      '모기지 금리(30년 고정)와 연동 → 주택 시장에 직접 영향.',
+      '10Y 대비 30Y가 높으면 장기 인플레 우려, 낮으면 성장 둔화 우려 신호.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 18. 하이일드 스프레드 (HY OAS)
+  // ──────────────────────────────────────────,
+  {
+    id: 'hy-spread',
+    title: '하이일드 스프레드 (HY OAS)',
+    description: 'ICE BofA 미국 고수익채 OAS – 스프레드 확대 → 신용 위기 선행지표',
+    category: 'rates',
+    series: [
+      {
+        id: 'hyspread',
+        label: 'HY OAS 스프레드',
+        type: 'fred',
+        seriesId: 'BAMLH0A0HYM2',
+        units: 'lin',
+        color: '#f97316',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 4, label: '안정', color: '#22c55e' },
+        { max: 7, label: '주의', color: '#f59e0b' },
+        {         label: '위기', color: '#ef4444' },
+      ],
+    },
+    refLines: [
+      { value: 4,  label: '주의(4%)',  color: '#fbbf24' },
+      { value: 7,  label: '위기(7%)',  color: '#ef4444' },
+    ],
+    reading: [
+      '국채 대비 정크본드 금리 차이. 확대 = 투자자들이 리스크 회피 중.',
+      '4% 이상 = 신용 경계. 7% 이상 = 금융 위기 수준(2008, 2020 참고).',
+      '주가 하락 선행하는 경우 많음. S&P 500 vs HY 스프레드 차트와 함께 볼 것.',
+    ],
+  },
+
+  // ══════════════════════════════════════════
+  // ▶ 유동성 & 원자재 (Liquidity & Commodities)
+  // ══════════════════════════════════════════
+
+  // ──────────────────────────────────────────
+  // 18. M2 통화량 (전년 대비)
+  // ──────────────────────────────────────────,
+  {
+    id: 'dollar-index',
+    title: '달러 지수 (Broad)',
+    description: '연준 Nominal Broad Dollar Index — DTWEXBGS (26개국 통화 가중) | ※ 흔히 말하는 DXY(ICE 6개국)와 다른 지수',
+    category: 'macro',
+    series: [
+      {
+        id: 'dxy',
+        label: '달러 지수',
+        type: 'fred',
+        seriesId: 'DTWEXBGS',
+        units: 'lin',
+        color: '#22d3ee',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '',
+    format: 'number',
+    reading: [
+      '강달러 = 신흥국 자금 이탈, 원자재 하락, 미국 수출기업 실적 악화.',
+      '약달러 = 글로벌 위험자산 선호, 원자재·신흥국 주가 상승.',
+      '※ DTWEXBGS는 26개국 기준 연준 지수. 흔히 말하는 DXY(ICE 6개국)와 수치 다름.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 금 가격
+  // ──────────────────────────────────────────,
   {
     id: 'consumer-sentiment',
     title: '소비자심리지수',
     description: '미시간대 소비자심리지수 (월별)',
-    category: 'sentiment',
+    category: 'macro',
     series: [
       {
         id: 'umcsent',
@@ -308,7 +817,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 5. 실질 GDP 성장률
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'gdp-growth',
     title: '실질 GDP 성장률',
@@ -348,7 +857,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 6. 실업률
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'unemployment',
     title: '실업률',
@@ -385,7 +894,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 7. 비농업 고용 변화 (NFP)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'nonfarm-payrolls',
     title: '비농업 고용 변화 (NFP)',
@@ -427,7 +936,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 8. JOLTS 채용공고
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'jolts',
     title: 'JOLTS 채용공고',
@@ -459,7 +968,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 9. 초기 실업수당 청구 (Initial Jobless Claims)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'jobless-claims',
     title: '초기 실업수당 청구',
@@ -502,7 +1011,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 10. CPI / 인플레이션
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'cpi',
     title: 'CPI 인플레이션',
@@ -550,7 +1059,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 11. PCE 물가지수
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'pce',
     title: 'PCE 물가지수',
@@ -597,7 +1106,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 12. 10년 기대인플레이션 (BEI)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'inflation-expectation',
     title: '10년 기대인플레이션 (BEI)',
@@ -642,229 +1151,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 13. 연방기금금리 (Fed Funds Rate)
-  // ──────────────────────────────────────────
-  {
-    id: 'fed-rate',
-    title: '연방기금금리',
-    description: 'Federal Funds Rate (FOMC 금리 결정)',
-    category: 'rates',
-    series: [
-      {
-        id: 'fedfunds',
-        label: '연방기금금리',
-        type: 'fred',
-        seriesId: 'FEDFUNDS',
-        units: 'lin',
-        color: '#22c55e',
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    reading: [
-      '인상 = 긴축(주가·채권 하락 압력). 인하 = 완화(위험자산 선호).',
-      '현재 사이클 방향(인상/동결/인하)과 속도가 핵심.',
-      '시장은 FOMC 결정 전부터 선반영. 금리 선물 시장 확인 병행 추천.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 14. 미국채 수익률 (2Y / 10Y)
-  // ──────────────────────────────────────────
-  {
-    id: 'treasury-yields',
-    title: '미국채 수익률',
-    description: '2년물·10년물 국채 수익률',
-    category: 'rates',
-    series: [
-      {
-        id: 'dgs2',
-        label: '2년물',
-        type: 'fred',
-        seriesId: 'DGS2',
-        units: 'lin',
-        color: '#38bdf8',
-      },
-      {
-        id: 'dgs10',
-        label: '10년물',
-        type: 'fred',
-        seriesId: 'DGS10',
-        units: 'lin',
-        color: '#818cf8',
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    normalizeModes: ['raw', 'zscore'],
-    reading: [
-      '2년물 = 금리 정책 민감. 10년물 = 장기 경기 기대치 반영.',
-      '10Y > 2Y = 정상적 우상향 곡선. 역전 = 침체 선행 신호.',
-      '두 선이 가까워지는(평탄화) 구간이 역전 전 경고 단계.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 15. 장단기 금리차 (10Y - 2Y)
-  // ──────────────────────────────────────────
-  {
-    id: 'yield-spread',
-    title: '장단기 금리차 (10Y-2Y)',
-    description: '미국채 수익률 역전: 음수 → 경기침체 선행지표',
-    category: 'rates',
-    series: [
-      {
-        id: 'spread',
-        label: '10Y-2Y 스프레드',
-        type: 'fred',
-        seriesId: 'T10Y2Y',
-        units: 'lin',
-        color: '#06b6d4',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%p',
-    format: 'percent',
-    zeroLine: true,
-    recessionShading: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0,   label: '역전',      color: '#ef4444' },
-        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
-        {           label: '정상',      color: '#22c55e' },
-      ],
-    },
-    reading: [
-      '음수(역전) = 과거 7번 연속 침체 선행. 신뢰도 높은 경기침체 예측 지표.',
-      '역전 지속 기간이 길수록 침체 심도가 깊은 경향.',
-      '역전 해소(양전환) 직후 실제 침체가 시작되는 패턴을 보임.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 16. 장단기 금리차 (10Y-3M) – 경기침체 최고 예측 지표
-  // ──────────────────────────────────────────
-  {
-    id: 'yield-spread-10y3m',
-    title: '금리차 (10Y-3M)',
-    description: '10년-3개월 국채 금리차: 역전 시 12~18개월 후 침체 예측 (뉴욕연준 모델)',
-    category: 'rates',
-    series: [
-      {
-        id: 't10y3m',
-        label: '10Y-3M 스프레드',
-        type: 'fred',
-        seriesId: 'T10Y3M',
-        units: 'lin',
-        color: '#a78bfa',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%p',
-    format: 'percent',
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0,   label: '역전',      color: '#ef4444' },
-        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
-        {           label: '정상',      color: '#22c55e' },
-      ],
-    },
-    reading: [
-      '뉴욕 연준 침체 예측 모델의 핵심 변수. 10Y-2Y보다 예측력 높다고 평가.',
-      '역전 후 12~18개월 내 침체 확률 급상승.',
-      '역전 해소 시점이 실제 침체 시작과 근접하는 경향.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 17. 30년물 국채 수익률
-  // ──────────────────────────────────────────
-  {
-    id: 'treasury-30y',
-    title: '30년물 국채 수익률',
-    description: '미국채 30년물 수익률 – 장기 인플레이션 기대 및 모기지 금리 연동',
-    category: 'rates',
-    series: [
-      {
-        id: 'dgs30',
-        label: '30년물',
-        type: 'fred',
-        seriesId: 'DGS30',
-        units: 'lin',
-        color: '#c084fc',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    reading: [
-      '30년물은 시장의 장기 인플레이션 기대와 성장 전망을 가장 잘 반영.',
-      '모기지 금리(30년 고정)와 연동 → 주택 시장에 직접 영향.',
-      '10Y 대비 30Y가 높으면 장기 인플레 우려, 낮으면 성장 둔화 우려 신호.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 18. 하이일드 스프레드 (HY OAS)
-  // ──────────────────────────────────────────
-  {
-    id: 'hy-spread',
-    title: '하이일드 스프레드 (HY OAS)',
-    description: 'ICE BofA 미국 고수익채 OAS – 스프레드 확대 → 신용 위기 선행지표',
-    category: 'rates',
-    series: [
-      {
-        id: 'hyspread',
-        label: 'HY OAS 스프레드',
-        type: 'fred',
-        seriesId: 'BAMLH0A0HYM2',
-        units: 'lin',
-        color: '#f97316',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 4, label: '안정', color: '#22c55e' },
-        { max: 7, label: '주의', color: '#f59e0b' },
-        {         label: '위기', color: '#ef4444' },
-      ],
-    },
-    refLines: [
-      { value: 4,  label: '주의(4%)',  color: '#fbbf24' },
-      { value: 7,  label: '위기(7%)',  color: '#ef4444' },
-    ],
-    reading: [
-      '국채 대비 정크본드 금리 차이. 확대 = 투자자들이 리스크 회피 중.',
-      '4% 이상 = 신용 경계. 7% 이상 = 금융 위기 수준(2008, 2020 참고).',
-      '주가 하락 선행하는 경우 많음. S&P 500 vs HY 스프레드 차트와 함께 볼 것.',
-    ],
-  },
-
-  // ══════════════════════════════════════════
-  // ▶ 유동성 & 원자재 (Liquidity & Commodities)
-  // ══════════════════════════════════════════
-
-  // ──────────────────────────────────────────
-  // 18. M2 통화량 (전년 대비)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'm2',
     title: 'M2 통화량 증가율',
@@ -904,182 +1191,7 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 19. 달러 지수 (DXY)
-  // ──────────────────────────────────────────
-  {
-    id: 'dollar-index',
-    title: '달러 지수 (Broad)',
-    description: '연준 Nominal Broad Dollar Index — DTWEXBGS (26개국 통화 가중) | ※ 흔히 말하는 DXY(ICE 6개국)와 다른 지수',
-    category: 'market',
-    series: [
-      {
-        id: 'dxy',
-        label: '달러 지수',
-        type: 'fred',
-        seriesId: 'DTWEXBGS',
-        units: 'lin',
-        color: '#22d3ee',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '',
-    format: 'number',
-    reading: [
-      '강달러 = 신흥국 자금 이탈, 원자재 하락, 미국 수출기업 실적 악화.',
-      '약달러 = 글로벌 위험자산 선호, 원자재·신흥국 주가 상승.',
-      '※ DTWEXBGS는 26개국 기준 연준 지수. 흔히 말하는 DXY(ICE 6개국)와 수치 다름.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 금 가격
-  // ──────────────────────────────────────────
-  {
-    id: 'gold-price',
-    title: '금 가격',
-    description: '금 선물 현물 환산가 (USD/트로이온스) – 안전자산·인플레이션 헤지 대표 지표 | 출처: Yahoo Finance GC=F',
-    category: 'commodity',
-    series: [
-      {
-        id: 'gold',
-        label: '금 가격',
-        type: 'static',
-        file: 'gold.json',
-        color: '#fbbf24',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/oz',
-    format: 'number',
-    reading: [
-      '달러 약세·실질금리 하락·지정학 리스크 고조 시 상승 경향.',
-      '주가 급락 구간에서 금이 오르면 안전자산 선호 확인. 동반 하락이면 마진콜 청산.',
-      '금 가격 ÷ S&P 500 비율로 위험자산 대비 안전자산 선호도 파악 가능.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 은 가격
-  // ──────────────────────────────────────────
-  {
-    id: 'silver-price',
-    title: '은 가격',
-    description: '은 선물 현물 환산가 (USD/트로이온스) – 산업·귀금속 이중 성격 | 출처: Yahoo Finance SI=F',
-    category: 'commodity',
-    series: [
-      {
-        id: 'silver',
-        label: '은 가격',
-        type: 'static',
-        file: 'silver.json',
-        color: '#94a3b8',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/oz',
-    format: 'number',
-    reading: [
-      '금·은 비율(Gold/Silver Ratio)이 80 이상이면 역사적으로 은이 저평가된 구간.',
-      '은은 산업 수요(태양광·전자 등) 비중이 높아 경기 둔화 시 금보다 더 하락하는 경향.',
-      '귀금속 랠리에서 은이 금보다 늦게, 그러나 더 강하게 상승하는 패턴 자주 관찰됨.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 구리 가격 (Dr. Copper)
-  // ──────────────────────────────────────────
-  {
-    id: 'copper-price',
-    title: '구리 가격 (Dr. Copper)',
-    description: '구리 선물 가격 (USD/mt) – 경제 활동 선행지표 (경기 확장 시 수요 증가) | 출처: Yahoo Finance HG=F',
-    category: 'commodity',
-    series: [
-      {
-        id: 'copper',
-        label: '구리 가격',
-        type: 'static',
-        file: 'copper.json',
-        color: '#fb923c',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/mt',
-    format: 'number',
-    reading: [
-      'Dr. Copper: 전기차·건설·인프라 수요에 민감해 경기 선행성 높음.',
-      '상승 = 글로벌 제조업 확장. 하락 = 경기 둔화, 특히 중국 경기 반영.',
-      '최근 급등은 AI 데이터센터·에너지전환 수요와 공급 부족이 복합 작용.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // WTI 원유 가격
-  // ──────────────────────────────────────────
-  {
-    id: 'wti-oil',
-    title: 'WTI 원유 가격',
-    description: '서부 텍사스산 중질유(WTI) 선물 가격 (경기 수요·인플레이션 선행지표) | 출처: Yahoo Finance CL=F',
-    category: 'commodity',
-    series: [
-      {
-        id: 'wti',
-        label: 'WTI 원유',
-        type: 'static',
-        file: 'wti.json',
-        color: '#84cc16',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/bbl',
-    format: 'number',
-    reading: [
-      '$60 이하 = 수요 우려(경기 둔화). $100 이상 = 인플레이션 압력 및 소비 위축.',
-      '공급 충격(OPEC 감산·지정학)과 수요 신호를 구분해 해석.',
-      '원유 급등은 CPI 헤드라인을 밀어올려 금리 인하를 제약.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 천연가스 가격 (Henry Hub)
-  // ──────────────────────────────────────────
-  {
-    id: 'natural-gas',
-    title: '천연가스 가격 (Henry Hub)',
-    description: 'Henry Hub 천연가스 선물 가격 – 에너지 비용·계절성 인플레이션 지표 | 출처: Yahoo Finance NG=F',
-    category: 'commodity',
-    series: [
-      {
-        id: 'natgas',
-        label: '천연가스',
-        type: 'static',
-        file: 'natgas.json',
-        color: '#34d399',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: 'USD/MMBtu',
-    format: 'number',
-    reading: [
-      '겨울철 수요·이상 기온에 극도로 민감. 계절성이 강해 YoY 비교가 중요.',
-      '천연가스 급등 = 전력·난방 비용 상승 → CPI 에너지 항목 압박.',
-      '미국 LNG 수출 확대로 유럽 가스 가격과 상관관계 증가 중.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 22. 케이스-실러 주택가격지수
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'housing-price',
     title: '주택가격지수 (Case-Shiller)',
@@ -1113,132 +1225,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 원/달러 환율 (USD/KRW)
-  // ──────────────────────────────────────────
-  {
-    id: 'usd-krw',
-    title: '원/달러 환율',
-    description: '달러 대비 원화 환율 (수치 상승 = 원화 약세) | Yahoo Finance USDKRW=X · 전일 종가',
-    category: 'forex',
-    series: [
-      {
-        id: 'usdkrw',
-        label: '원/달러',
-        type: 'static',
-        file: 'yahoo_usdkrw.json',
-        color: '#22d3ee',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '₩/$',
-    format: 'number',
-    reading: [
-      '원화 약세(수치↑) = 수출 기업 유리, 수입 물가 상승, 외국인 자금 이탈 신호.',
-      '1,300원 이상 고착 = 원화 약세 구조화. 1,200원 이하 = 원화 강세 안정 국면.',
-      '달러 강세·글로벌 위기 시 원화는 신흥국 통화 중 변동성이 큰 편.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 원/엔 환율 (KRW/JPY)
-  // ──────────────────────────────────────────
-  {
-    id: 'krw-jpy',
-    title: '원/엔 환율',
-    description: '100엔당 원화 환율 (수치 상승 = 원화 약세 / 엔 강세) | USDKRW=X ÷ USDJPY=X × 100 · 전일 종가',
-    category: 'forex',
-    series: [
-      {
-        id: 'krwjpy',
-        label: '원/엔 (100엔)',
-        type: 'static',
-        file: 'krwjpy.json',
-        color: '#fb923c',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '₩/¥100',
-    format: 'number',
-    reading: [
-      '100엔당 원화 기준. 수치 상승 = 원화 약세(엔 대비), 하락 = 원화 강세.',
-      '일본과 교역·관광 의존도가 높아 원/엔 환율은 한국 경제에 직접 영향.',
-      '800원대 이하 = 엔화 약세 극단 구간. 엔화 반등 시 원화도 동반 영향.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // USD/JPY 환율
-  // ──────────────────────────────────────────
-  {
-    id: 'usd-jpy',
-    title: 'USD/JPY 환율',
-    description: '달러 대비 엔화 환율 (수치 상승 = 엔 약세) – 캐리 트레이드·위험 선호 바로미터 | Yahoo Finance USDJPY=X · 전일 종가',
-    category: 'forex',
-    series: [
-      {
-        id: 'usdjpy',
-        label: 'USD/JPY',
-        type: 'static',
-        file: 'yahoo_usdjpy.json',
-        color: '#f43f5e',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '¥/$',
-    format: 'number',
-    reading: [
-      '엔 약세(수치↑) = 글로벌 위험 선호, 캐리 트레이드 활성화. 엔 강세(수치↓) = 리스크 오프, 캐리 청산.',
-      '일본은행(BOJ) 금리 인상 시 엔 강세 압력 → 글로벌 자산 변동성 증폭 가능.',
-      '엔화 급격한 강세 전환은 과거 글로벌 위험자산 동반 하락의 전조.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // EUR/USD 환율
-  // ──────────────────────────────────────────
-  {
-    id: 'eur-usd',
-    title: 'EUR/USD 환율',
-    description: '유로 대비 달러 환율 (수치 하락 = 달러 강세) – Fed vs ECB 정책 차이 반영 | Yahoo Finance EURUSD=X · 전일 종가',
-    category: 'forex',
-    series: [
-      {
-        id: 'eurusd',
-        label: 'EUR/USD',
-        type: 'static',
-        file: 'yahoo_eurusd.json',
-        color: '#818cf8',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '$/€',
-    format: 'number',
-    reading: [
-      '달러 강세(수치↓) = 글로벌 위험 회피, 신흥국 자금 이탈. 달러 약세(수치↑) = 위험 선호.',
-      'Fed 금리 > ECB 금리 → 달러 강세 압력. 격차 축소 시 달러 약세 전환 경향.',
-      '1.00 하회(달러 패리티) = 유럽 경기 위기 신호. 역사적으로 드문 구간.',
-    ],
-  },
-
-  // ══════════════════════════════════════════
-  // ▶ S&P 500 비교 차트
-  // ══════════════════════════════════════════
-
-  // ──────────────────────────────────────────
-  // 23. S&P 500 vs VIX
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-vix',
     title: 'S&P 500 vs VIX',
     description: 'S&P 500과 변동성(공포) 지수의 역상관 관계',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1272,12 +1264,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 24. S&P 500 + 마진 부채
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-margin',
     title: 'S&P 500 & 마진 부채',
     description: 'S&P 500 vs FINRA 마진 부채 (수급 과열 지표)',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1309,12 +1301,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 25. S&P 500 vs P/E Ratio (Shiller)
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-pe',
     title: 'S&P 500 vs P/E Ratio',
     description: '주가수익비율 (Price / 12개월 Trailing Earnings) | 출처: Robert Shiller, Yale — 2020년 EPS 급감 구간 y축 100 캡',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1350,12 +1342,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 27. S&P 500 vs M2 통화량
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-m2',
     title: 'S&P 500 vs M2 통화량',
     description: '주가와 통화량의 상관관계 (유동성 장세 분석)',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1388,12 +1380,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 28. S&P 500 vs 달러 지수
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-dxy',
     title: 'S&P 500 vs 달러 지수',
     description: '주가와 달러의 역상관 관계 (달러 강세 → 주가 하락 압력)',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1428,12 +1420,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 29. S&P 500 vs HY 스프레드
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-hyspread',
     title: 'S&P 500 vs HY 스프레드',
     description: '주가와 신용 스프레드 역상관 – 스프레드 확대 시 시장 위험 신호',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1468,12 +1460,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 30. S&P 500 vs 10년물 금리
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-10y',
     title: 'S&P 500 vs 10년물 금리',
     description: 'S&P 500 대비 미국채 10년물 수익률 – 금리 상승 시 주가 밸류에이션 압박',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1508,12 +1500,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 31. S&P 500 vs 연방기금금리
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-fedfunds',
     title: 'S&P 500 vs 연방기금금리',
     description: 'S&P 500 대비 기준금리 – 금리 인상/인하 사이클과 주가 흐름',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1548,12 +1540,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 32. S&P 500 vs 장단기 금리차
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-yield-spread',
     title: 'S&P 500 vs 장단기 금리차',
     description: 'S&P 500 대비 10Y-2Y 금리차 – 수익률 곡선 역전과 주가 꺾임 시점',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1588,12 +1580,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // S&P 500 vs 금
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-gold',
     title: 'S&P 500 vs 금',
     description: '위험자산(주식) 대비 안전자산(금)의 방향 – 시장 심리 판독 지표',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1627,12 +1619,12 @@ const CHART_CONFIGS = [
 
   // ──────────────────────────────────────────
   // 33. S&P 500 vs WTI 원유
-  // ──────────────────────────────────────────
+  // ──────────────────────────────────────────,
   {
     id: 'sp500-wti',
     title: 'S&P 500 vs WTI 원유',
     description: 'S&P 500 대비 WTI 원유 가격 – 경기 동반 지표 vs 비용 충격',
-    category: 'market',
+    category: 'comparison',
     series: [
       {
         id: 'sp500',
@@ -1662,5 +1654,5 @@ const CHART_CONFIGS = [
       '원유 급등(공급 충격) + 주가 하락 = 스태그플레이션 우려 신호.',
       '%변화 모드로 비교 시 원유가 주가에 선행하는 구간을 파악할 수 있음.',
     ],
-  },
+  }
 ];

@@ -15,12 +15,13 @@ const CONFIG = {
 // 차트 카테고리 정의
 // ============================================================
 const CATEGORIES = {
-  market:    { label: '시장',     color: '#3b82f6' },
-  sentiment: { label: '심리',     color: '#8b5cf6' },
-  rates:     { label: '금리',     color: '#06b6d4' },
-  macro:     { label: '거시경제', color: '#22c55e' },
-  commodity: { label: '원자재',   color: '#f59e0b' },
-  forex:     { label: '환율',     color: '#f43f5e' },
+  market:     { label: '시장',     color: '#3b82f6' },
+  sentiment:  { label: '심리',     color: '#8b5cf6' },
+  forex:      { label: '환율',     color: '#f43f5e' },
+  commodity:  { label: '원자재',   color: '#f59e0b' },
+  rates:      { label: '금리',     color: '#06b6d4' },
+  macro:      { label: '거시경제', color: '#22c55e' },
+  comparison: { label: 'S&P 비교', color: '#94a3b8' },
 };
 
 // ============================================================

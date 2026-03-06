@@ -170,7 +170,10 @@ class MacroDashboard {
   _renderChart(chartId) {
     const entry = this.charts[chartId];
     if (!entry || !entry.seriesData) return;
-    const range = entry.config.defaultRange || this.currentRange;
+    const range = this._effectiveRange(
+      entry.config.defaultRange || this.currentRange,
+      entry.seriesData
+    );
     ChartFactory.render(
       `chart-${chartId}`,
       entry.config,
@@ -178,6 +181,22 @@ class MacroDashboard {
       entry.normalizeMode,
       range
     );
+  }
+
+  /** 선택 범위 내 데이터 포인트가 부족하면 자동으로 더 넓은 범위로 확장 */
+  _effectiveRange(range, seriesData) {
+    const RANGES = ['1M', '3M', '6M', '1Y', '3Y', '5Y', 'MAX'];
+    const primary = seriesData[0];
+    if (!primary || !primary.dates || !primary.dates.length) return range;
+    let idx = RANGES.indexOf(range);
+    if (idx < 0) return range;
+    while (idx < RANGES.length - 1) {
+      const startDate = getRangeStartDate(RANGES[idx]);
+      const count = primary.dates.filter(d => d >= startDate).length;
+      if (count >= 3) break;
+      idx++;
+    }
+    return RANGES[idx];
   }
 
   // ──────────────────────────────────
