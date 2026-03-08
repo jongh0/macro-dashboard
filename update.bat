@@ -32,7 +32,24 @@ echo  Yahoo Finance + FRED + CNN + FINRA + Shiller
 echo ============================================
 echo.
 
-python scripts/update_data.py --all
+echo [1/2] Checking required packages...
+where py >nul 2>&1
+if %errorlevel% == 0 (
+    py -m pip show requests pandas openpyxl yfinance xlrd >nul 2>&1
+    if errorlevel 1 py -m pip install requests pandas openpyxl yfinance xlrd --quiet
+) else (
+    python -m pip show requests pandas openpyxl yfinance xlrd >nul 2>&1
+    if errorlevel 1 python -m pip install requests pandas openpyxl yfinance xlrd --quiet
+)
+echo.
+
+echo [2/2] Updating data...
+where py >nul 2>&1
+if %errorlevel% == 0 (
+    py scripts/update_data.py --all
+) else (
+    python scripts/update_data.py --all
+)
 if errorlevel 1 echo   WARNING: Some downloads partially failed
 echo.
 

@@ -1,9 +1,25 @@
 @echo off
-title Macro Dashboard
 cd /d "%~dp0"
-echo ============================================
-echo  Macro Dashboard - http://localhost:8080
-echo  Close this window to stop the server.
-echo ============================================
-start /b "" cmd /c "timeout /t 2 /nobreak >nul && start http://localhost:8080"
-python -m http.server 8080
+
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080 "') do (
+    taskkill /f /pid %%a >nul 2>&1
+)
+
+echo [MacroDashboard] Starting local server...
+echo   http://localhost:8080
+echo.
+echo Press Ctrl+C to stop.
+echo.
+
+start "" /b cmd /c "timeout /t 1 >nul && start http://localhost:8080"
+
+where py >nul 2>&1
+if %errorlevel% == 0 (
+    py -m http.server 8080
+) else (
+    python -m http.server 8080
+)
+
+echo.
+echo Server stopped.
+pause
