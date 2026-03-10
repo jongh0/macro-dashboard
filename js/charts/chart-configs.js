@@ -46,7 +46,7 @@ const CHART_CONFIGS = [
   {
     id: 'nasdaq',
     title: 'NASDAQ 종합지수',
-    description: 'NASDAQ Composite Index (일별) | FRED NASDAQCOM',
+    description: 'NASDAQ Composite Index (일별)',
     category: 'market',
     series: [
       {
@@ -85,7 +85,7 @@ const CHART_CONFIGS = [
   {
     id: 'dow-jones',
     title: '다우존스 산업평균',
-    description: 'Dow Jones Industrial Average (일별) | FRED DJIA — 2016년부터 제공',
+    description: 'Dow Jones Industrial Average (일별)',
     category: 'market',
     series: [
       {
@@ -118,14 +118,18 @@ const CHART_CONFIGS = [
     ],
   },
 
+  // ══════════════════════════════════════════
+  // ▶ 심리/수급 (Sentiment)
+  // ══════════════════════════════════════════
+
   // ──────────────────────────────────────────
   // 4. VIX 변동성 지수
   // ──────────────────────────────────────────,
   {
     id: 'vix',
     title: 'VIX 변동성 지수',
-    description: 'CBOE 변동성 지수 (공포 지수) - 20 이상: 불안, 30 이상: 공포',
-    category: 'market',
+    description: 'CBOE 변동성 지수 (공포 지수)',
+    category: 'sentiment',
     series: [
       {
         id: 'vix',
@@ -159,17 +163,13 @@ const CHART_CONFIGS = [
     ],
   },
 
-  // ══════════════════════════════════════════
-  // ▶ 심리/수급 (Sentiment)
-  // ══════════════════════════════════════════
-
   // ──────────────────────────────────────────
   // 3. Fear & Greed Index (주식 시장, CNN)
   // ──────────────────────────────────────────,
   {
     id: 'fear-greed-stock',
     title: 'Fear & Greed (주식)',
-    description: '주식 시장 공포·탐욕 지수 (0=극도 공포, 100=극도 탐욕) | CNN — 약 1년 데이터 (CNN API 제한)',
+    description: '주식 시장 공포·탐욕 지수',
     category: 'sentiment',
     series: [
       {
@@ -220,7 +220,7 @@ const CHART_CONFIGS = [
   {
     id: 'fear-greed-crypto',
     title: 'Fear & Greed (크립토)',
-    description: '암호화폐 시장 공포·탐욕 지수 (비트코인 기준) | alternative.me',
+    description: '암호화폐 시장 공포·탐욕 지수',
     category: 'sentiment',
     series: [
       {
@@ -271,7 +271,7 @@ const CHART_CONFIGS = [
   {
     id: 'usd-krw',
     title: '원/달러 환율',
-    description: '달러 대비 원화 환율 (수치 상승 = 원화 약세) | Yahoo Finance USDKRW=X · 전일 종가',
+    description: '달러 대비 원화 환율',
     category: 'forex',
     series: [
       {
@@ -300,7 +300,7 @@ const CHART_CONFIGS = [
   {
     id: 'krw-jpy',
     title: '원/엔 환율',
-    description: '100엔당 원화 환율 (수치 상승 = 원화 약세 / 엔 강세) | USDKRW=X ÷ USDJPY=X × 100 · 전일 종가',
+    description: '100엔당 원화 환율',
     category: 'forex',
     series: [
       {
@@ -329,7 +329,7 @@ const CHART_CONFIGS = [
   {
     id: 'usd-jpy',
     title: 'USD/JPY 환율',
-    description: '달러 대비 엔화 환율 (수치 상승 = 엔 약세) – 캐리 트레이드·위험 선호 바로미터 | Yahoo Finance USDJPY=X · 전일 종가',
+    description: '달러 대비 엔화 환율',
     category: 'forex',
     series: [
       {
@@ -358,7 +358,7 @@ const CHART_CONFIGS = [
   {
     id: 'eur-usd',
     title: 'EUR/USD 환율',
-    description: '유로 대비 달러 환율 (수치 하락 = 달러 강세) – Fed vs ECB 정책 차이 반영 | Yahoo Finance EURUSD=X · 전일 종가',
+    description: '유로 대비 달러 환율',
     category: 'forex',
     series: [
       {
@@ -391,7 +391,7 @@ const CHART_CONFIGS = [
   {
     id: 'gold-price',
     title: '금 가격',
-    description: '금 선물 현물 환산가 (USD/트로이온스) – 안전자산·인플레이션 헤지 대표 지표 | 출처: Yahoo Finance GC=F',
+    description: '금 선물 현물 환산가 (USD/트로이온스)',
     category: 'commodity',
     series: [
       {
@@ -420,7 +420,7 @@ const CHART_CONFIGS = [
   {
     id: 'silver-price',
     title: '은 가격',
-    description: '은 선물 현물 환산가 (USD/트로이온스) – 산업·귀금속 이중 성격 | 출처: Yahoo Finance SI=F',
+    description: '은 선물 현물 환산가 (USD/트로이온스)',
     category: 'commodity',
     series: [
       {
@@ -449,7 +449,7 @@ const CHART_CONFIGS = [
   {
     id: 'copper-price',
     title: '구리 가격 (Dr. Copper)',
-    description: '구리 선물 가격 (USD/mt) – 경제 활동 선행지표 (경기 확장 시 수요 증가) | 출처: Yahoo Finance HG=F',
+    description: '구리 선물 가격 (USD/mt)',
     category: 'commodity',
     series: [
       {
@@ -478,7 +478,7 @@ const CHART_CONFIGS = [
   {
     id: 'wti-oil',
     title: 'WTI 원유 가격',
-    description: '서부 텍사스산 중질유(WTI) 선물 가격 (경기 수요·인플레이션 선행지표) | 출처: Yahoo Finance CL=F',
+    description: '서부 텍사스산 중질유 (WTI) 선물 가격',
     category: 'commodity',
     series: [
       {
@@ -507,7 +507,7 @@ const CHART_CONFIGS = [
   {
     id: 'natural-gas',
     title: '천연가스 가격 (Henry Hub)',
-    description: 'Henry Hub 천연가스 선물 가격 – 에너지 비용·계절성 인플레이션 지표 | 출처: Yahoo Finance NG=F',
+    description: 'Henry Hub 천연가스 선물 가격',
     category: 'commodity',
     series: [
       {
@@ -603,7 +603,7 @@ const CHART_CONFIGS = [
   {
     id: 'yield-spread',
     title: '장단기 금리차 (10Y-2Y)',
-    description: '미국채 수익률 역전: 음수 → 경기침체 선행지표',
+    description: '미국채 수익률 역전',
     category: 'rates',
     series: [
       {
@@ -643,7 +643,7 @@ const CHART_CONFIGS = [
   {
     id: 'yield-spread-10y3m',
     title: '금리차 (10Y-3M)',
-    description: '10년-3개월 국채 금리차: 역전 시 12~18개월 후 침체 예측 (뉴욕연준 모델)',
+    description: '10년-3개월 국채 금리차',
     category: 'rates',
     series: [
       {
@@ -682,7 +682,7 @@ const CHART_CONFIGS = [
   {
     id: 'treasury-30y',
     title: '30년물 국채 수익률',
-    description: '미국채 30년물 수익률 – 장기 인플레이션 기대 및 모기지 금리 연동',
+    description: '미국채 30년물 수익률',
     category: 'rates',
     series: [
       {
@@ -712,7 +712,7 @@ const CHART_CONFIGS = [
   {
     id: 'hy-spread',
     title: '하이일드 스프레드 (HY OAS)',
-    description: 'ICE BofA 미국 고수익채 OAS – 스프레드 확대 → 신용 위기 선행지표',
+    description: 'ICE BofA 미국 고수익채 OAS',
     category: 'rates',
     series: [
       {
@@ -758,7 +758,7 @@ const CHART_CONFIGS = [
   {
     id: 'dollar-index',
     title: '달러 지수 (Broad)',
-    description: '연준 Nominal Broad Dollar Index — DTWEXBGS (26개국 통화 가중) | ※ 흔히 말하는 DXY(ICE 6개국)와 다른 지수',
+    description: '연준 Nominal Broad Dollar Index (DTWEXBGS)',
     category: 'macro',
     series: [
       {
@@ -829,7 +829,7 @@ const CHART_CONFIGS = [
   {
     id: 'gdp-growth',
     title: '실질 GDP 성장률',
-    description: '미국 실질 GDP 전년 대비 성장률 (분기별) – 경기 확장/침체 기준선',
+    description: '미국 실질 GDP 전년 대비 성장률 (분기별)',
     category: 'macro',
     series: [
       {
@@ -906,7 +906,7 @@ const CHART_CONFIGS = [
   {
     id: 'nonfarm-payrolls',
     title: '비농업 고용 변화 (NFP)',
-    description: '비농업 취업자수 전월 대비 변화 – 경기 강도 핵심 지표',
+    description: '비농업 취업자수 전월 대비 변화',
     category: 'macro',
     series: [
       {
@@ -948,7 +948,7 @@ const CHART_CONFIGS = [
   {
     id: 'jolts',
     title: 'JOLTS 채용공고',
-    description: '미국 일자리 창출 및 이직 서베이 – 채용공고 건수 (노동 수요 지표)',
+    description: '미국 일자리 창출 및 이직 서베이',
     category: 'macro',
     series: [
       {
@@ -980,7 +980,7 @@ const CHART_CONFIGS = [
   {
     id: 'jobless-claims',
     title: '초기 실업수당 청구',
-    description: '주간 신규 실업수당 청구 건수 – 노동시장 선행지표 (주별)',
+    description: '주간 신규 실업수당 청구 건수',
     category: 'macro',
     series: [
       {
@@ -1071,7 +1071,7 @@ const CHART_CONFIGS = [
   {
     id: 'pce',
     title: 'PCE 물가지수',
-    description: '개인소비지출 물가지수 (연준이 선호하는 물가지표)',
+    description: '개인소비지출 물가지수 (PCE)',
     category: 'macro',
     series: [
       {
@@ -1118,7 +1118,7 @@ const CHART_CONFIGS = [
   {
     id: 'inflation-expectation',
     title: '10년 기대인플레이션 (BEI)',
-    description: '10년물 TIPS 손익분기 인플레이션율 – 시장이 예상하는 향후 10년 평균 물가',
+    description: '10년물 TIPS 손익분기 인플레이션율',
     category: 'macro',
     series: [
       {
@@ -1163,7 +1163,7 @@ const CHART_CONFIGS = [
   {
     id: 'm2',
     title: 'M2 통화량 증가율',
-    description: 'M2 통화량 전년 대비 변화율 (유동성 지표) | WM2NS 주간 비계절조정 — M2SL 월간 대비 약 2~3주 빠른 데이터',
+    description: 'M2 통화량 전년 대비 변화율 (유동성 지표)',
     category: 'macro',
     series: [
       {
@@ -1203,7 +1203,7 @@ const CHART_CONFIGS = [
   {
     id: 'housing-price',
     title: '주택가격지수 (Case-Shiller)',
-    description: 'S&P 케이스-실러 미국 전국 주택가격지수 (소비·자산효과·인플레이션 연관)',
+    description: 'S&P 케이스-실러 미국 전국 주택가격지수',
     category: 'macro',
     series: [
       {
@@ -1313,7 +1313,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-pe',
     title: 'S&P 500 vs P/E Ratio',
-    description: '주가수익비율 (Price / 12개월 Trailing Earnings) | 출처: Robert Shiller, Yale — 2020년 EPS 급감 구간 y축 100 캡',
+    description: '주가수익비율 (Shiller P/E)',
     category: 'comparison',
     series: [
       {
@@ -1354,7 +1354,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-m2',
     title: 'S&P 500 vs M2 통화량',
-    description: '주가와 통화량의 상관관계 (유동성 장세 분석)',
+    description: '주가와 통화량의 상관관계',
     category: 'comparison',
     series: [
       {
@@ -1392,7 +1392,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-dxy',
     title: 'S&P 500 vs 달러 지수',
-    description: '주가와 달러의 역상관 관계 (달러 강세 → 주가 하락 압력)',
+    description: '주가와 달러의 역상관 관계',
     category: 'comparison',
     series: [
       {
@@ -1432,7 +1432,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-hyspread',
     title: 'S&P 500 vs HY 스프레드',
-    description: '주가와 신용 스프레드 역상관 – 스프레드 확대 시 시장 위험 신호',
+    description: '주가와 신용 스프레드 역상관',
     category: 'comparison',
     series: [
       {
@@ -1472,7 +1472,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-10y',
     title: 'S&P 500 vs 10년물 금리',
-    description: 'S&P 500 대비 미국채 10년물 수익률 – 금리 상승 시 주가 밸류에이션 압박',
+    description: 'S&P 500 대비 미국채 10년물 수익률',
     category: 'comparison',
     series: [
       {
@@ -1512,7 +1512,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-fedfunds',
     title: 'S&P 500 vs 연방기금금리',
-    description: 'S&P 500 대비 기준금리 – 금리 인상/인하 사이클과 주가 흐름',
+    description: 'S&P 500 대비 기준금리',
     category: 'comparison',
     series: [
       {
@@ -1552,7 +1552,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-yield-spread',
     title: 'S&P 500 vs 장단기 금리차',
-    description: 'S&P 500 대비 10Y-2Y 금리차 – 수익률 곡선 역전과 주가 꺾임 시점',
+    description: 'S&P 500 대비 10Y-2Y 금리차',
     category: 'comparison',
     series: [
       {
@@ -1592,7 +1592,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-gold',
     title: 'S&P 500 vs 금',
-    description: '위험자산(주식) 대비 안전자산(금)의 방향 – 시장 심리 판독 지표',
+    description: '위험자산(주식) 대비 안전자산(금)의 방향',
     category: 'comparison',
     series: [
       {
@@ -1631,7 +1631,7 @@ const CHART_CONFIGS = [
   {
     id: 'sp500-wti',
     title: 'S&P 500 vs WTI 원유',
-    description: 'S&P 500 대비 WTI 원유 가격 – 경기 동반 지표 vs 비용 충격',
+    description: 'S&P 500 대비 WTI 원유 가격',
     category: 'comparison',
     series: [
       {

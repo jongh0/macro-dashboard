@@ -28,7 +28,7 @@ const ChartFactory = {
     if (this.instances[containerId]) return this.instances[containerId];
     const chart = echarts.init(el, null, { renderer: 'canvas' });
     this.instances[containerId] = chart;
-    window.addEventListener('resize', () => chart.resize());
+    new ResizeObserver(() => chart.resize()).observe(el);
     return chart;
   },
 
