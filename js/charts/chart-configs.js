@@ -203,6 +203,10 @@ const CHART_CONFIGS = [
       { name: '탐욕',      min: 55, max: 75,  color: 'rgba(132,204,18,0.10)' },
       { name: '극도 탐욕', min: 75, max: 100, color: 'rgba(34,197,94,0.12)' },
     ],
+    refLines: [
+      { value: 25, label: '공포', color: '#ef4444' },
+      { value: 75, label: '탐욕', color: '#22c55e' },
+    ],
     reading: [
       '25 이하(극도 공포) = 저점 매수 검토 신호. 75 이상(극도 탐욕) = 과열 경보.',
       '7가지 주식 시장 지표(모멘텀·VIX·풋콜비율 등) 합산. CNN 산출 기준.',
@@ -249,6 +253,10 @@ const CHART_CONFIGS = [
       { name: '중립',      min: 45, max: 55,  color: 'rgba(234,179,8,0.10)' },
       { name: '탐욕',      min: 55, max: 75,  color: 'rgba(132,204,18,0.10)' },
       { name: '극도 탐욕', min: 75, max: 100, color: 'rgba(34,197,94,0.12)' },
+    ],
+    refLines: [
+      { value: 25, label: '공포', color: '#ef4444' },
+      { value: 75, label: '탐욕', color: '#22c55e' },
     ],
     reading: [
       '비트코인 기준 암호화폐 시장 심리. 주식 F&G와 독립적으로 움직임.',
