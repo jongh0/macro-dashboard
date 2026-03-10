@@ -82,6 +82,46 @@ const ChartFactory = {
       };
     }
 
+    // 1-year average line (avg1Y: true 차트, raw 모드에서만)
+    if (config.avg1Y && normalizeMode === 'raw' && processed.length > 0) {
+      const s = processed[0];
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const cutoff = oneYearAgo.toISOString().slice(0, 10);
+
+      const vals = [];
+      (s.dates || []).forEach((d, i) => {
+        if (d >= cutoff && s.values[i] != null && isFinite(s.values[i])) {
+          vals.push(s.values[i]);
+        }
+      });
+
+      if (vals.length > 0) {
+        const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+        const dec = avg >= 100 ? 0 : avg >= 10 ? 2 : 4;
+        const formatted = avg.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+        const labelText = `1Y 평균  ${formatted}`;
+
+        if (!echartsSeriesList[0].markLine) {
+          echartsSeriesList[0].markLine = {
+            silent: true,
+            symbol: 'none',
+            data: [{
+              yAxis: avg,
+              lineStyle: { color: '#94a3b8', type: 'dashed', width: 1.2 },
+              label: {
+                show: true,
+                position: 'insideEndTop',
+                formatter: labelText,
+                color: '#94a3b8',
+                fontSize: 11,
+              },
+            }],
+          };
+        }
+      }
+    }
+
     // ── Y축 설정 ──────────────────────────────────────
     const yAxis = useDualAxis
       ? this._buildDualYAxis(processed, config, c)
