@@ -77,7 +77,7 @@ const ChartFactory = {
         data: config.refLines.map(r => ({
           yAxis: r.value,
           lineStyle: { color: r.color, type: 'dashed', width: 1 },
-          label: { show: true, position: 'end', formatter: r.label, color: r.color, fontSize: 11 },
+          label: { show: true, position: 'insideEndTop', formatter: r.label, color: r.color, fontSize: 11 },
         })),
       };
     }
@@ -212,6 +212,7 @@ const ChartFactory = {
   _buildTooltipConfig(config, seriesData, useDualAxis, c) {
     return {
       trigger: 'axis',
+      confine: true,
       axisPointer: {
         type: 'cross',
         crossStyle: { color: c.textFaint },
