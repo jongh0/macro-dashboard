@@ -83,6 +83,7 @@ const ChartFactory = {
     }
 
     // 1-year average line (avg1Y: true 차트, raw 모드에서만)
+    let avg1YLabel = null;
     if (config.avg1Y && normalizeMode === 'raw' && processed.length > 0) {
       const s = processed[0];
       const oneYearAgo = new Date();
@@ -100,23 +101,58 @@ const ChartFactory = {
         const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
         const dec = avg >= 100 ? 0 : avg >= 10 ? 2 : 4;
         const formatted = avg.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-        const labelText = `1Y 평균  ${formatted}`;
+        avg1YLabel = `1Y 평균  ${formatted}`;
 
-        if (!echartsSeriesList[0].markLine) {
+        const avgLineData = {
+          yAxis: avg,
+          lineStyle: { color: '#94a3b8', type: 'dashed', width: 1.2 },
+          label: { show: false },
+        };
+        if (echartsSeriesList[0].markLine) {
+          echartsSeriesList[0].markLine.data.push(avgLineData);
+        } else {
           echartsSeriesList[0].markLine = {
             silent: true,
             symbol: 'none',
-            data: [{
-              yAxis: avg,
-              lineStyle: { color: '#94a3b8', type: 'dashed', width: 1.2 },
-              label: {
-                show: true,
-                position: 'insideEndTop',
-                formatter: labelText,
-                color: '#94a3b8',
-                fontSize: 11,
-              },
-            }],
+            data: [avgLineData],
+          };
+        }
+      }
+    }
+
+    // 3-year average line (avg3Y: true 차트, raw 모드에서만)
+    let avg3YLabel = null;
+    if (config.avg3Y && normalizeMode === 'raw' && processed.length > 0) {
+      const s = processed[0];
+      const threeYearsAgo = new Date();
+      threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+      const cutoff = threeYearsAgo.toISOString().slice(0, 10);
+
+      const vals = [];
+      (s.dates || []).forEach((d, i) => {
+        if (d >= cutoff && s.values[i] != null && isFinite(s.values[i])) {
+          vals.push(s.values[i]);
+        }
+      });
+
+      if (vals.length > 0) {
+        const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+        const dec = avg >= 100 ? 0 : avg >= 10 ? 2 : 4;
+        const formatted = avg.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+        avg3YLabel = `3Y 평균  ${formatted}`;
+
+        const avgLineData = {
+          yAxis: avg,
+          lineStyle: { color: '#64748b', type: 'dashed', width: 1.2 },
+          label: { show: false },
+        };
+        if (echartsSeriesList[0].markLine) {
+          echartsSeriesList[0].markLine.data.push(avgLineData);
+        } else {
+          echartsSeriesList[0].markLine = {
+            silent: true,
+            symbol: 'none',
+            data: [avgLineData],
           };
         }
       }
@@ -138,6 +174,21 @@ const ChartFactory = {
       backgroundColor: 'transparent',
       animation: true,
       animationDuration: 400,
+
+      graphic: (() => {
+        const items = [];
+        if (avg1YLabel) items.push({
+          type: 'text', right: 16, top: 8,
+          style: { text: avg1YLabel, fill: '#94a3b8', fontSize: 11, fontFamily: 'inherit' },
+          silent: true,
+        });
+        if (avg3YLabel) items.push({
+          type: 'text', right: 16, top: avg1YLabel ? 22 : 8,
+          style: { text: avg3YLabel, fill: '#64748b', fontSize: 11, fontFamily: 'inherit' },
+          silent: true,
+        });
+        return items;
+      })(),
 
       grid: {
         top: 32,
