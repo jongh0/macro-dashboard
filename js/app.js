@@ -371,6 +371,18 @@ class MacroDashboard {
         this._reRenderAll();
       });
     });
+
+    // 모바일 브라우저 복귀 시 차트 재렌더링
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        Object.values(ChartFactory.instances).forEach(c => c.resize());
+      }
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        Object.values(ChartFactory.instances).forEach(c => c.resize());
+      }
+    });
   }
 
   /** 전체 차트 재렌더링 (기간 변경 등) */
