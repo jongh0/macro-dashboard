@@ -40,7 +40,9 @@ class MacroDashboard {
       (config.series && config.series.length > 1);
 
     const card = document.createElement('div');
-    card.className = 'chart-card';
+    card.className = config.category === 'comparison'
+      ? 'chart-card chart-card--wide'
+      : 'chart-card';
     card.id = `card-${config.id}`;
     card.innerHTML = `
       <div class="card-header">

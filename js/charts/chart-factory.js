@@ -192,10 +192,10 @@ const ChartFactory = {
 
       grid: {
         top: 32,
-        right: useDualAxis ? 72 : 16,   // 오른쪽 Y축 공간
+        right: 8,
         bottom: 44,
-        left: 62,
-        containLabel: false,
+        left: 8,
+        containLabel: true,
       },
 
       xAxis: {
