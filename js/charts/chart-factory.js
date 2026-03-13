@@ -192,9 +192,9 @@ const ChartFactory = {
 
       grid: {
         top: 32,
-        right: 8,
+        right: window.innerWidth > 900 ? 20 : 8,
         bottom: 44,
-        left: 8,
+        left: window.innerWidth > 900 ? 20 : 8,
         containLabel: true,
       },
 
