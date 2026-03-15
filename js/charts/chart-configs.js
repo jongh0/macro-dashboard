@@ -1585,11 +1585,12 @@ const CHART_CONFIGS = [
       },
     ],
     defaultNormalize: 'raw',
+    defaultRange: '3Y',
     updateInterval: 24 * 60 * 60 * 1000,
     reading: [
       '마진 부채 급증 = 레버리지 과열 → 시장 고점 신호. 급감 = 강제 청산 → 하락 가속.',
       '주가와 장기적으로 동행하지만 변곡점에서 선행하는 경향.',
-      '마진 부채 YoY 감소 전환 후 주가 하락 본격화 패턴이 반복됨.',
+      '※ FINRA 데이터는 약 4~5개월 지연 발표 — 최근 구간 공백은 정상.',
     ],
   },
 
