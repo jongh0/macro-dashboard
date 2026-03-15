@@ -110,3 +110,15 @@ All `data/*.json` files follow:
 - `StaticAPI.fetch(file)` → falls back to `fred_<file>` if `<file>` not found
 - CNN F&G → tries `cnn_fg.json` then `fg.json`
 - Copper (HG=F): raw value in USD/lb is multiplied by 2204.62 to convert to USD/mt in `update_data.py`
+
+### FRED Series → Static File Mapping (key entries)
+| FRED ID | units | file | 지표 |
+|---|---|---|---|
+| PPIFIS | pc1 | fred_ppi.json | PPI 생산자물가 YoY |
+| RSAFS | pc1 | fred_rsafs.json | 소매판매 YoY |
+| INDPRO | pc1 | fred_indpro.json | 산업생산 YoY |
+| WALCL | lin | fred_walcl.json | 연준 대차대조표 ($B) |
+| WM2NS | pc1 | fred_m2_weekly.json | M2 주간 YoY |
+| GDPC1 | pc1 | fred_gdp.json | 실질 GDP YoY |
+| CPIAUCSL | pc1 | fred_cpi.json | CPI YoY |
+| PCEPI | pc1 | fred_pce.json | PCE YoY |

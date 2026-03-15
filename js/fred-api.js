@@ -70,6 +70,10 @@ const FredAPI = {
       'WM2NS':          { pc1: 'fred_m2_weekly.json', lin: 'fred_m2_weekly_level.json' },
       // WM2NS 폴백: 주간 파일 없을 시 M2SL 사용
       'WM2NS_fallback': { pc1: 'fred_m2.json', lin: 'fred_m2_level.json' },
+      'PPIFIS': { pc1: 'fred_ppi.json' },
+      'RSAFS':  { pc1: 'fred_rsafs.json' },
+      'INDPRO': { pc1: 'fred_indpro.json' },
+      'WALCL':  { lin: 'fred_walcl.json' },
     };
     return map[seriesId]?.[units] || null;
   },

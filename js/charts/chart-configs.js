@@ -872,7 +872,87 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 6. 실업률
+  // 6. 소매판매
+  // ──────────────────────────────────────────,
+  {
+    id: 'retail-sales',
+    title: '소매판매',
+    description: '미국 소매 및 식품 서비스 판매액 전년 대비 변화율 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'rsafs',
+        label: '소매판매 YoY',
+        type: 'fred',
+        seriesId: 'RSAFS',
+        units: 'pc1',
+        color: '#34d399',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0, label: '위축', color: '#ef4444' },
+        { max: 3, label: '둔화', color: '#f59e0b' },
+        { max: 6, label: '성장', color: '#22c55e' },
+        {         label: '과열', color: '#60a5fa' },
+      ],
+    },
+    reading: [
+      'GDP의 약 70%를 차지하는 소비 지출의 선행지표.',
+      '마이너스 전환 시 경기침체 가능성 상승. 3% 이상 = 견고한 소비.',
+      '고용·임금 증가율과 함께 보면 소비 여력 판단에 효과적.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 7. 산업생산
+  // ──────────────────────────────────────────,
+  {
+    id: 'industrial-production',
+    title: '산업생산지수',
+    description: '미국 산업생산 전년 대비 변화율 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'indpro',
+        label: '산업생산 YoY',
+        type: 'fred',
+        seriesId: 'INDPRO',
+        units: 'pc1',
+        color: '#38bdf8',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: -2, label: '침체', color: '#ef4444' },
+        { max: 0,  label: '위축', color: '#f97316' },
+        { max: 3,  label: '성장', color: '#22c55e' },
+        {          label: '과열', color: '#60a5fa' },
+      ],
+    },
+    reading: [
+      '제조업·광업·전기가스 유틸리티 생산량을 포괄하는 경기동행지표.',
+      '마이너스 지속 = 제조업 불황 신호. 서비스 중심 경제에서도 제조 흐름은 중요.',
+      '글로벌 공급망·수요와 연동되어 무역 지표와 함께 해석.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 8. 실업률
   // ──────────────────────────────────────────,
   {
     id: 'unemployment',
@@ -1026,7 +1106,48 @@ const CHART_CONFIGS = [
   // ══════════════════════════════════════════
 
   // ──────────────────────────────────────────
-  // 10. CPI / 인플레이션
+  // 10. PPI / 생산자물가
+  // ──────────────────────────────────────────,
+  {
+    id: 'ppi',
+    title: 'PPI 생산자물가',
+    description: '생산자물가지수(최종수요) 전년 대비 변화율 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'ppi',
+        label: 'PPI YoY',
+        type: 'fred',
+        seriesId: 'PPIFIS',
+        units: 'pc1',
+        color: '#fb923c',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0, label: '디플레', color: '#60a5fa' },
+        { max: 2, label: '안정',   color: '#22c55e' },
+        { max: 4, label: '주의',   color: '#f59e0b' },
+        { max: 6, label: '상승',   color: '#f97316' },
+        {         label: '과열',   color: '#ef4444' },
+      ],
+    },
+    reading: [
+      'CPI보다 1~2개월 선행하는 인플레이션 선행지표.',
+      '원자재·중간재 비용 압력을 반영. 기업이 소비자에게 가격 전가 여부가 관건.',
+      'PPI 상승 후 CPI가 반응하는 패턴을 함께 확인.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 11. CPI / 인플레이션
   // ──────────────────────────────────────────,
   {
     id: 'cpi',
@@ -1206,7 +1327,40 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 19. 달러 지수 (DXY)
+  // 연준 대차대조표
+  // ──────────────────────────────────────────,
+  {
+    id: 'fed-balance-sheet',
+    title: '연준 대차대조표',
+    description: '연준 총자산 (주간, 십억달러)',
+    category: 'macro',
+    series: [
+      {
+        id: 'walcl',
+        label: '연준 자산',
+        type: 'fred',
+        seriesId: 'WALCL',
+        units: 'lin',
+        color: '#a855f7',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$B',
+    format: 'number',
+    refLines: [
+      { value: 4000, label: '코로나 이전', color: '#94a3b8' },
+    ],
+    reading: [
+      'QE(양적완화) = 자산 확대 → 유동성 증가. QT(양적긴축) = 자산 축소 → 유동성 회수.',
+      '연준 자산과 S&P500은 장기적으로 높은 상관관계. 확장 전환 시 위험자산 선호 신호.',
+      'M2 증가율과 함께 보면 시중 유동성 방향을 종합적으로 파악 가능.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 주택가격지수
   // ──────────────────────────────────────────,
   {
     id: 'housing-price',

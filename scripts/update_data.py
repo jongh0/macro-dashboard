@@ -416,9 +416,14 @@ FRED_SERIES = {
     "jolts":           ("JTSJOL",         "lin"),   # JOLTS 채용공고
     # ── 거시경제 ──────────────────────────────
     "gdp":             ("GDPC1",          "pc1"),   # 실질 GDP YoY 성장률
+    "rsafs":           ("RSAFS",          "pc1"),   # 소매판매 YoY
+    "indpro":          ("INDPRO",         "pc1"),   # 산업생산 YoY
     "umcsent":         ("UMCSENT",        "lin"),   # 미시간대 소비자심리
     "housing":         ("CSUSHPINSA",     "lin"),   # 케이스-실러 주택가격지수
+    # ── 물가 (추가) ───────────────────────────
+    "ppi":             ("PPIFIS",         "pc1"),   # 생산자물가 YoY
     # ── 유동성 ────────────────────────────────
+    "walcl":           ("WALCL",          "lin"),   # 연준 대차대조표 (십억달러)
     "m2":              ("M2SL",           "pc1"),   # M2 YoY (월별 폴백용)
     "m2_level":        ("M2SL",           "lin"),   # M2 실수치 (십억달러)
     "m2_weekly":       ("WM2NS",          "pc1"),   # M2 주간 YoY 변화율
