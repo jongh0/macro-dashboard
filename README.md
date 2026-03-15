@@ -16,7 +16,7 @@
 | **원자재** | 금, 은, 구리, WTI 원유, 천연가스(Henry Hub) |
 | **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 하이일드 OAS |
 | **거시경제** | 달러지수(Broad), 소비자심리지수, 실질 GDP, 소매판매, 산업생산, 실업률, NFP, JOLTS, 실업수당 청구, PPI, CPI, PCE, 기대인플레이션(BEI), M2 통화량(주간), 연준 대차대조표, RRP 잔고, TGA 잔고, 순유동성, 주택가격지수 |
-| **S&P 비교** | S&P 500 vs 순유동성 |
+| **S&P 비교** | S&P 500 vs 순유동성, S&P 500 vs 하이일드 스프레드, S&P 500 vs 마진 부채 |
 
 ---
 
@@ -51,7 +51,7 @@ update.bat
 **직접 실행:**
 ```bash
 # 의존성 설치
-pip install requests pandas openpyxl yfinance xlrd
+pip install requests pandas openpyxl yfinance xlrd pytrends
 
 # 전체 업데이트
 python scripts/update_data.py --all --key YOUR_FRED_API_KEY
@@ -64,6 +64,7 @@ python scripts/update_data.py --fg       # Fear & Greed (CNN + 크립토)
 python scripts/update_data.py --shiller  # Shiller P/E
 python scripts/update_data.py --finra    # FINRA 마진 부채
 python scripts/update_data.py --fred     # FRED 전체 (API 키 필요)
+python scripts/update_data.py --fear     # 공포 키워드 트렌드 (Google Trends)
 ```
 
 GitHub Actions로 1시간마다 자동 갱신 (`.github/workflows/update-data.yml`).

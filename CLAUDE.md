@@ -72,7 +72,7 @@ All modules are plain globals — no bundler, no ES modules.
   id,           // unique string, used for DOM IDs (card-{id}, chart-{id}, etc.)
   title,        // display name
   description,  // subtitle text
-  category,     // one of: market | sentiment | forex | commodity | rates | macro
+  category,     // one of: market | sentiment | forex | commodity | rates | macro | spcomparison
   series: [{
     id,         // series identifier
     label,      // legend label
@@ -92,6 +92,7 @@ All modules are plain globals — no bundler, no ES modules.
   yMinLeft/yMaxLeft/yMinRight/yMaxRight, // dual-axis bounds
   zeroLine,     // boolean — draw dashed line at y=0
   refLines,     // [{value, label, color}] — reference lines
+  defaultRange,     // '1M'|'3M'|'6M'|'1Y'|'3Y'|'5Y'|'MAX' — per-chart default range (overrides global)
   defaultNormalize, // 'raw' | 'zscore' | 'pct' (default: 'raw')
   statusConfig: {
     type: 'threshold' | 'drawdown',
@@ -124,7 +125,10 @@ All `data/*.json` files follow:
 | PPIFIS | pc1 | fred_ppi.json | PPI 생산자물가 YoY |
 | RSAFS | pc1 | fred_rsafs.json | 소매판매 YoY |
 | INDPRO | pc1 | fred_indpro.json | 산업생산 YoY |
-| WALCL | lin | fred_walcl.json | 연준 대차대조표 ($B) |
+| WALCL | lin | fred_walcl.json | 연준 대차대조표 ($M → /1000 → $B) |
+| RRPONTSYD | lin | fred_rrpontsyd.json | RRP 잔고 ($B) |
+| WDTGAL | lin | fred_wdtgal.json | TGA 잔고 ($M → /1000 → $B) |
+| NET_LIQUIDITY | lin | fred_net_liquidity.json | 순유동성 계산값 ($B, WALCL/1000 - RRPONTSYD - WDTGAL/1000) |
 | WM2NS | pc1 | fred_m2_weekly.json | M2 주간 YoY |
 | GDPC1 | pc1 | fred_gdp.json | 실질 GDP YoY |
 | CPIAUCSL | pc1 | fred_cpi.json | CPI YoY |
