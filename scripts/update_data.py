@@ -502,11 +502,18 @@ def calc_net_liquidity():
         rrp   = load("fred_rrpontsyd.json")
         tga   = load("fred_wdtgal.json")
 
+        # 단위 통일: 모두 십억달러($B)로 변환
+        # WALCL: 백만달러 → /1000 → 십억달러
+        # RRPONTSYD: 이미 십억달러
+        # WDTGAL: 백만달러 → /1000 → 십억달러
+        walcl_b = walcl / 1000
+        tga_b   = tga   / 1000
+
         # RRP(일별) → 주간 마지막값으로 리샘플
         rrp_w = rrp.resample("W-WED").last()
 
         # 세 시리즈를 날짜 기준 병합 (inner: 공통 날짜만)
-        df = pd.DataFrame({"walcl": walcl, "rrp": rrp_w, "tga": tga}).dropna()
+        df = pd.DataFrame({"walcl": walcl_b, "rrp": rrp_w, "tga": tga_b}).dropna()
         df["net"] = df["walcl"] - df["rrp"] - df["tga"]
 
         data = to_json_dates(df["net"], round_digits=2)
@@ -515,6 +522,65 @@ def calc_net_liquidity():
         print(f"OK ({len(data['dates'])}개, {data['dates'][0]} ~ {data['dates'][-1]})")
     except Exception as e:
         print(f"FAIL: {e}")
+
+
+# ──────────────────────────────────────────────────────
+# 6. Google Trends 공포 지수
+# ──────────────────────────────────────────────────────
+FEAR_KEYWORDS = [
+    "recession",
+    "inflation",
+    "tariff",
+    "financial crisis",
+    "stock market crash",
+    "unemployment",
+]
+
+
+def download_fear_sentiment():
+    print("\n[6] Google Trends 공포 지수 다운로드 중...")
+    import time
+    try:
+        from pytrends.request import TrendReq
+    except ImportError:
+        print("  FAIL: pip install pytrends 필요")
+        return False
+
+    pytrends = TrendReq(hl='en-US', tz=0)
+    end_date  = datetime.now(KST).strftime('%Y-%m-%d')
+    timeframe = f'2020-01-01 {end_date}'
+
+    series_list = []
+    # pytrends는 한 번에 최대 5개 키워드
+    for i in range(0, len(FEAR_KEYWORDS), 5):
+        batch = FEAR_KEYWORDS[i:i + 5]
+        print(f"  -> {batch}...", end=" ", flush=True)
+        try:
+            pytrends.build_payload(batch, timeframe=timeframe, geo='US')
+            df = pytrends.interest_over_time()
+            if df.empty:
+                print("SKIP (empty)")
+                continue
+            if 'isPartial' in df.columns:
+                df = df.drop(columns=['isPartial'])
+            for col in df.columns:
+                series_list.append(df[col].rename(col))
+            print(f"OK ({len(df)}주)")
+        except Exception as e:
+            print(f"FAIL: {e}")
+        time.sleep(3)
+
+    if not series_list:
+        print("  FAIL: 유효한 데이터 없음")
+        return False
+
+    composite = pd.concat(series_list, axis=1).mean(axis=1).dropna()
+
+    data = to_json_dates(composite, round_digits=2)
+    data["source"] = "Google Trends US (공포·불확실성 키워드 평균)"
+    save_json(data, "fear_sentiment.json")
+    print(f"  -> 공포 지수 저장: {len(data['dates'])}개 ({data['dates'][0]} ~ {data['dates'][-1]})")
+    return True
 
 
 # ──────────────────────────────────────────────────────
@@ -530,6 +596,7 @@ if __name__ == "__main__":
     parser.add_argument("--yahoo",   action="store_true", help="Yahoo Finance 데이터만 (금, 은)")
     parser.add_argument("--market",  action="store_true", help="Yahoo Finance 시장 지수·원자재 (S&P·NASDAQ·DJIA·VIX·WTI·구리·천연가스)")
     parser.add_argument("--forex",   action="store_true", help="Yahoo Finance 환율 데이터만")
+    parser.add_argument("--gdelt",   action="store_true", help="GDELT 뉴스 센티먼트만")
     parser.add_argument("--all",     action="store_true", help="모두 (기본)")
     parser.add_argument("--key",     type=str,            help="FRED API 키 직접 지정")
     args = parser.parse_args()
@@ -537,7 +604,7 @@ if __name__ == "__main__":
     if args.key:
         FRED_API_KEY = args.key
 
-    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.market, args.forex])
+    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.market, args.forex, args.gdelt])
 
     print("=" * 50)
     print("매크로 대시보드 데이터 업데이트")
@@ -560,5 +627,7 @@ if __name__ == "__main__":
         download_all_fred()
     if run_all or args.shiller:
         download_shiller()
+    if run_all or args.gdelt:
+        download_fear_sentiment()
 
     print("\n완료!")

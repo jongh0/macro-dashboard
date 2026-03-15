@@ -1477,4 +1477,78 @@ const CHART_CONFIGS = [
     ],
   },
 
+
+  // ══════════════════════════════════════════
+  // ▶ S&P 비교 (spcomparison)
+  // ══════════════════════════════════════════
+
+  // ──────────────────────────────────────────
+  // S&P 500 vs 순유동성
+  // ──────────────────────────────────────────,
+  {
+    id: 'sp500-vs-liquidity',
+    title: 'S&P 500 vs 순유동성',
+    description: 'S&P 500 지수와 순유동성(연준 자산 - RRP - TGA) 비교',
+    category: 'spcomparison',
+    series: [
+      {
+        id: 'sp500',
+        label: 'S&P 500',
+        type: 'static',
+        file: 'sp500.json',
+        color: '#3b82f6',
+        noDecimal: true,
+      },
+      {
+        id: 'net_liquidity',
+        label: '순유동성 ($B)',
+        type: 'fred',
+        seriesId: 'NET_LIQUIDITY',
+        units: 'lin',
+        color: '#34d399',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    reading: [
+      '순유동성 상승 = 시중 유동성 확대 → 주가 상승 압력. 하락 = 유동성 축소 → 주가 하방 압력.',
+      '두 지표의 방향이 엇갈릴 때 (divergence) 주목. 유동성 없는 상승은 지속성이 낮음.',
+      'QT 중에도 RRP·TGA 감소로 순유동성이 증가하면 시장 충격이 제한됨.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // S&P 500 vs 뉴스 센티먼트
+  // ──────────────────────────────────────────,
+  {
+    id: 'sp500-vs-sentiment',
+    title: 'S&P 500 vs 공포 지수',
+    description: 'S&P 500 지수와 Google Trends 공포 지수 비교 (6개 키워드 검색량 평균)',
+    category: 'spcomparison',
+    series: [
+      {
+        id: 'sp500',
+        label: 'S&P 500',
+        type: 'static',
+        file: 'sp500.json',
+        color: '#3b82f6',
+        noDecimal: true,
+      },
+      {
+        id: 'fear',
+        label: '공포 지수',
+        type: 'static',
+        file: 'fear_sentiment.json',
+        color: '#ef4444',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    reading: [
+      '공포 지수 = recession·inflation·tariff·financial crisis·stock market crash·unemployment 검색량 평균 (Google Trends US).',
+      '공포 지수 ↑ = 대중의 불안 심리 상승 → 시장 하락과 동반하는 경향.',
+      '급등 구간이 시장 저점과 일치하는 경우 많음 (공포 극대화 = 매수 기회).',
+    ],
+  },
+
 ];
