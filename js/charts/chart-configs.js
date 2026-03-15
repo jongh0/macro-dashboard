@@ -1585,7 +1585,6 @@ const CHART_CONFIGS = [
       },
     ],
     defaultNormalize: 'raw',
-    defaultRange: '3Y',
     updateInterval: 24 * 60 * 60 * 1000,
     reading: [
       '마진 부채 급증 = 레버리지 과열 → 시장 고점 신호. 급감 = 강제 청산 → 하락 가속.',
