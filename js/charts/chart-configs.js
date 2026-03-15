@@ -266,51 +266,6 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 매크로 공포 지수 (MFI)
-  // ──────────────────────────────────────────,
-  {
-    id: 'macro-fear-index',
-    title: '매크로 공포 지수 (MFI)',
-    description: 'Google Trends 기반 거시경제 공포·불확실성 종합 지수 (미국, 주간)',
-    category: 'sentiment',
-    series: [
-      {
-        id: 'fear',
-        label: '매크로 공포 지수',
-        type: 'static',
-        file: 'fear_sentiment.json',
-        color: '#ef4444',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '',
-    format: 'number',
-    yMin: 0,
-    yMax: 100,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 25, label: '안정', color: '#22c55e' },
-        { max: 50, label: '주의', color: '#f59e0b' },
-        { max: 70, label: '불안', color: '#f97316' },
-        {          label: '공포', color: '#ef4444' },
-      ],
-    },
-    refLines: [
-      { value: 25, label: '안정', color: '#22c55e' },
-      { value: 50, label: '주의', color: '#f59e0b' },
-      { value: 70, label: '공포', color: '#ef4444' },
-    ],
-    reading: [
-      'recession·inflation·tariff·financial crisis·stock market crash·unemployment 6개 키워드 Google 검색량 평균 (미국).',
-      '지수 급등 = 대중 공포 극대화 → 과거 시장 저점과 일치하는 경향 (역발상 신호).',
-      'VIX·Fear & Greed와 함께 보면 심리 지표 종합 판단에 유용.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
   // 4. 소비자심리지수
   // ──────────────────────────────────────────,
   {
@@ -1564,40 +1519,5 @@ const CHART_CONFIGS = [
     ],
   },
 
-  // ──────────────────────────────────────────
-  // S&P 500 vs 뉴스 센티먼트
-  // ──────────────────────────────────────────,
-  {
-    id: 'sp500-vs-sentiment',
-    title: 'S&P 500 vs 공포 지수',
-    description: 'S&P 500 지수와 Google Trends 공포 지수 비교 (6개 키워드 검색량 평균)',
-    category: 'spcomparison',
-    series: [
-      {
-        id: 'sp500',
-        label: 'S&P 500',
-        type: 'static',
-        file: 'sp500.json',
-        color: '#3b82f6',
-        noDecimal: true,
-      },
-      {
-        id: 'fear',
-        label: '매크로 공포 지수',
-        type: 'static',
-        file: 'fear_sentiment.json',
-        color: '#ef4444',
-        unit: '',
-        decimals: 1,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    reading: [
-      '공포 지수 = recession·inflation·tariff·financial crisis·stock market crash·unemployment 검색량 평균 (Google Trends US).',
-      '공포 지수 ↑ = 대중의 불안 심리 상승 → 시장 하락과 동반하는 경향.',
-      '급등 구간이 시장 저점과 일치하는 경우 많음 (공포 극대화 = 매수 기회).',
-    ],
-  },
-
 ];
+
