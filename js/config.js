@@ -21,7 +21,6 @@ const CATEGORIES = {
   commodity:  { label: '원자재',   color: '#f59e0b' },
   rates:      { label: '금리',     color: '#06b6d4' },
   macro:      { label: '거시경제', color: '#22c55e' },
-  comparison: { label: 'S&P 비교', color: '#94a3b8' },
 };
 
 // ============================================================

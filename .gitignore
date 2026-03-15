@@ -40,3 +40,4 @@ $RECYCLE.BIN/
 # FRED API 키 등 민감 정보를 별도 파일로 관리할 경우
 .env
 secrets.json
+update with Key.bat
