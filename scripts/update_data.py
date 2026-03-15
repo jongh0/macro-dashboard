@@ -596,7 +596,7 @@ if __name__ == "__main__":
     parser.add_argument("--yahoo",   action="store_true", help="Yahoo Finance 데이터만 (금, 은)")
     parser.add_argument("--market",  action="store_true", help="Yahoo Finance 시장 지수·원자재 (S&P·NASDAQ·DJIA·VIX·WTI·구리·천연가스)")
     parser.add_argument("--forex",   action="store_true", help="Yahoo Finance 환율 데이터만")
-    parser.add_argument("--gdelt",   action="store_true", help="GDELT 뉴스 센티먼트만")
+    parser.add_argument("--fear",    action="store_true", help="Google Trends 매크로 공포 지수만")
     parser.add_argument("--all",     action="store_true", help="모두 (기본)")
     parser.add_argument("--key",     type=str,            help="FRED API 키 직접 지정")
     args = parser.parse_args()
@@ -604,7 +604,7 @@ if __name__ == "__main__":
     if args.key:
         FRED_API_KEY = args.key
 
-    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.market, args.forex, args.gdelt])
+    run_all = args.all or not any([args.finra, args.fg, args.fred, args.shiller, args.yahoo, args.market, args.forex, args.fear])
 
     print("=" * 50)
     print("매크로 대시보드 데이터 업데이트")
@@ -627,7 +627,7 @@ if __name__ == "__main__":
         download_all_fred()
     if run_all or args.shiller:
         download_shiller()
-    if run_all or args.gdelt:
+    if run_all or args.fear:
         download_fear_sentiment()
 
     print("\n완료!")

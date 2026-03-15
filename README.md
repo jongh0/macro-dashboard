@@ -11,11 +11,12 @@
 | 카테고리 | 지표 |
 |---|---|
 | **시장** | S&P 500, NASDAQ, 다우존스, VIX |
-| **심리** | CNN Fear & Greed (주식), Crypto Fear & Greed |
+| **심리** | CNN Fear & Greed (주식), Crypto Fear & Greed, 매크로 공포 지수 (MFI) |
 | **환율** | USD/KRW, KRW/JPY, USD/JPY, EUR/USD |
 | **원자재** | 금, 은, 구리, WTI 원유, 천연가스(Henry Hub) |
 | **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 하이일드 OAS |
-| **거시경제** | 달러지수(Broad), 소비자심리지수, 실질 GDP, 소매판매, 산업생산, 실업률, NFP, JOLTS, 실업수당 청구, PPI, CPI, PCE, 기대인플레이션(BEI), M2 통화량(주간), 연준 대차대조표, 주택가격지수 |
+| **거시경제** | 달러지수(Broad), 소비자심리지수, 실질 GDP, 소매판매, 산업생산, 실업률, NFP, JOLTS, 실업수당 청구, PPI, CPI, PCE, 기대인플레이션(BEI), M2 통화량(주간), 연준 대차대조표, RRP 잔고, TGA 잔고, 순유동성, 주택가격지수 |
+| **S&P 비교** | S&P 500 vs 순유동성, S&P 500 vs 매크로 공포 지수 (MFI) |
 
 ---
 

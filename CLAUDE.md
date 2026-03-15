@@ -27,6 +27,7 @@ python scripts/update_data.py --fg              # Fear & Greed (CNN + Crypto)
 python scripts/update_data.py --shiller         # Shiller P/E
 python scripts/update_data.py --finra           # FINRA margin debt
 python scripts/update_data.py --fred            # All FRED series (API key required)
+python scripts/update_data.py --fear            # 매크로 공포 지수 (Google Trends, pip install pytrends)
 ```
 
 ## Architecture
