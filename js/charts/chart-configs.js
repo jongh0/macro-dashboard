@@ -1519,5 +1519,79 @@ const CHART_CONFIGS = [
     ],
   },
 
+
+  // ──────────────────────────────────────────
+  // S&P 500 vs 하이일드 스프레드
+  // ──────────────────────────────────────────,
+  {
+    id: 'sp500-vs-hyspread',
+    title: 'S&P 500 vs 하이일드 스프레드',
+    description: 'S&P 500 지수와 하이일드 OAS 스프레드 비교 — 신용위험 선행지표',
+    category: 'spcomparison',
+    series: [
+      {
+        id: 'sp500',
+        label: 'S&P 500',
+        type: 'static',
+        file: 'sp500.json',
+        color: '#3b82f6',
+        noDecimal: true,
+      },
+      {
+        id: 'hyspread',
+        label: 'HY 스프레드',
+        type: 'fred',
+        seriesId: 'BAMLH0A0HYM2',
+        units: 'lin',
+        color: '#ef4444',
+        unit: '%',
+        decimals: 2,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    reading: [
+      'HY 스프레드 확대 = 기업 신용위험 상승 → 주가 하락 선행. 2008·2020·2022년 모두 스프레드 선행.',
+      '4% 이하 = 위험 선호. 6% 이상 = 신용 경계. 10% 이상 = 금융위기 수준.',
+      '스프레드 급등 후 주가 반등 시 신용시장 안정 여부를 함께 확인해야 진짜 반등 여부 판단 가능.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // S&P 500 vs 마진 부채
+  // ──────────────────────────────────────────,
+  {
+    id: 'sp500-vs-margin-debt',
+    title: 'S&P 500 vs 마진 부채',
+    description: 'S&P 500 지수와 FINRA 마진 부채 비교 — 레버리지 사이클 지표',
+    category: 'spcomparison',
+    series: [
+      {
+        id: 'sp500',
+        label: 'S&P 500',
+        type: 'static',
+        file: 'sp500.json',
+        color: '#3b82f6',
+        noDecimal: true,
+      },
+      {
+        id: 'margin',
+        label: '마진 부채',
+        type: 'static',
+        file: 'finra_margin.json',
+        color: '#f59e0b',
+        unit: '$M',
+        decimals: 0,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    reading: [
+      '마진 부채 급증 = 레버리지 과열 → 시장 고점 신호. 급감 = 강제 청산 → 하락 가속.',
+      '주가와 장기적으로 동행하지만 변곡점에서 선행하는 경향.',
+      '마진 부채 YoY 감소 전환 후 주가 하락 본격화 패턴이 반복됨.',
+    ],
+  },
+
 ];
 
