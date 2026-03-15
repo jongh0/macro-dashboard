@@ -1331,8 +1331,8 @@ const CHART_CONFIGS = [
   // ──────────────────────────────────────────,
   {
     id: 'fed-balance-sheet',
-    title: '연준 대차대조표 · RRP · TGA',
-    description: '연준 총자산, 역레포(RRP) 잔고, 재무부 TGA 잔고 (십억달러)',
+    title: '연준 대차대조표',
+    description: '연준 총자산 (주간, 십억달러)',
     category: 'macro',
     series: [
       {
@@ -1344,6 +1344,27 @@ const CHART_CONFIGS = [
         color: '#a855f7',
         areaStyle: true,
       },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$B',
+    format: 'number',
+    reading: [
+      'QE(양적완화) = 자산 확대 → 유동성 증가. QT(양적긴축) = 자산 축소 → 유동성 회수.',
+      '연준 자산과 S&P500은 장기적으로 높은 상관관계. 확장 전환 시 위험자산 선호 신호.',
+      '대차대조표만으로는 실제 유동성을 오독할 수 있음 → RRP·TGA·순유동성 차트 함께 참고.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // RRP 잔고
+  // ──────────────────────────────────────────,
+  {
+    id: 'rrp',
+    title: 'RRP 잔고 (역레포)',
+    description: '연준 역레포(Reverse Repo) 잔고 — 민간이 연준에 맡긴 돈 (십억달러)',
+    category: 'macro',
+    series: [
       {
         id: 'rrpontsyd',
         label: 'RRP 잔고',
@@ -1351,14 +1372,7 @@ const CHART_CONFIGS = [
         seriesId: 'RRPONTSYD',
         units: 'lin',
         color: '#38bdf8',
-      },
-      {
-        id: 'wdtgal',
-        label: 'TGA 잔고',
-        type: 'fred',
-        seriesId: 'WDTGAL',
-        units: 'lin',
-        color: '#fb923c',
+        areaStyle: true,
       },
     ],
     defaultNormalize: 'raw',
@@ -1366,9 +1380,39 @@ const CHART_CONFIGS = [
     unit: '$B',
     format: 'number',
     reading: [
-      '순유동성 = 연준 자산 - RRP - TGA. 세 지표를 합산해야 실제 시중 유동성을 파악 가능.',
-      'RRP ↓ · TGA ↓ = 시중에 돈 공급. QT 중에도 이 두 잔고가 줄면 유동성 충격 완화.',
-      'RRP 소진 이후 QT는 완충 없이 직접 유동성을 회수 → 시장 민감도 상승.',
+      'RRP ↑ = 돈이 연준에 묶임 → 시중 유동성 ↓. RRP ↓ = 돈이 시장으로 나옴 → 유동성 ↑.',
+      '코로나 이후 과잉 유동성이 RRP에 쌓였다가 2022~2024년 소진 → QT 충격을 상쇄.',
+      'RRP 잔고가 0에 근접하면 이 완충재 소멸 → 이후 QT는 시장에 직접 영향.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // TGA 잔고
+  // ──────────────────────────────────────────,
+  {
+    id: 'tga',
+    title: 'TGA 잔고 (재무부 계좌)',
+    description: '미국 재무부 당좌계좌(Treasury General Account) 잔고 (십억달러)',
+    category: 'macro',
+    series: [
+      {
+        id: 'wdtgal',
+        label: 'TGA 잔고',
+        type: 'fred',
+        seriesId: 'WDTGAL',
+        units: 'lin',
+        color: '#fb923c',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$B',
+    format: 'number',
+    reading: [
+      'TGA ↑ = 정부가 세금·국채 발행으로 돈을 흡수 → 시중 유동성 ↓.',
+      'TGA ↓ = 정부 지출로 민간에 달러 공급 → 유동성 ↑.',
+      '부채한도 협상 시 TGA가 급변동하며 단기 유동성에 큰 영향을 줌.',
     ],
   },
 
