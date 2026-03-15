@@ -65,7 +65,7 @@ All modules are plain globals — no bundler, no ES modules.
   id,           // unique string, used for DOM IDs (card-{id}, chart-{id}, etc.)
   title,        // display name
   description,  // subtitle text
-  category,     // one of: market | sentiment | forex | commodity | rates | macro | comparison
+  category,     // one of: market | sentiment | forex | commodity | rates | macro
   series: [{
     id,         // series identifier
     label,      // legend label
@@ -95,8 +95,8 @@ All modules are plain globals — no bundler, no ES modules.
 }
 ```
 
-### Dual Y-Axis (Comparison Charts)
-Charts with multiple series in `raw` mode use left/right dual axes (S&P500 on left, secondary indicator on right). Z-Score and %변화 modes collapse to a single axis.
+### Dual Y-Axis
+Charts with multiple series in `raw` mode use left/right dual axes. Z-Score and %변화 modes collapse to a single axis.
 
 ### Static JSON Format
 All `data/*.json` files follow:

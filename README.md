@@ -16,7 +16,6 @@
 | **원자재** | 금, 은, 구리, WTI 원유, 천연가스(Henry Hub) |
 | **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 하이일드 OAS |
 | **거시경제** | 달러지수(Broad), 소비자심리지수, 실질 GDP, 실업률, NFP, JOLTS, 실업수당 청구, CPI, PCE, 기대인플레이션(BEI), M2 통화량(주간), 주택가격지수 |
-| **S&P 비교** | S&P vs VIX, 마진 부채, P/E, M2, 달러지수, HY 스프레드, 10년물 금리, 기준금리, 장단기 금리차, 금, WTI |
 
 ---
 
@@ -84,7 +83,7 @@ macro-dashboard/
 │   ├── fred-api.js         # FRED 정적 파일 로더
 │   ├── cnn-api.js          # CNN/Static 로더
 │   └── charts/
-│       ├── chart-configs.js  # 차트 정의 (전체 지표 + S&P 비교)
+│       ├── chart-configs.js  # 차트 정의
 │       └── chart-factory.js  # ECharts 렌더러
 ├── data/                   # 정적 JSON (스크립트로 갱신)
 ├── scripts/update_data.py  # 데이터 업데이트
