@@ -1331,8 +1331,8 @@ const CHART_CONFIGS = [
   // ──────────────────────────────────────────,
   {
     id: 'fed-balance-sheet',
-    title: '연준 대차대조표',
-    description: '연준 총자산 (주간, 십억달러)',
+    title: '연준 대차대조표 · RRP · TGA',
+    description: '연준 총자산, 역레포(RRP) 잔고, 재무부 TGA 잔고 (십억달러)',
     category: 'macro',
     series: [
       {
@@ -1344,18 +1344,62 @@ const CHART_CONFIGS = [
         color: '#a855f7',
         areaStyle: true,
       },
+      {
+        id: 'rrpontsyd',
+        label: 'RRP 잔고',
+        type: 'fred',
+        seriesId: 'RRPONTSYD',
+        units: 'lin',
+        color: '#38bdf8',
+      },
+      {
+        id: 'wdtgal',
+        label: 'TGA 잔고',
+        type: 'fred',
+        seriesId: 'WDTGAL',
+        units: 'lin',
+        color: '#fb923c',
+      },
     ],
     defaultNormalize: 'raw',
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '$B',
     format: 'number',
-    refLines: [
-      { value: 4000, label: '코로나 이전', color: '#94a3b8' },
-    ],
     reading: [
-      'QE(양적완화) = 자산 확대 → 유동성 증가. QT(양적긴축) = 자산 축소 → 유동성 회수.',
-      '연준 자산과 S&P500은 장기적으로 높은 상관관계. 확장 전환 시 위험자산 선호 신호.',
-      'M2 증가율과 함께 보면 시중 유동성 방향을 종합적으로 파악 가능.',
+      '순유동성 = 연준 자산 - RRP - TGA. 세 지표를 합산해야 실제 시중 유동성을 파악 가능.',
+      'RRP ↓ · TGA ↓ = 시중에 돈 공급. QT 중에도 이 두 잔고가 줄면 유동성 충격 완화.',
+      'RRP 소진 이후 QT는 완충 없이 직접 유동성을 회수 → 시장 민감도 상승.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 순유동성 (Net Liquidity)
+  // ──────────────────────────────────────────,
+  {
+    id: 'net-liquidity',
+    title: '순유동성 (Net Liquidity)',
+    description: '연준 자산 - RRP - TGA (실제 시중 유동성 추정치, 십억달러)',
+    category: 'macro',
+    series: [
+      {
+        id: 'net_liquidity',
+        label: '순유동성',
+        type: 'fred',
+        seriesId: 'NET_LIQUIDITY',
+        units: 'lin',
+        color: '#34d399',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$B',
+    format: 'number',
+    zeroLine: false,
+    reading: [
+      '순유동성 = 연준 자산 - RRP 잔고 - TGA 잔고. 연준 대차대조표보다 실제 시중 유동성을 더 정확히 반영.',
+      '상승 전환 = 유동성 확대 → 위험자산 선호. 하락 추세 = 유동성 축소 → 시장 압력.',
+      'QT 중에도 RRP·TGA 감소로 순유동성이 증가하면 시장 충격이 제한됨 (2022~2024년 사례).',
     ],
   },
 

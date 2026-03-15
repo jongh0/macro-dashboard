@@ -424,6 +424,8 @@ FRED_SERIES = {
     "ppi":             ("PPIFIS",         "pc1"),   # 생산자물가 YoY
     # ── 유동성 ────────────────────────────────
     "walcl":           ("WALCL",          "lin"),   # 연준 대차대조표 (십억달러)
+    "rrpontsyd":       ("RRPONTSYD",      "lin"),   # 역레포(RRP) 잔고 (십억달러)
+    "wdtgal":          ("WDTGAL",         "lin"),   # 재무부 TGA 잔고 (십억달러)
     "m2":              ("M2SL",           "pc1"),   # M2 YoY (월별 폴백용)
     "m2_level":        ("M2SL",           "lin"),   # M2 실수치 (십억달러)
     "m2_weekly":       ("WM2NS",          "pc1"),   # M2 주간 YoY 변화율
@@ -479,6 +481,40 @@ def download_all_fred():
         print(f"  -> {series_id} ({units})...", end=" ", flush=True)
         ok = download_fred_series(name, series_id, units)
         print("OK" if ok else "FAIL")
+    calc_net_liquidity()
+
+
+def calc_net_liquidity():
+    """순유동성 = 연준 자산(WALCL) - RRP(RRPONTSYD) - TGA(WDTGAL) 계산 후 저장"""
+    print("  -> 순유동성 계산 중...", end=" ", flush=True)
+    try:
+        def load(filename):
+            path = OUTPUT_DIR / filename
+            with open(path, encoding="utf-8") as f:
+                j = json.load(f)
+            return pd.Series(
+                j["values"],
+                index=pd.to_datetime(j["dates"]),
+                dtype=float,
+            )
+
+        walcl = load("fred_walcl.json")
+        rrp   = load("fred_rrpontsyd.json")
+        tga   = load("fred_wdtgal.json")
+
+        # RRP(일별) → 주간 마지막값으로 리샘플
+        rrp_w = rrp.resample("W-WED").last()
+
+        # 세 시리즈를 날짜 기준 병합 (inner: 공통 날짜만)
+        df = pd.DataFrame({"walcl": walcl, "rrp": rrp_w, "tga": tga}).dropna()
+        df["net"] = df["walcl"] - df["rrp"] - df["tga"]
+
+        data = to_json_dates(df["net"], round_digits=2)
+        data["source"] = "FRED (WALCL - RRPONTSYD - WDTGAL)"
+        save_json(data, "fred_net_liquidity.json")
+        print(f"OK ({len(data['dates'])}개, {data['dates'][0]} ~ {data['dates'][-1]})")
+    except Exception as e:
+        print(f"FAIL: {e}")
 
 
 # ──────────────────────────────────────────────────────

@@ -73,7 +73,10 @@ const FredAPI = {
       'PPIFIS': { pc1: 'fred_ppi.json' },
       'RSAFS':  { pc1: 'fred_rsafs.json' },
       'INDPRO': { pc1: 'fred_indpro.json' },
-      'WALCL':  { lin: 'fred_walcl.json' },
+      'WALCL':      { lin: 'fred_walcl.json' },
+      'RRPONTSYD':  { lin: 'fred_rrpontsyd.json' },
+      'WDTGAL':     { lin: 'fred_wdtgal.json' },
+      'NET_LIQUIDITY': { lin: 'fred_net_liquidity.json' },
     };
     return map[seriesId]?.[units] || null;
   },
