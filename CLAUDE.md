@@ -60,6 +60,12 @@ All modules are plain globals — no bundler, no ES modules.
 3. If `type: 'fred'`, add the series ID → filename mapping in `FredAPI._staticName()` in `js/fred-api.js`
 4. If `type: 'static'`, `StaticAPI.fetch(file)` will look for `data/<file>` (falls back to `data/fred_<file>`)
 
+### Adding a New Category
+카테고리 필터 버튼은 `index.html`에 **하드코딩**되어 있음 — `js/config.js`의 `CATEGORIES`만 추가해도 버튼이 자동 생성되지 않음.
+새 카테고리 추가 시 두 곳 모두 수정 필요:
+1. `js/config.js` — `CATEGORIES` 객체에 추가 (label, color)
+2. `index.html` — `.category-filter` 내 `<button class="cat-filter-btn" data-cat="...">` 추가
+
 ### Chart Config Schema (`CHART_CONFIGS` entries)
 ```js
 {
