@@ -12,6 +12,7 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  id-token: write # google-github-actions/auth를 위해 필요
 
 jobs:
   # 1. PR 리뷰 및 인터랙티브 어시스턴트
@@ -26,6 +27,13 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+
+      # Google Cloud 인증 단계
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Prepare Prompt
         id: prep
@@ -49,7 +57,9 @@ jobs:
       - name: Run Gemini CLI Action
         uses: google-github-actions/run-gemini-cli@v0
         with:
-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          use_vertex_ai: true
+          gcp_project_id: "gen-lang-client-07111599943"
+          gcp_location: "asia-northeast3" # 서울 리전
           gemini_model: "gemini-1.5-flash"
           # PR 오픈 시에는 리뷰를 수행하고, 댓글 명령 시에는 해당 태스크 수행 (결과는 한글로 작성)
           prompt: ${{ steps.prep.outputs.prompt }}
@@ -77,6 +87,13 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
 
+      # Google Cloud 인증 단계
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
       - name: Prepare Prompt
         id: prep
         shell: bash
@@ -98,7 +115,9 @@ jobs:
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          use_vertex_ai: true
+          gcp_project_id: "gen-lang-client-07111599943"
+          gcp_location: "asia-northeast3" # 서울 리전
           gemini_model: "gemini-1.5-flash"
           # 이슈 내용을 분석하여 코드 수정 수행 (결과는 한글로 작성)
           prompt: ${{ steps.prep.outputs.prompt }}
