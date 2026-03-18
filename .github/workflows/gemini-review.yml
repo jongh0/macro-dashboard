@@ -27,7 +27,8 @@ jobs:
         run: |
           mkdir -p $HOME/.gemini
           WORKSPACE_PATH="$GITHUB_WORKSPACE"
-          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
+          REPO_NAME="${{ github.event.repository.name }}"
+          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"$REPO_NAME\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
           chmod -R 700 $HOME/.gemini
 
       - name: Run Gemini CLI Action
