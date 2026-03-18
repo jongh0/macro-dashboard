@@ -19,7 +19,8 @@ jobs:
   pr-handler:
     if: |
       github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/gemini') && 
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && 
+       startsWith(trim(github.event.comment.body), '/gemini') && 
        contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
     runs-on: ubuntu-latest
     steps:
@@ -55,8 +56,8 @@ jobs:
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             PROMPT="다음 git diff를 코드 품질, 보안, 모범 사례 관점에서 리뷰하고 마크다운 형식의 한글로 피드백을 제공해 주세요."
           else
-            # Extract command safely using environment variable
-            CLEAN_COMMAND=$(echo "$COMMENT_BODY" | sed 's/^\/gemini //')
+            # Extract command safely (handles both '/gemini command' and '/geminicommand')
+            CLEAN_COMMAND=$(echo "$COMMENT_BODY" | sed -E 's/^[[:space:]]*\/gemini[[:space:]]*//')
             # Use printf to avoid command injection via string interpolation
             PROMPT=$(printf "당신은 시니어 소프트웨어 엔지니어입니다. 사용자가 이 PR에 대해 \"%s\" 작업을 요청했습니다. 도구를 사용하여 관련 파일을 조사하고 작업을 수행한 후, 변경 사항을 한글로 간략히 설명해 주세요." "$CLEAN_COMMAND")
           fi
