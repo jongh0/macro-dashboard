@@ -41,7 +41,8 @@ jobs:
       - name: Create Gemini Config Directory
         run: |
           mkdir -p /home/runner/.gemini
-          echo "{}" > /home/runner/.gemini/projects.json
+          # Initialize projects.json with the current workspace to avoid ProjectRegistry errors
+          echo "{\"projects\":{\"/home/runner/work/macro-dashboard/macro-dashboard\":{\"shortId\":\"macro-dashboard\"}},\"activeProject\":\"/home/runner/work/macro-dashboard/macro-dashboard\"}" > /home/runner/.gemini/projects.json
           chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
@@ -131,7 +132,8 @@ jobs:
       - name: Create Gemini Config Directory
         run: |
           mkdir -p /home/runner/.gemini
-          echo "{}" > /home/runner/.gemini/projects.json
+          # Initialize projects.json with the current workspace to avoid ProjectRegistry errors
+          echo "{\"projects\":{\"/home/runner/work/macro-dashboard/macro-dashboard\":{\"shortId\":\"macro-dashboard\"}},\"activeProject\":\"/home/runner/work/macro-dashboard/macro-dashboard\"}" > /home/runner/.gemini/projects.json
           chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
