@@ -37,6 +37,9 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
+      - name: Create Gemini Config Directory
+        run: mkdir -p ~/.gemini
+
       - name: Prepare Prompt
         id: prep
         shell: bash
@@ -106,6 +109,9 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Create Gemini Config Directory
+        run: mkdir -p ~/.gemini
 
       - name: Prepare Prompt
         id: prep
