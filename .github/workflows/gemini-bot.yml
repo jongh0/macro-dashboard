@@ -12,7 +12,6 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
-  # id-token: write # OIDC/WIF 인증 사용 시 필요 (JSON 키 방식 사용 시 불필요)
 
 jobs:
   # 1. PR 리뷰 및 인터랙티브 어시스턴트
@@ -71,7 +70,6 @@ jobs:
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
-          # gemini_cli_version: "0.33.0"
           gemini_debug: false
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
