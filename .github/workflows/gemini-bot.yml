@@ -81,7 +81,7 @@ jobs:
         uses: google-github-actions/run-gemini-cli@v0
         with:
           gemini_cli_version: "0.33.0"
-          gemini_debug: true
+          gemini_debug: false
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
@@ -94,20 +94,31 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
-          GEMINI_RESPONSE: ${{ steps.gemini.outputs.gemini_response }}
-          GEMINI_ERRORS: ${{ steps.gemini.outputs.gemini_errors }}
         run: |
-          # Create a comment body file safely
+          # Create a comment body file safely by reading from step output logs
           echo "### 🤖 Gemini Assistant" > comment.md
-          if [ -z "$GEMINI_RESPONSE" ] && [ -z "$GEMINI_ERRORS" ]; then
+          
+          STDOUT_LOG="gemini-artifacts/stdout.log"
+          STDERR_LOG="gemini-artifacts/stderr.log"
+          
+          if [ -f "$STDOUT_LOG" ]; then
+            # Extract response field from JSON if possible, otherwise use whole file
+            if jq -e . "$STDOUT_LOG" >/dev/null 2>&1; then
+              jq -r '.response // empty' "$STDOUT_LOG" >> comment.md
+            else
+              cat "$STDOUT_LOG" >> comment.md
+            fi
+          fi
+          
+          if [ -f "$STDERR_LOG" ] && [ -s "$STDERR_LOG" ]; then
+            echo -e "\n---\n### ⚠️ 실행 로그/오류 (Logs/Errors)" >> comment.md
+            echo '```' >> comment.md
+            cat "$STDERR_LOG" >> comment.md
+            echo '```' >> comment.md
+          fi
+          
+          if [ ! -s comment.md ] || [ "$(cat comment.md)" = "### 🤖 Gemini Assistant" ]; then
             echo "리뷰 결과를 생성하는 중에 문제가 발생했거나 응답이 비어 있습니다. Actions 로그를 확인해 주세요." >> comment.md
-          else
-            if [ -n "$GEMINI_RESPONSE" ]; then
-              echo "$GEMINI_RESPONSE" >> comment.md
-            fi
-            if [ -n "$GEMINI_ERRORS" ]; then
-              echo -e "\n---\n### ⚠️ 실행 오류 (Errors)\n\`\`\`\n$GEMINI_ERRORS\n\`\`\`" >> comment.md
-            fi
           fi
           
           # Post comment using GitHub CLI from the file
