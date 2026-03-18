@@ -1,110 +1,135 @@
-# Macro Dashboard
+# Macro Dashboard (거시경제 지표 대시보드)
 
-거시경제 지표 대시보드. FRED·CNN·FINRA·Yahoo Finance 데이터를 JSON으로 로컬 캐싱해 서버 없이 브라우저에서 실행됩니다.
+전 세계 거시경제 및 금융 지표를 시각화하는 "서버리스" 정적 대시보드입니다. FRED, Yahoo Finance, CNN, FINRA 등 다양한 소스에서 데이터를 수집하여 로컬 JSON 파일로 캐싱하며, 브라우저에서는 별도의 백엔드 없이 정적 파일만으로 동작합니다.
 
-**라이브 데모:** https://jongh0.github.io/macro-dashboard/
-
----
-
-## 지표 목록
-
-| 카테고리 | 지표 |
-|---|---|
-| **시장** | S&P 500, NASDAQ, 다우존스, VIX |
-| **심리** | CNN Fear & Greed (주식), Crypto Fear & Greed |
-| **환율** | USD/KRW, KRW/JPY, USD/JPY, EUR/USD |
-| **원자재** | 금, 은, 구리, WTI 원유, 천연가스(Henry Hub) |
-| **금리** | 연방기금금리, 2Y/10Y/30Y 국채, 10Y-2Y/10Y-3M 스프레드, 하이일드 OAS |
-| **거시경제** | 달러지수(Broad), 소비자심리지수, 실질 GDP, 소매판매, 산업생산, 실업률, NFP, JOLTS, 실업수당 청구, PPI, CPI, PCE, 기대인플레이션(BEI), M2 통화량(주간), 연준 대차대조표, RRP 잔고, TGA 잔고, 순유동성, 주택가격지수 |
-| **S&P 비교** | S&P 500 vs 순유동성, S&P 500 vs 하이일드 스프레드, S&P 500 vs 마진 부채 |
+**라이브 데모:** [https://jongh0.github.io/macro-dashboard/](https://jongh0.github.io/macro-dashboard/)
 
 ---
 
-## 빠른 시작
+## 🏗 아키텍처 및 데이터 흐름
 
+이 프로젝트는 **Static-First** 원칙을 따릅니다. 브라우저는 외부 API를 직접 호출하지 않고, 미리 생성된 JSON 데이터를 읽어옵니다. 이를 통해 CORS 문제와 API 키 노출을 방지하며 빠른 로딩 속도를 보장합니다.
+
+```mermaid
+graph LR
+    API[External APIs] --> Py[scripts/update_data.py]
+    Py --> JSON[data/*.json]
+    JSON --> Web[Browser: index.html]
+    Web --> Charts[js/charts/chart-factory.js]
+```
+
+1.  **데이터 수집 (Python):** `update_data.py` 스크립트가 외부 API에서 최신 데이터를 가져와 `data/` 폴더에 표준화된 JSON 형식으로 저장합니다.
+2.  **정적 호스팅:** `index.html` 및 관련 JS/CSS 파일이 `data/` 폴더의 JSON을 fetch하여 화면에 렌더링합니다.
+3.  **자동화:** GitHub Actions가 매시간 데이터를 업데이트하여 라이브 사이트를 최신 상태로 유지합니다.
+
+---
+
+## ✨ 주요 기능
+
+-   **데이터 정규화 (Normalization):**
+    -   **Raw:** 실제 수치 표시 (이중 Y축 지원)
+    -   **Z-Score:** 평균 대비 표준편차로 변환하여 서로 다른 단위의 지표를 직접 비교
+    -   **% 변화:** 기준 시점 대비 변동률 (%) 표시
+-   **스마트 포맷팅:** 한국 사용자 편의를 위한 '만/억' 단위 표기 (`koUnit`) 및 퍼센트/정수 자동 최적화.
+-   **상태 지표 (Status Indicators):** MDD(최대 낙폭) 분석 및 임계값(Threshold) 기반의 상태 표시 (예: 탐욕/공포 단계).
+-   **반응형 차트:** Apache ECharts 기반의 고성능 인터랙티브 차트.
+-   **오프라인 친화적:** 데이터를 한 번 로드하면 브라우저 메모리에 캐싱되어 탐색이 매우 빠릅니다.
+
+---
+
+## 🚀 빠른 시작
+
+로컬에서 대시보드를 실행하려면 `fetch()` API 보안 제약으로 인해 로컬 서버가 필요합니다.
+
+**Windows:**
 ```bat
 start.bat          # 로컬 서버 실행 (http://localhost:8080)
 ```
 
-또는 Python으로 직접:
+**Python (직접 실행):**
 ```bash
 python -m http.server 8080
 ```
 
 ---
 
-## 데이터 업데이트
+## 🔄 데이터 업데이트
 
-FRED API 키는 [fred.stlouisfed.org](https://fred.stlouisfed.org/docs/api/api_key.html)에서 무료 발급.
+데이터를 직접 업데이트하려면 FRED API 키가 필요할 수 있습니다. ([발급 받기](https://fred.stlouisfed.org/docs/api/api_key.html))
 
-**Windows 배치 파일 (권장):**
+### 1. 의존성 설치
+```bash
+pip install requests pandas openpyxl yfinance xlrd pytrends
+```
+
+### 2. 업데이트 실행
+**배치 파일 사용 (Windows):**
 ```bat
 update.bat YOUR_FRED_API_KEY
 ```
 
-환경변수로 키를 설정한 경우:
-```bat
-set FRED_API_KEY=YOUR_KEY
-update.bat
-```
-
-**직접 실행:**
+**Python 스크립트 직접 사용:**
 ```bash
-# 의존성 설치
-pip install requests pandas openpyxl yfinance xlrd pytrends
-
 # 전체 업데이트
 python scripts/update_data.py --all --key YOUR_FRED_API_KEY
 
-# 개별 실행
-python scripts/update_data.py --market   # S&P 500·NASDAQ·DJIA·VIX·WTI·구리·천연가스 (Yahoo Finance)
-python scripts/update_data.py --yahoo    # 금, 은 (Yahoo Finance)
-python scripts/update_data.py --forex    # 환율 USD/KRW, USD/JPY, EUR/USD
-python scripts/update_data.py --fg       # Fear & Greed (CNN + 크립토)
-python scripts/update_data.py --shiller  # Shiller P/E
-python scripts/update_data.py --finra    # FINRA 마진 부채
-python scripts/update_data.py --fred     # FRED 전체 (API 키 필요)
-python scripts/update_data.py --fear     # 공포 키워드 트렌드 (Google Trends)
+# 카테고리별 선택 업데이트
+python scripts/update_data.py --market   # 주식, 원자재 (Yahoo Finance)
+python scripts/update_data.py --fred     # 경제 지표 (FRED)
+python scripts/update_data.py --fg       # 공포와 탐욕 지수
+python scripts/update_data.py --fear     # 매크로 공포 트렌드 (Google Trends)
 ```
-
-GitHub Actions로 1시간마다 자동 갱신 (`.github/workflows/update-data.yml`).
 
 ---
 
-## 프로젝트 구조
+## 📂 프로젝트 구조
 
-```
+```text
 macro-dashboard/
-├── index.html
-├── css/style.css
+├── index.html              # 메인 페이지 및 UI 레이아웃
+├── css/style.css           # 대시보드 스타일링
+├── data/                   # 업데이트 스크립트로 생성된 정적 JSON 데이터
 ├── js/
-│   ├── config.js           # 전역 설정 및 카테고리 정의
-│   ├── app.js              # 메인 앱
-│   ├── cache.js            # 브라우저 캐시
-│   ├── normalizer.js       # 데이터 정규화
-│   ├── fred-api.js         # FRED 정적 파일 로더
-│   ├── cnn-api.js          # CNN/Static 로더
+│   ├── config.js           # 전역 설정, 카테고리 및 날짜 범위 정의
+│   ├── app.js              # 애플리케이션 오케스트레이터 (MacroDashboard 클래스)
+│   ├── cache.js            # 인메모리 TTL 캐시 로직
+│   ├── normalizer.js       # Z-Score, % 변화 등 데이터 변환 모듈
+│   ├── fred-api.js         # FRED 및 정적 데이터 로더
+│   ├── cnn-api.js          # CNN Fear & Greed 데이터 로더
 │   └── charts/
-│       ├── chart-configs.js  # 차트 정의
-│       └── chart-factory.js  # ECharts 렌더러
-├── data/                   # 정적 JSON (스크립트로 갱신)
-├── scripts/update_data.py  # 데이터 업데이트
-├── .github/workflows/      # GitHub Actions 자동화
-├── start.bat
-└── update.bat
+│       ├── chart-configs.js # 중요: 모든 차트의 메타데이터 및 설정 정의
+│       └── chart-factory.js # ECharts 엔진을 통한 차트 생성 및 렌더링
+├── scripts/
+│   └── update_data.py      # 데이터 수집 및 가공 엔진 (Python)
+└── .github/workflows/      # GitHub Actions 자동화 워크플로우
 ```
 
 ---
 
-## 데이터 출처
+## 🛠 개발 가이드
 
-| 소스 | 지표 | 비고 |
-|---|---|---|
-| [Yahoo Finance](https://finance.yahoo.com) | S&P 500(^GSPC), NASDAQ(^IXIC), DJIA(^DJI), VIX(^VIX), WTI(CL=F), 구리(HG=F), 천연가스(NG=F), 금(GC=F), 은(SI=F), 환율 | FRED 대비 1~2일 빠른 전일 종가 |
-| [FRED](https://fred.stlouisfed.org) | 금리·GDP·물가·고용·M2·달러지수(Broad)·하이일드 스프레드·주택가격 등 | API 키 필요 |
-| [CNN Fear & Greed](https://www.cnn.com/markets/fear-and-greed) | 주식 시장 심리 | |
-| [alternative.me](https://alternative.me/crypto/fear-and-greed-index/) | 크립토 공포·탐욕 | |
-| [FINRA](https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics) | 마진 부채 | |
-| [Robert Shiller / Yale](http://www.econ.yale.edu/~shiller/data/) | P/E | 약 1~2개월 지연 |
+### 새 차트 추가하기
+1.  `js/charts/chart-configs.js`의 `CHART_CONFIGS` 배열에 설정을 추가합니다.
+2.  데이터 소스가 FRED인 경우 `js/fred-api.js`의 `FredAPI._staticName`에 시리즈 ID 매핑을 추가합니다.
+3.  필요한 경우 `scripts/update_data.py`에 수집 로직을 추가합니다.
 
-본 대시보드는 투자 조언이 아닙니다.
+### 새 카테고리 추가하기
+1.  `js/config.js`의 `CATEGORIES` 객체에 새 카테고리를 정의합니다.
+2.  `index.html`의 카테고리 필터 영역(`.category-filter`)에 해당 `data-cat` 값을 가진 `<button>`을 수동으로 추가합니다.
+
+---
+
+## 📊 데이터 출처
+
+-   **Yahoo Finance:** 주가지수, 원자재, 환율 (실시간성 높음)
+-   **FRED (St. Louis Fed):** 경제 지표, 금리, 통화량 등 (공식 통계)
+-   **CNN Business:** Fear & Greed Index
+-   **Alternative.me:** Crypto Fear & Greed Index
+-   **FINRA:** Margin Debt 수치
+-   **Robert Shiller (Yale):** CAPE Ratio 등 가치평가 지표
+
+---
+
+## ⚖️ 면책 조항 (Disclaimer)
+
+본 대시보드에서 제공하는 모든 정보는 교육 및 참고용이며, **어떠한 경우에도 투자 조언(Investment Advice)이 아닙니다.** 데이터의 정확성을 보장하지 않으며, 투자 결정에 따른 모든 책임은 사용자 본인에게 있습니다.
