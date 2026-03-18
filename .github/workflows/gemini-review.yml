@@ -30,21 +30,6 @@ jobs:
           echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
           chmod -R 700 $HOME/.gemini
 
-      - name: Get PR Diff
-        id: get_diff
-        run: |
-          # Fetch the base branch to compare
-          git fetch origin ${{ github.base_ref }} --depth=1
-          # Get diff between base and head
-          git diff origin/${{ github.base_ref }}...HEAD > pr_diff.txt
-          
-          # Check if diff is too large (optional, but good for stability)
-          if [ $(stat -c%s "pr_diff.txt") -gt 50000 ]; then
-            echo "Diff is too large, truncating..."
-            head -c 50000 pr_diff.txt > pr_diff_temp.txt
-            mv pr_diff_temp.txt pr_diff.txt
-          fi
-
       - name: Run Gemini CLI Action
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
@@ -52,13 +37,10 @@ jobs:
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
-          # Combine instructions with the actual diff
           prompt: |
-            다음 git diff를 코드 품질, 보안, 모범 사례 관점에서 리뷰하고 마크다운 형식의 한글로 피드백을 제공해 주세요.
-            
-            --- PR DIFF START ---
-            $(cat pr_diff.txt)
-            --- PR DIFF END ---
+            당신은 시니어 소프트웨어 엔지니어입니다. 
+            현재 PR의 변경 사항을 확인하기 위해 `git diff origin/${{ github.base_ref }}...HEAD` 명령어를 실행하고, 
+            그 내용을 코드 품질, 보안, 모범 사례 관점에서 리뷰하여 마크다운 형식의 한글로 피드백을 제공해 주세요.
           settings: '{"approval_mode": "yolo"}'
 
       - name: Post Comment to PR
@@ -79,9 +61,7 @@ jobs:
             fi
           fi
           
-          # Restore Error Logging: Append stderr if it contains actual errors
           if [ -f "$STDERR_LOG" ] && [ -s "$STDERR_LOG" ]; then
-            # Filter out expected keychain warnings to show only real errors
             ERRORS=$(grep -vE "Keychain initialization|Using FileKeychain" "$STDERR_LOG" || true)
             if [ -n "$ERRORS" ]; then
               echo -e "\n---\n### ⚠️ 실행 오류 (Errors)" >> comment.md
