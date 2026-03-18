@@ -40,9 +40,20 @@ jobs:
 
       - name: Create Gemini Config Directory
         run: |
-          mkdir -p /home/runner/.gemini
-          echo '{"projects":{}}' > /home/runner/.gemini/projects.json
-          chmod -R 777 /home/runner/.gemini
+          mkdir -p $HOME/.gemini
+          # Dynamically create a fully valid projects.json using the exact GITHUB_WORKSPACE
+          WORKSPACE_PATH="$GITHUB_WORKSPACE"
+          cat <<EOF > $HOME/.gemini/projects.json
+          {
+            "activeProject": "$WORKSPACE_PATH",
+            "projects": {
+              "$WORKSPACE_PATH": {
+                "shortId": "macro-dashboard"
+              }
+            }
+          }
+          EOF
+          chmod -R 777 $HOME/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -131,9 +142,20 @@ jobs:
 
       - name: Create Gemini Config Directory
         run: |
-          mkdir -p /home/runner/.gemini
-          echo '{"projects":{}}' > /home/runner/.gemini/projects.json
-          chmod -R 777 /home/runner/.gemini
+          mkdir -p $HOME/.gemini
+          # Dynamically create a fully valid projects.json using the exact GITHUB_WORKSPACE
+          WORKSPACE_PATH="$GITHUB_WORKSPACE"
+          cat <<EOF > $HOME/.gemini/projects.json
+          {
+            "activeProject": "$WORKSPACE_PATH",
+            "projects": {
+              "$WORKSPACE_PATH": {
+                "shortId": "macro-dashboard"
+              }
+            }
+          }
+          EOF
+          chmod -R 777 $HOME/.gemini
 
       - name: Prepare Prompt
         id: prep
