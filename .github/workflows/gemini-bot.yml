@@ -2,7 +2,7 @@ name: Gemini Assistant
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
   issue_comment:
     types: [created]
   issues:
