@@ -38,6 +38,8 @@ GitHub Actions가 내 GCP 리소스에 접근할 수 있도록 전용 계정을 
 
 ## 4. 서비스 계정 키(JSON) 생성
 
+> **보안 참고**: 프로덕션 환경에서는 JSON 키를 발급받는 대신 **Workload Identity Federation(WIF)**을 사용하는 것이 더 안전한 모범 사례입니다. 이 가이드는 빠른 설정을 위해 JSON 키 방식을 설명하지만, 향후 전환을 고려해 보세요. ([Google 공식 문서](https://cloud.google.com/iam/docs/workload-identity-federation))
+
 1.  생성된 서비스 계정의 **이메일 주소**를 클릭하여 상세 페이지로 들어갑니다.
 2.  **'키(Keys)'** 탭을 클릭합니다.
 3.  **'키 추가' > '새 키 만들기'**를 선택합니다.
