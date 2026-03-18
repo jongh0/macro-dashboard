@@ -41,18 +41,19 @@ jobs:
       - name: Create Gemini Config Directory
         run: |
           mkdir -p $HOME/.gemini
-          # Dynamically create a fully valid projects.json using the exact GITHUB_WORKSPACE
+          # Initialize projects.json with the correct string-value mapping
           WORKSPACE_PATH="$GITHUB_WORKSPACE"
-          cat <<EOF > $HOME/.gemini/projects.json
-          {
-            "activeProject": "$WORKSPACE_PATH",
-            "projects": {
-              "$WORKSPACE_PATH": {
-                "shortId": "macro-dashboard"
-              }
-            }
-          }
-          EOF
+          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
+          
+          # Diagnostic logging
+          echo "--- Diagnostic Information ---"
+          echo "HOME: $HOME"
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "Config file contents:"
+          cat $HOME/.gemini/projects.json
+          ls -la $HOME/.gemini
+          echo "----------------------------"
+          
           chmod -R 777 $HOME/.gemini
 
       - name: Prepare Prompt
@@ -80,6 +81,7 @@ jobs:
         uses: google-github-actions/run-gemini-cli@v0
         with:
           gemini_cli_version: "0.33.0"
+          gemini_debug: true
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
@@ -143,18 +145,19 @@ jobs:
       - name: Create Gemini Config Directory
         run: |
           mkdir -p $HOME/.gemini
-          # Dynamically create a fully valid projects.json using the exact GITHUB_WORKSPACE
+          # Initialize projects.json with the correct string-value mapping
           WORKSPACE_PATH="$GITHUB_WORKSPACE"
-          cat <<EOF > $HOME/.gemini/projects.json
-          {
-            "activeProject": "$WORKSPACE_PATH",
-            "projects": {
-              "$WORKSPACE_PATH": {
-                "shortId": "macro-dashboard"
-              }
-            }
-          }
-          EOF
+          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
+          
+          # Diagnostic logging
+          echo "--- Diagnostic Information ---"
+          echo "HOME: $HOME"
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "Config file contents:"
+          cat $HOME/.gemini/projects.json
+          ls -la $HOME/.gemini
+          echo "----------------------------"
+          
           chmod -R 777 $HOME/.gemini
 
       - name: Prepare Prompt
@@ -178,6 +181,7 @@ jobs:
         uses: google-github-actions/run-gemini-cli@v0
         with:
           gemini_cli_version: "0.33.0"
+          gemini_debug: true
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
