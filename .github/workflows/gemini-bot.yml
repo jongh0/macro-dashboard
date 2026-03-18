@@ -44,17 +44,7 @@ jobs:
           # Initialize projects.json with the correct string-value mapping
           WORKSPACE_PATH="$GITHUB_WORKSPACE"
           echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
-          
-          # Diagnostic logging
-          echo "--- Diagnostic Information ---"
-          echo "HOME: $HOME"
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "Config file contents:"
-          cat $HOME/.gemini/projects.json
-          ls -la $HOME/.gemini
-          echo "----------------------------"
-          
-          chmod -R 777 $HOME/.gemini
+          chmod -R 700 $HOME/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -80,7 +70,7 @@ jobs:
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
-          gemini_cli_version: "0.33.0"
+          # gemini_cli_version: "0.33.0"
           gemini_debug: false
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
@@ -137,7 +127,10 @@ jobs:
 
   # 2. 이슈 분석 및 자동 PR 생성
   issue-handler:
-    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'gemini') || contains(github.event.issue.title, '[gemini]')
+    if: |
+      github.event_name == 'issues' && 
+      (contains(github.event.issue.labels.*.name, 'gemini') || contains(github.event.issue.title, '[gemini]')) &&
+      contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -159,17 +152,7 @@ jobs:
           # Initialize projects.json with the correct string-value mapping
           WORKSPACE_PATH="$GITHUB_WORKSPACE"
           echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
-          
-          # Diagnostic logging
-          echo "--- Diagnostic Information ---"
-          echo "HOME: $HOME"
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "Config file contents:"
-          cat $HOME/.gemini/projects.json
-          ls -la $HOME/.gemini
-          echo "----------------------------"
-          
-          chmod -R 777 $HOME/.gemini
+          chmod -R 700 $HOME/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -191,8 +174,8 @@ jobs:
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
-          gemini_cli_version: "0.33.0"
-          gemini_debug: true
+          # gemini_cli_version: "0.33.0"
+          gemini_debug: false
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"

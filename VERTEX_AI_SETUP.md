@@ -86,10 +86,10 @@ jobs:
       - name: Run Gemini CLI
         uses: google-github-actions/run-gemini-cli@v0
         with:
+          gemini_cli_version: "0.33.0"
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
-          gcp_location: "asia-northeast3" # 서울 리전
-          gemini_model: "gemini-1.5-flash" # 또는 gemini-1.5-pro
+          gcp_location: "global" # 가장 넓은 가용성을 위한 설정
           prompt: "여기에 프롬프트 입력"
           settings: '{"approval_mode": "yolo"}'
 ```
