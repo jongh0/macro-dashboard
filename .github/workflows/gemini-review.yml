@@ -1,0 +1,65 @@
+name: Gemini Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Create Gemini Config Directory
+        run: |
+          mkdir -p $HOME/.gemini
+          WORKSPACE_PATH="$GITHUB_WORKSPACE"
+          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
+          chmod -R 700 $HOME/.gemini
+
+      - name: Run Gemini CLI Action
+        id: gemini
+        uses: google-github-actions/run-gemini-cli@v0
+        with:
+          gemini_debug: false
+          use_vertex_ai: true
+          gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          gcp_location: "global"
+          prompt: "다음 git diff를 코드 품질, 보안, 모범 사례 관점에서 리뷰하고 마크다운 형식의 한글로 피드백을 제공해 주세요."
+          settings: '{"approval_mode": "yolo"}'
+
+      - name: Post Comment to PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "### 🤖 Gemini Review" > comment.md
+          STDOUT_LOG="gemini-artifacts/stdout.log"
+          
+          if [ -f "$STDOUT_LOG" ]; then
+            if jq -e . "$STDOUT_LOG" >/dev/null 2>&1; then
+              jq -r '.response // empty' "$STDOUT_LOG" >> comment.md
+            else
+              cat "$STDOUT_LOG" >> comment.md
+            fi
+          fi
+          
+          if [ ! -s comment.md ] || [ "$(cat comment.md)" = "### 🤖 Gemini Review" ]; then
+            echo "리뷰 결과를 생성하는 중에 문제가 발생했거나 응답이 비어 있습니다. Actions 로그를 확인해 주세요." >> comment.md
+          fi
+          gh pr comment "$PR_NUMBER" --body-file comment.md
