@@ -64,7 +64,7 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
-  id-token: write # 인증을 위해 필수
+  # id-token: write # OIDC 인증 사용 시 필수 (JSON 키 방식 사용 시 불필요)
 
 jobs:
   gemini-job:
