@@ -41,8 +41,9 @@ jobs:
       - name: Create Gemini Config Directory
         run: |
           mkdir -p /home/runner/.gemini
-          # Initialize projects.json with the current workspace to avoid ProjectRegistry errors
-          echo "{\"projects\":{\"/home/runner/work/macro-dashboard/macro-dashboard\":{\"shortId\":\"macro-dashboard\"}},\"activeProject\":\"/home/runner/work/macro-dashboard/macro-dashboard\"}" > /home/runner/.gemini/projects.json
+          # Fully initialize projects.json with correct structure to prevent Module.join TypeError
+          PROJ_PATH="/home/runner/work/macro-dashboard/macro-dashboard"
+          echo "{\"projects\":{\"$PROJ_PATH\":{\"shortId\":\"macro-dashboard\",\"path\":\"$PROJ_PATH\"}},\"activeProject\":\"$PROJ_PATH\"}" > /home/runner/.gemini/projects.json
           chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
@@ -132,8 +133,9 @@ jobs:
       - name: Create Gemini Config Directory
         run: |
           mkdir -p /home/runner/.gemini
-          # Initialize projects.json with the current workspace to avoid ProjectRegistry errors
-          echo "{\"projects\":{\"/home/runner/work/macro-dashboard/macro-dashboard\":{\"shortId\":\"macro-dashboard\"}},\"activeProject\":\"/home/runner/work/macro-dashboard/macro-dashboard\"}" > /home/runner/.gemini/projects.json
+          # Fully initialize projects.json with correct structure to prevent Module.join TypeError
+          PROJ_PATH="/home/runner/work/macro-dashboard/macro-dashboard"
+          echo "{\"projects\":{\"$PROJ_PATH\":{\"shortId\":\"macro-dashboard\",\"path\":\"$PROJ_PATH\"}},\"activeProject\":\"$PROJ_PATH\"}" > /home/runner/.gemini/projects.json
           chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
