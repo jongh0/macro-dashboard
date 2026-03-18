@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
@@ -31,15 +31,37 @@ jobs:
           echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
           chmod -R 700 $HOME/.gemini
 
+      - name: Get PR Diff
+        id: get_diff
+        run: |
+          # Fetch the base branch to compare
+          git fetch origin ${{ github.base_ref }} --depth=1
+          # Get diff between base and head
+          git diff origin/${{ github.base_ref }}...HEAD > pr_diff.txt
+          
+          # Check if diff is too large (optional, but good for stability)
+          if [ $(stat -c%s "pr_diff.txt") -gt 50000 ]; then
+            echo "Diff is too large, truncating..."
+            head -c 50000 pr_diff.txt > pr_diff_temp.txt
+            mv pr_diff_temp.txt pr_diff.txt
+          fi
+
       - name: Run Gemini CLI Action
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
+          gemini_cli_version: "0.33.0"
           gemini_debug: false
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
-          prompt: "다음 git diff를 코드 품질, 보안, 모범 사례 관점에서 리뷰하고 마크다운 형식의 한글로 피드백을 제공해 주세요."
+          # Combine instructions with the actual diff
+          prompt: |
+            다음 git diff를 코드 품질, 보안, 모범 사례 관점에서 리뷰하고 마크다운 형식의 한글로 피드백을 제공해 주세요.
+            
+            --- PR DIFF START ---
+            $(cat pr_diff.txt)
+            --- PR DIFF END ---
           settings: '{"approval_mode": "yolo"}'
 
       - name: Post Comment to PR
@@ -50,6 +72,7 @@ jobs:
         run: |
           echo "### 🤖 Gemini Review" > comment.md
           STDOUT_LOG="gemini-artifacts/stdout.log"
+          STDERR_LOG="gemini-artifacts/stderr.log"
           
           if [ -f "$STDOUT_LOG" ]; then
             if jq -e . "$STDOUT_LOG" >/dev/null 2>&1; then
@@ -59,7 +82,19 @@ jobs:
             fi
           fi
           
-          if [ ! -s comment.md ] || [ "$(cat comment.md)" = "### 🤖 Gemini Review" ]; then
+          # Restore Error Logging: Append stderr if it contains actual errors
+          if [ -f "$STDERR_LOG" ] && [ -s "$STDERR_LOG" ]; then
+            # Filter out expected keychain warnings to show only real errors
+            ERRORS=$(grep -vE "Keychain initialization|Using FileKeychain" "$STDERR_LOG" || true)
+            if [ -n "$ERRORS" ]; then
+              echo -e "\n---\n### ⚠️ 실행 오류 (Errors)" >> comment.md
+              echo '```' >> comment.md
+              echo "$ERRORS" >> comment.md
+              echo '```' >> comment.md
+            fi
+          fi
+          
+          if [ ! -s comment.md ] || [ "$(cat comment.md | tr -d '\n')" = "### 🤖 Gemini Review" ]; then
             echo "리뷰 결과를 생성하는 중에 문제가 발생했거나 응답이 비어 있습니다. Actions 로그를 확인해 주세요." >> comment.md
           fi
           gh pr comment "$PR_NUMBER" --body-file comment.md
