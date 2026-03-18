@@ -1,0 +1,213 @@
+name: Gemini Assistant
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  # id-token: write # OIDC/WIF 인증 사용 시 필요 (JSON 키 방식 사용 시 불필요)
+
+jobs:
+  # 1. PR 리뷰 및 인터랙티브 어시스턴트
+  pr-handler:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && 
+       startsWith(github.event.comment.body, '/gemini') && 
+       contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+          # PR 댓글 이벤트일 경우 해당 PR 브랜치를 명시적으로 체크아웃
+          ref: ${{ github.event.issue.pull_request && format('refs/pull/{0}/head', github.event.issue.number) || github.ref }}
+
+      # Google Cloud 인증 단계
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Create Gemini Config Directory
+        run: |
+          mkdir -p $HOME/.gemini
+          # Initialize projects.json with the correct string-value mapping
+          WORKSPACE_PATH="$GITHUB_WORKSPACE"
+          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
+          chmod -R 700 $HOME/.gemini
+
+      - name: Prepare Prompt
+        id: prep
+        shell: bash
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PROMPT="다음 git diff를 코드 품질, 보안, 모범 사례 관점에서 리뷰하고 마크다운 형식의 한글로 피드백을 제공해 주세요."
+          else
+            # Extract command safely (handles both '/gemini command' and '/geminicommand')
+            CLEAN_COMMAND=$(echo "$COMMENT_BODY" | sed -E 's/^[[:space:]]*\/gemini[[:space:]]*//')
+            # Use printf to avoid command injection via string interpolation
+            PROMPT=$(printf "당신은 시니어 소프트웨어 엔지니어입니다. 사용자가 이 PR에 대해 \"%s\" 작업을 요청했습니다. 도구를 사용하여 관련 파일을 조사하고 작업을 수행한 후, 변경 사항을 한글로 간략히 설명해 주세요." "$CLEAN_COMMAND")
+          fi
+          # Handle multi-line strings for GITHUB_OUTPUT using a unique delimiter
+          DELIMITER=$(dd if=/dev/urandom bs=15 count=1 2>/dev/null | base64)
+          echo "prompt<<$DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "$PROMPT" >> "$GITHUB_OUTPUT"
+          echo "$DELIMITER" >> "$GITHUB_OUTPUT"
+
+      - name: Run Gemini CLI Action
+        id: gemini
+        uses: google-github-actions/run-gemini-cli@v0
+        with:
+          # gemini_cli_version: "0.33.0"
+          gemini_debug: false
+          use_vertex_ai: true
+          gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          gcp_location: "global"
+          # PR 오픈 시에는 리뷰를 수행하고, 댓글 명령 시에는 해당 태스크 수행 (결과는 한글로 작성)
+          prompt: ${{ steps.prep.outputs.prompt }}
+          settings: '{"approval_mode": "yolo"}'
+
+      - name: Post Comment to PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        run: |
+          # Create a comment body file safely by reading from step output logs
+          echo "### 🤖 Gemini Assistant" > comment.md
+          
+          STDOUT_LOG="gemini-artifacts/stdout.log"
+          STDERR_LOG="gemini-artifacts/stderr.log"
+          
+          if [ -f "$STDOUT_LOG" ]; then
+            # Extract response field from JSON if possible, otherwise use whole file
+            if jq -e . "$STDOUT_LOG" >/dev/null 2>&1; then
+              jq -r '.response // empty' "$STDOUT_LOG" >> comment.md
+            else
+              cat "$STDOUT_LOG" >> comment.md
+            fi
+          fi
+          
+          if [ -f "$STDERR_LOG" ] && [ -s "$STDERR_LOG" ]; then
+            echo -e "\n---\n### ⚠️ 실행 로그/오류 (Logs/Errors)" >> comment.md
+            echo '```' >> comment.md
+            cat "$STDERR_LOG" >> comment.md
+            echo '```' >> comment.md
+          fi
+          
+          if [ ! -s comment.md ] || [ "$(cat comment.md)" = "### 🤖 Gemini Assistant" ]; then
+            echo "리뷰 결과를 생성하는 중에 문제가 발생했거나 응답이 비어 있습니다. Actions 로그를 확인해 주세요." >> comment.md
+          fi
+          
+          # Post comment using GitHub CLI from the file
+          gh pr comment "$PR_NUMBER" --body-file comment.md
+
+      - name: Commit and Push Changes (Assistant mode only)
+        if: github.event_name == 'issue_comment'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [[ -n $(git status -s) ]]; then
+            git add .
+            git commit -m "chore: Gemini Assistant applied changes"
+            git push
+          fi
+
+  # 2. 이슈 분석 및 자동 PR 생성
+  issue-handler:
+    if: |
+      github.event_name == 'issues' && 
+      (contains(github.event.issue.labels.*.name, 'gemini') || contains(github.event.issue.title, '[gemini]')) &&
+      contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+
+      # Google Cloud 인증 단계
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Create Gemini Config Directory
+        run: |
+          mkdir -p $HOME/.gemini
+          # Initialize projects.json with the correct string-value mapping
+          WORKSPACE_PATH="$GITHUB_WORKSPACE"
+          echo "{\"projects\":{\"$WORKSPACE_PATH\":\"macro-dashboard\"},\"activeProject\":\"$WORKSPACE_PATH\"}" > $HOME/.gemini/projects.json
+          chmod -R 700 $HOME/.gemini
+
+      - name: Prepare Prompt
+        id: prep
+        shell: bash
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          # Use environment variables and printf to prevent script injection
+          PROMPT=$(printf "당신은 시니어 소프트웨어 엔지니어입니다. 다음 이슈를 분석하고 저장소의 코드를 수정해 주세요.\n\n이슈 제목: %s\n이슈 내용: %s\n\n관련 파일을 조사하고 수정 또는 기능을 구현한 후, 변경 사항을 한글로 설명해 주세요." "$ISSUE_TITLE" "$ISSUE_BODY")
+          
+          # Handle multi-line strings for GITHUB_OUTPUT using a unique delimiter
+          DELIMITER=$(dd if=/dev/urandom bs=15 count=1 2>/dev/null | base64)
+          echo "prompt<<$DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "$PROMPT" >> "$GITHUB_OUTPUT"
+          echo "$DELIMITER" >> "$GITHUB_OUTPUT"
+
+      - name: Run Gemini CLI Action
+        id: gemini
+        uses: google-github-actions/run-gemini-cli@v0
+        with:
+          # gemini_cli_version: "0.33.0"
+          gemini_debug: false
+          use_vertex_ai: true
+          gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          gcp_location: "global"
+          # 이슈 내용을 분석하여 코드 수정 수행 (결과는 한글로 작성)
+          prompt: ${{ steps.prep.outputs.prompt }}
+          settings: '{"approval_mode": "yolo"}'
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          if [[ -n $(git status -s) ]]; then
+            BRANCH_NAME="gemini-fix-issue-$ISSUE_NUMBER"
+            git checkout -b "$BRANCH_NAME"
+            git add .
+            git commit -m "fix: address issue #$ISSUE_NUMBER via Gemini"
+            git push origin "$BRANCH_NAME"
+            
+            gh pr create \
+              --title "Gemini: Fix for Issue #$ISSUE_NUMBER" \
+              --body "This PR was automatically generated by Gemini Assistant to address issue #$ISSUE_NUMBER. 
+              
+              **Summary of changes:**
+              $ISSUE_TITLE" \
+              --base main \
+              --head "$BRANCH_NAME"
+          else
+            echo "No changes were made by Gemini."
+          fi
