@@ -19,7 +19,8 @@ jobs:
   pr-handler:
     if: |
       github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/gemini'))
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/gemini') && 
+       contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -72,14 +73,28 @@ jobs:
           settings: '{"approval_mode": "yolo"}'
 
       - name: Post Comment to PR
-        if: always() && steps.gemini.outputs.gemini_response != ''
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
-          RESPONSE: ${{ steps.gemini.outputs.gemini_response }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          GEMINI_RESPONSE: ${{ steps.gemini.outputs.gemini_response }}
+          GEMINI_ERRORS: ${{ steps.gemini.outputs.gemini_errors }}
         run: |
-          # Post the response as a comment using GitHub CLI
-          gh pr comment "$PR_NUMBER" --body "$RESPONSE"
+          # Create a comment body file safely
+          echo "### 🤖 Gemini Assistant" > comment.md
+          if [ -z "$GEMINI_RESPONSE" ] && [ -z "$GEMINI_ERRORS" ]; then
+            echo "리뷰 결과를 생성하는 중에 문제가 발생했거나 응답이 비어 있습니다. Actions 로그를 확인해 주세요." >> comment.md
+          else
+            if [ -n "$GEMINI_RESPONSE" ]; then
+              echo "$GEMINI_RESPONSE" >> comment.md
+            fi
+            if [ -n "$GEMINI_ERRORS" ]; then
+              echo -e "\n---\n### ⚠️ 실행 오류 (Errors)\n\`\`\`\n$GEMINI_ERRORS\n\`\`\`" >> comment.md
+            fi
+          fi
+          
+          # Post comment using GitHub CLI from the file
+          gh pr comment "$PR_NUMBER" --body-file comment.md
 
       - name: Commit and Push Changes (Assistant mode only)
         if: github.event_name == 'issue_comment'
