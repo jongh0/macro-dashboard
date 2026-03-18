@@ -39,7 +39,10 @@ jobs:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Create Gemini Config Directory
-        run: mkdir -p ~/.gemini
+        run: |
+          mkdir -p /home/runner/.gemini
+          echo "{}" > /home/runner/.gemini/projects.json
+          chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -126,7 +129,10 @@ jobs:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Create Gemini Config Directory
-        run: mkdir -p ~/.gemini
+        run: |
+          mkdir -p /home/runner/.gemini
+          echo "{}" > /home/runner/.gemini/projects.json
+          chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
         id: prep
