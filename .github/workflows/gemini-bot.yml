@@ -40,9 +40,9 @@ jobs:
 
       - name: Create Gemini Config Directory
         run: |
-          mkdir -p $HOME/.gemini
-          echo "{}" > $HOME/.gemini/projects.json
-          chmod -R 777 $HOME/.gemini
+          mkdir -p /home/runner/.gemini
+          echo '{"projects":{}}' > /home/runner/.gemini/projects.json
+          chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -131,9 +131,9 @@ jobs:
 
       - name: Create Gemini Config Directory
         run: |
-          mkdir -p $HOME/.gemini
-          echo "{}" > $HOME/.gemini/projects.json
-          chmod -R 777 $HOME/.gemini
+          mkdir -p /home/runner/.gemini
+          echo '{"projects":{}}' > /home/runner/.gemini/projects.json
+          chmod -R 777 /home/runner/.gemini
 
       - name: Prepare Prompt
         id: prep
