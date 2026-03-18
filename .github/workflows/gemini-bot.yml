@@ -75,7 +75,7 @@ jobs:
       - name: Post Comment to PR
         if: always()
         env:
-          GH_TOKEN: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
           GEMINI_RESPONSE: ${{ steps.gemini.outputs.gemini_response }}
           GEMINI_ERRORS: ${{ steps.gemini.outputs.gemini_errors }}
