@@ -39,12 +39,7 @@ jobs:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Create Gemini Config Directory
-        run: |
-          mkdir -p /home/runner/.gemini
-          # Fully initialize projects.json with correct structure to prevent Module.join TypeError
-          PROJ_PATH="/home/runner/work/macro-dashboard/macro-dashboard"
-          echo "{\"projects\":{\"$PROJ_PATH\":{\"shortId\":\"macro-dashboard\",\"path\":\"$PROJ_PATH\"}},\"activeProject\":\"$PROJ_PATH\"}" > /home/runner/.gemini/projects.json
-          chmod -R 777 /home/runner/.gemini
+        run: mkdir -p /home/runner/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -70,6 +65,7 @@ jobs:
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
+          gemini_cli_version: "0.33.0"
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
@@ -131,12 +127,7 @@ jobs:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Create Gemini Config Directory
-        run: |
-          mkdir -p /home/runner/.gemini
-          # Fully initialize projects.json with correct structure to prevent Module.join TypeError
-          PROJ_PATH="/home/runner/work/macro-dashboard/macro-dashboard"
-          echo "{\"projects\":{\"$PROJ_PATH\":{\"shortId\":\"macro-dashboard\",\"path\":\"$PROJ_PATH\"}},\"activeProject\":\"$PROJ_PATH\"}" > /home/runner/.gemini/projects.json
-          chmod -R 777 /home/runner/.gemini
+        run: mkdir -p /home/runner/.gemini
 
       - name: Prepare Prompt
         id: prep
@@ -158,6 +149,7 @@ jobs:
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0
         with:
+          gemini_cli_version: "0.33.0"
           use_vertex_ai: true
           gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           gcp_location: "global"
