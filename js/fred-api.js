@@ -77,6 +77,11 @@ const FredAPI = {
       'RRPONTSYD':  { lin: 'fred_rrpontsyd.json' },
       'WDTGAL':     { lin: 'fred_wdtgal.json' },
       'NET_LIQUIDITY': { lin: 'fred_net_liquidity.json' },
+      'SAHMREALTIME':    { lin: 'fred_sahm.json' },
+      'NFCI':            { lin: 'fred_nfci.json' },
+      'HOUST':           { lin: 'fred_houst.json' },
+      'TCU':             { lin: 'fred_tcu.json' },
+      'CES0500000003':   { pc1: 'fred_ahe.json' },
     };
     return map[seriesId]?.[units] || null;
   },

@@ -432,6 +432,12 @@ FRED_SERIES = {
     "m2_weekly_level": ("WM2NS",          "lin"),   # M2 주간 절대값
     # ── 달러 지수 (연준 Broad — ICE DXY와 다른 지수) ──
     "dxy":             ("DTWEXBGS",       "lin"),
+    # ── 경기선행 / 침체 감지 ─────────────────
+    "sahm":            ("SAHMREALTIME",   "lin"),   # Sahm Rule 침체 지표
+    "nfci":            ("NFCI",           "lin"),   # 시카고 연준 금융여건지수
+    "houst":           ("HOUST",          "lin"),   # 주택착공건수 (천건, SAAR)
+    "tcu":             ("TCU",            "lin"),   # 설비가동률 (%)
+    "ahe":             ("CES0500000003",  "pc1"),   # 평균시간당임금 YoY
     # ── SP500·VIX·NASDAQ·DJIA·WTI·구리·천연가스 →
     #    Yahoo Finance로 이전 (download_market_tickers)
     # ── 환율 → Yahoo Finance로 이전 (download_forex_yahoo)

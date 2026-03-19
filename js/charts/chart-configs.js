@@ -757,78 +757,7 @@ const CHART_CONFIGS = [
   },
 
   // ══════════════════════════════════════════
-  // ▶ 유동성 & 원자재 (Liquidity & Commodities)
-  // ══════════════════════════════════════════
-
-  // ──────────────────────────────────────────
-  // 18. M2 통화량 (전년 대비)
-  // ──────────────────────────────────────────,
-  {
-    id: 'dollar-index',
-    title: '달러 지수 (Broad)',
-    description: '연준 Nominal Broad Dollar Index (DTWEXBGS)',
-    category: 'macro',
-    series: [
-      {
-        id: 'dxy',
-        label: '달러 지수',
-        type: 'fred',
-        seriesId: 'DTWEXBGS',
-        units: 'lin',
-        color: '#22d3ee',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '',
-    format: 'number',
-    reading: [
-      '강달러 = 신흥국 자금 이탈, 원자재 하락, 미국 수출기업 실적 악화.',
-      '약달러 = 글로벌 위험자산 선호, 원자재·신흥국 주가 상승.',
-      '※ DTWEXBGS는 26개국 기준 연준 지수. 흔히 말하는 DXY(ICE 6개국)와 수치 다름.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 금 가격
-  // ──────────────────────────────────────────,
-  {
-    id: 'consumer-sentiment',
-    title: '소비자심리지수',
-    description: '미시간대 소비자심리지수 (월별)',
-    category: 'macro',
-    series: [
-      {
-        id: 'umcsent',
-        label: '소비자심리지수',
-        type: 'fred',
-        seriesId: 'UMCSENT',
-        units: 'lin',
-        color: '#34d399',
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '',
-    format: 'number',
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 65, label: '위축', color: '#ef4444' },
-        { max: 80, label: '보통', color: '#f59e0b' },
-        {          label: '양호', color: '#22c55e' },
-      ],
-    },
-    reading: [
-      '하락 추세 = 소비 위축 전망. 70 이하 지속 시 경기침체 우려.',
-      '고용·인플레이션·금리 방향에 민감. 선행 지표로 활용.',
-      '급락 후 반등 = 경기 바닥 신호일 수 있음.',
-    ],
-  },
-
-  // ══════════════════════════════════════════
-  // ▶ 거시경제 (Macro) — 경기 활동
+  // ▶ 거시경제 (Macro)
   // ══════════════════════════════════════════
 
   // ──────────────────────────────────────────
@@ -868,281 +797,6 @@ const CHART_CONFIGS = [
       '연속 2분기 마이너스 = 공식 경기침체 기준.',
       '2~3% = 건강한 성장. 0% 근처 = 침체 경계.',
       '분기별 발표라 후행성 강함. 다른 선행 지표와 함께 해석.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 6. 소매판매
-  // ──────────────────────────────────────────,
-  {
-    id: 'retail-sales',
-    title: '소매판매',
-    description: '미국 소매 및 식품 서비스 판매액 전년 대비 변화율 (월별)',
-    category: 'macro',
-    series: [
-      {
-        id: 'rsafs',
-        label: '소매판매 YoY',
-        type: 'fred',
-        seriesId: 'RSAFS',
-        units: 'pc1',
-        color: '#34d399',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0, label: '위축', color: '#ef4444' },
-        { max: 3, label: '둔화', color: '#f59e0b' },
-        { max: 6, label: '성장', color: '#22c55e' },
-        {         label: '과열', color: '#60a5fa' },
-      ],
-    },
-    reading: [
-      'GDP의 약 70%를 차지하는 소비 지출의 선행지표.',
-      '마이너스 전환 시 경기침체 가능성 상승. 3% 이상 = 견고한 소비.',
-      '고용·임금 증가율과 함께 보면 소비 여력 판단에 효과적.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 7. 산업생산
-  // ──────────────────────────────────────────,
-  {
-    id: 'industrial-production',
-    title: '산업생산지수',
-    description: '미국 산업생산 전년 대비 변화율 (월별)',
-    category: 'macro',
-    series: [
-      {
-        id: 'indpro',
-        label: '산업생산 YoY',
-        type: 'fred',
-        seriesId: 'INDPRO',
-        units: 'pc1',
-        color: '#38bdf8',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: -2, label: '침체', color: '#ef4444' },
-        { max: 0,  label: '위축', color: '#f97316' },
-        { max: 3,  label: '성장', color: '#22c55e' },
-        {          label: '과열', color: '#60a5fa' },
-      ],
-    },
-    reading: [
-      '제조업·광업·전기가스 유틸리티 생산량을 포괄하는 경기동행지표.',
-      '마이너스 지속 = 제조업 불황 신호. 서비스 중심 경제에서도 제조 흐름은 중요.',
-      '글로벌 공급망·수요와 연동되어 무역 지표와 함께 해석.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 8. 실업률
-  // ──────────────────────────────────────────,
-  {
-    id: 'unemployment',
-    title: '실업률',
-    description: 'U-3 실업률 (월별)',
-    category: 'macro',
-    series: [
-      {
-        id: 'unrate',
-        label: '실업률',
-        type: 'fred',
-        seriesId: 'UNRATE',
-        units: 'lin',
-        color: '#fb923c',
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 4,   label: '완전고용', color: '#22c55e' },
-        { max: 5,   label: '정상',     color: '#f59e0b' },
-        {           label: '약화',     color: '#ef4444' },
-      ],
-    },
-    reading: [
-      '상승 추세 전환 시 주목. 최저점 대비 +0.5%p 이상 = Sahm Rule 침체 신호.',
-      '4% 이하 = 완전고용. 5% 이상 지속 = 노동시장 약화 신호.',
-      '급등 구간(코로나 등) 이후 정상화 속도가 경기 회복력을 보여줌.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 7. 비농업 고용 변화 (NFP)
-  // ──────────────────────────────────────────,
-  {
-    id: 'nonfarm-payrolls',
-    title: '비농업 고용 변화 (NFP)',
-    description: '비농업 취업자수 전월 대비 변화',
-    category: 'macro',
-    series: [
-      {
-        id: 'payems',
-        label: 'NFP 고용 변화',
-        type: 'fred',
-        seriesId: 'PAYEMS',
-        units: 'chg',
-        color: '#10b981',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '명',
-    valueMultiplier: 1000,   // FRED PAYEMS 단위: 천명 → 명 변환
-    format: 'number',
-    koUnit: true,
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0,      label: '위축', color: '#ef4444' },
-        { max: 75000,  label: '주의', color: '#f97316' },
-        { max: 150000, label: '완만', color: '#f59e0b' },
-        {              label: '견조', color: '#22c55e' },
-      ],
-    },
-    reading: [
-      '15만명 이상 = 건강한 고용. 마이너스 연속 = 침체 신호.',
-      '전망치 대비 실제치 서프라이즈가 당일 시장 반응을 결정.',
-      '코로나 이후 수치는 변동성이 크므로 3개월 추세로 판단.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 8. JOLTS 채용공고
-  // ──────────────────────────────────────────,
-  {
-    id: 'jolts',
-    title: 'JOLTS 채용공고',
-    description: '미국 일자리 창출 및 이직 서베이',
-    category: 'macro',
-    series: [
-      {
-        id: 'jolts',
-        label: '채용공고',
-        type: 'fred',
-        seriesId: 'JTSJOL',
-        units: 'lin',
-        color: '#38bdf8',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '건',
-    valueMultiplier: 1000,   // FRED JTSJOL 단위: 천건 → 건 변환
-    format: 'number',
-    koUnit: true,
-    reading: [
-      '채용공고 수 > 실업자 수 = 노동시장 타이트(임금 상승 압력).',
-      '급감 = 기업들이 채용 수요를 줄이는 신호. 실업률 상승 선행.',
-      '1,000만건 이상 = 역사적 고점(과열). 700만건 이하 = 정상화.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 9. 초기 실업수당 청구 (Initial Jobless Claims)
-  // ──────────────────────────────────────────,
-  {
-    id: 'jobless-claims',
-    title: '초기 실업수당 청구',
-    description: '주간 신규 실업수당 청구 건수',
-    category: 'macro',
-    series: [
-      {
-        id: 'icsa',
-        label: '초기 실업수당',
-        type: 'fred',
-        seriesId: 'ICSA',
-        units: 'lin',
-        color: '#f59e0b',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '건',
-    format: 'number',
-    koUnit: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 220000, label: '견조', color: '#22c55e' },
-        { max: 280000, label: '주의', color: '#f59e0b' },
-        {              label: '악화', color: '#ef4444' },
-      ],
-    },
-    reading: [
-      '25만건 이상 지속 = 노동시장 약화 신호. 급등 = 해고 증가.',
-      '주별 발표라 경기 변화를 가장 빠르게 감지하는 지표 중 하나.',
-      '4주 이동평균으로 노이즈를 제거해 추세를 파악하는 것이 효과적.',
-    ],
-  },
-
-  // ══════════════════════════════════════════
-  // ▶ 물가 (Inflation)
-  // ══════════════════════════════════════════
-
-  // ──────────────────────────────────────────
-  // 10. PPI / 생산자물가
-  // ──────────────────────────────────────────,
-  {
-    id: 'ppi',
-    title: 'PPI 생산자물가',
-    description: '생산자물가지수(최종수요) 전년 대비 변화율 (월별)',
-    category: 'macro',
-    series: [
-      {
-        id: 'ppi',
-        label: 'PPI YoY',
-        type: 'fred',
-        seriesId: 'PPIFIS',
-        units: 'pc1',
-        color: '#fb923c',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0, label: '디플레', color: '#60a5fa' },
-        { max: 2, label: '안정',   color: '#22c55e' },
-        { max: 4, label: '주의',   color: '#f59e0b' },
-        { max: 6, label: '상승',   color: '#f97316' },
-        {         label: '과열',   color: '#ef4444' },
-      ],
-    },
-    reading: [
-      'CPI보다 1~2개월 선행하는 인플레이션 선행지표.',
-      '원자재·중간재 비용 압력을 반영. 기업이 소비자에게 가격 전가 여부가 관건.',
-      'PPI 상승 후 CPI가 반응하는 패턴을 함께 확인.',
     ],
   },
 
@@ -1242,6 +896,282 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
+  // 7. 비농업 고용 변화 (NFP)
+  // ──────────────────────────────────────────,
+  {
+    id: 'nonfarm-payrolls',
+    title: '비농업 고용 변화 (NFP)',
+    description: '비농업 취업자수 전월 대비 변화',
+    category: 'macro',
+    series: [
+      {
+        id: 'payems',
+        label: 'NFP 고용 변화',
+        type: 'fred',
+        seriesId: 'PAYEMS',
+        units: 'chg',
+        color: '#10b981',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '명',
+    valueMultiplier: 1000,   // FRED PAYEMS 단위: 천명 → 명 변환
+    format: 'number',
+    koUnit: true,
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0,      label: '위축', color: '#ef4444' },
+        { max: 75000,  label: '주의', color: '#f97316' },
+        { max: 150000, label: '완만', color: '#f59e0b' },
+        {              label: '견조', color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '15만명 이상 = 건강한 고용. 마이너스 연속 = 침체 신호.',
+      '전망치 대비 실제치 서프라이즈가 당일 시장 반응을 결정.',
+      '코로나 이후 수치는 변동성이 크므로 3개월 추세로 판단.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 8. 실업률
+  // ──────────────────────────────────────────,
+  {
+    id: 'unemployment',
+    title: '실업률',
+    description: 'U-3 실업률 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'unrate',
+        label: '실업률',
+        type: 'fred',
+        seriesId: 'UNRATE',
+        units: 'lin',
+        color: '#fb923c',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 4,   label: '완전고용', color: '#22c55e' },
+        { max: 5,   label: '정상',     color: '#f59e0b' },
+        {           label: '약화',     color: '#ef4444' },
+      ],
+    },
+    reading: [
+      '상승 추세 전환 시 주목. 최저점 대비 +0.5%p 이상 = Sahm Rule 침체 신호.',
+      '4% 이하 = 완전고용. 5% 이상 지속 = 노동시장 약화 신호.',
+      '급등 구간(코로나 등) 이후 정상화 속도가 경기 회복력을 보여줌.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 6. 소매판매
+  // ──────────────────────────────────────────,
+  {
+    id: 'retail-sales',
+    title: '소매판매',
+    description: '미국 소매 및 식품 서비스 판매액 전년 대비 변화율 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'rsafs',
+        label: '소매판매 YoY',
+        type: 'fred',
+        seriesId: 'RSAFS',
+        units: 'pc1',
+        color: '#34d399',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0, label: '위축', color: '#ef4444' },
+        { max: 3, label: '둔화', color: '#f59e0b' },
+        { max: 6, label: '성장', color: '#22c55e' },
+        {         label: '과열', color: '#60a5fa' },
+      ],
+    },
+    reading: [
+      'GDP의 약 70%를 차지하는 소비 지출의 선행지표.',
+      '마이너스 전환 시 경기침체 가능성 상승. 3% 이상 = 견고한 소비.',
+      '고용·임금 증가율과 함께 보면 소비 여력 판단에 효과적.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 금 가격
+  // ──────────────────────────────────────────,
+  {
+    id: 'consumer-sentiment',
+    title: '소비자심리지수',
+    description: '미시간대 소비자심리지수 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'umcsent',
+        label: '소비자심리지수',
+        type: 'fred',
+        seriesId: 'UMCSENT',
+        units: 'lin',
+        color: '#34d399',
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '',
+    format: 'number',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 65, label: '위축', color: '#ef4444' },
+        { max: 80, label: '보통', color: '#f59e0b' },
+        {          label: '양호', color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '하락 추세 = 소비 위축 전망. 70 이하 지속 시 경기침체 우려.',
+      '고용·인플레이션·금리 방향에 민감. 선행 지표로 활용.',
+      '급락 후 반등 = 경기 바닥 신호일 수 있음.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 7. 산업생산
+  // ──────────────────────────────────────────,
+  {
+    id: 'industrial-production',
+    title: '산업생산지수',
+    description: '미국 산업생산 전년 대비 변화율 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'indpro',
+        label: '산업생산 YoY',
+        type: 'fred',
+        seriesId: 'INDPRO',
+        units: 'pc1',
+        color: '#38bdf8',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: -2, label: '침체', color: '#ef4444' },
+        { max: 0,  label: '위축', color: '#f97316' },
+        { max: 3,  label: '성장', color: '#22c55e' },
+        {          label: '과열', color: '#60a5fa' },
+      ],
+    },
+    reading: [
+      '제조업·광업·전기가스 유틸리티 생산량을 포괄하는 경기동행지표.',
+      '마이너스 지속 = 제조업 불황 신호. 서비스 중심 경제에서도 제조 흐름은 중요.',
+      '글로벌 공급망·수요와 연동되어 무역 지표와 함께 해석.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 설비가동률
+  // ──────────────────────────────────────────,
+  {
+    id: 'capacity-utilization',
+    title: '설비가동률',
+    description: '전산업 설비가동률 (Total Capacity Utilization)',
+    category: 'macro',
+    series: [
+      {
+        id: 'tcu',
+        label: '설비가동률',
+        type: 'fred',
+        seriesId: 'TCU',
+        units: 'lin',
+        color: '#14b8a6',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 72, label: '침체', color: '#ef4444' },
+        { max: 76, label: '둔화', color: '#f59e0b' },
+        { max: 80, label: '정상', color: '#22c55e' },
+        {          label: '과열', color: '#60a5fa' },
+      ],
+    },
+    reading: [
+      '80% 이상 = 인플레이션 압력(공급 병목). 75% 이하 = 유휴 설비(경기 약화).',
+      '산업생산(INDPRO)과 쌍으로 해석. 생산량 ↑ + 가동률 ↑ = 과열 경고.',
+      '72% 이하 급락 = 역사적으로 경기침체 구간(2008·2020 참고).',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 10. PPI / 생산자물가
+  // ──────────────────────────────────────────,
+  {
+    id: 'ppi',
+    title: 'PPI 생산자물가',
+    description: '생산자물가지수(최종수요) 전년 대비 변화율 (월별)',
+    category: 'macro',
+    series: [
+      {
+        id: 'ppi',
+        label: 'PPI YoY',
+        type: 'fred',
+        seriesId: 'PPIFIS',
+        units: 'pc1',
+        color: '#fb923c',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0, label: '디플레', color: '#60a5fa' },
+        { max: 2, label: '안정',   color: '#22c55e' },
+        { max: 4, label: '주의',   color: '#f59e0b' },
+        { max: 6, label: '상승',   color: '#f97316' },
+        {         label: '과열',   color: '#ef4444' },
+      ],
+    },
+    reading: [
+      'CPI보다 1~2개월 선행하는 인플레이션 선행지표.',
+      '원자재·중간재 비용 압력을 반영. 기업이 소비자에게 가격 전가 여부가 관건.',
+      'PPI 상승 후 CPI가 반응하는 패턴을 함께 확인.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
   // 12. 10년 기대인플레이션 (BEI)
   // ──────────────────────────────────────────,
   {
@@ -1282,9 +1212,218 @@ const CHART_CONFIGS = [
     ],
   },
 
-  // ══════════════════════════════════════════
-  // ▶ 금리 (Rates)
-  // ══════════════════════════════════════════
+  // ──────────────────────────────────────────
+  // 평균시간당 임금 (YoY)
+  // ──────────────────────────────────────────,
+  {
+    id: 'avg-hourly-earnings',
+    title: '평균시간당 임금 (YoY)',
+    description: '민간 전체 평균시간당 임금 전년 대비 변화율',
+    category: 'macro',
+    series: [
+      {
+        id: 'ahe',
+        label: '임금 YoY',
+        type: 'fred',
+        seriesId: 'CES0500000003',
+        units: 'pc1',
+        color: '#f97316',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%',
+    format: 'percent',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 2, label: '정체', color: '#60a5fa' },
+        { max: 3.5, label: '안정', color: '#22c55e' },
+        { max: 5, label: '과열', color: '#f59e0b' },
+        {         label: '급등', color: '#ef4444' },
+      ],
+    },
+    reading: [
+      '임금 상승 > 생산성 증가 = 서비스 인플레이션 지속 → 연준 긴축 유지.',
+      '3~3.5% = 2% 물가 목표와 양립 가능한 수준. 5% 이상 = 임금-물가 스파이럴 우려.',
+      'CPI/PCE(물가 결과)와 함께 보면 연준 정책 방향 판단에 핵심.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 8. JOLTS 채용공고
+  // ──────────────────────────────────────────,
+  {
+    id: 'jolts',
+    title: 'JOLTS 채용공고',
+    description: '미국 일자리 창출 및 이직 서베이',
+    category: 'macro',
+    series: [
+      {
+        id: 'jolts',
+        label: '채용공고',
+        type: 'fred',
+        seriesId: 'JTSJOL',
+        units: 'lin',
+        color: '#38bdf8',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '건',
+    valueMultiplier: 1000,   // FRED JTSJOL 단위: 천건 → 건 변환
+    format: 'number',
+    koUnit: true,
+    reading: [
+      '채용공고 수 > 실업자 수 = 노동시장 타이트(임금 상승 압력).',
+      '급감 = 기업들이 채용 수요를 줄이는 신호. 실업률 상승 선행.',
+      '1,000만건 이상 = 역사적 고점(과열). 700만건 이하 = 정상화.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 9. 초기 실업수당 청구 (Initial Jobless Claims)
+  // ──────────────────────────────────────────,
+  {
+    id: 'jobless-claims',
+    title: '초기 실업수당 청구',
+    description: '주간 신규 실업수당 청구 건수',
+    category: 'macro',
+    series: [
+      {
+        id: 'icsa',
+        label: '초기 실업수당',
+        type: 'fred',
+        seriesId: 'ICSA',
+        units: 'lin',
+        color: '#f59e0b',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '건',
+    format: 'number',
+    koUnit: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 220000, label: '견조', color: '#22c55e' },
+        { max: 280000, label: '주의', color: '#f59e0b' },
+        {              label: '악화', color: '#ef4444' },
+      ],
+    },
+    reading: [
+      '25만건 이상 지속 = 노동시장 약화 신호. 급등 = 해고 증가.',
+      '주별 발표라 경기 변화를 가장 빠르게 감지하는 지표 중 하나.',
+      '4주 이동평균으로 노이즈를 제거해 추세를 파악하는 것이 효과적.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // Sahm Rule 침체 지표
+  // ──────────────────────────────────────────,
+  {
+    id: 'sahm-rule',
+    title: 'Sahm Rule 침체 지표',
+    description: '실업률 3개월 이동평균 - 12개월 최저치 (실시간)',
+    category: 'macro',
+    series: [
+      {
+        id: 'sahm',
+        label: 'Sahm Rule',
+        type: 'fred',
+        seriesId: 'SAHMREALTIME',
+        units: 'lin',
+        color: '#ef4444',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '%p',
+    format: 'percent',
+    refLines: [
+      { value: 0.5, label: '침체 기준 0.5%p', color: '#ef4444' },
+    ],
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 0.3, label: '안전', color: '#22c55e' },
+        { max: 0.5, label: '경고', color: '#f59e0b' },
+        {           label: '침체', color: '#ef4444' },
+      ],
+    },
+    reading: [
+      '0.5%p 이상 = 침체 신호. 1970년 이후 모든 침체를 오탐 없이 탐지.',
+      '실업률(UNRATE) 자체보다 변화 속도가 핵심. 저점 대비 급등이 위험.',
+      'Claudia Sahm(前 연준 이코노미스트) 제안. 연준·의회 공식 참고 지표.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 순유동성 (Net Liquidity)
+  // ──────────────────────────────────────────,
+  {
+    id: 'net-liquidity',
+    title: '순유동성 (Net Liquidity)',
+    description: '연준 자산 - RRP - TGA (실제 시중 유동성 추정치, 십억달러)',
+    category: 'macro',
+    series: [
+      {
+        id: 'net_liquidity',
+        label: '순유동성',
+        type: 'fred',
+        seriesId: 'NET_LIQUIDITY',
+        units: 'lin',
+        color: '#34d399',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$B',
+    format: 'number',
+    zeroLine: false,
+    reading: [
+      '순유동성 = 연준 자산 - RRP 잔고 - TGA 잔고. 연준 대차대조표보다 실제 시중 유동성을 더 정확히 반영.',
+      '상승 전환 = 유동성 확대 → 위험자산 선호. 하락 추세 = 유동성 축소 → 시장 압력.',
+      'QT 중에도 RRP·TGA 감소로 순유동성이 증가하면 시장 충격이 제한됨 (2022~2024년 사례).',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 연준 대차대조표
+  // ──────────────────────────────────────────,
+  {
+    id: 'fed-balance-sheet',
+    title: '연준 대차대조표',
+    description: '연준 총자산 (주간, 십억달러)',
+    category: 'macro',
+    series: [
+      {
+        id: 'walcl',
+        label: '연준 자산',
+        type: 'fred',
+        seriesId: 'WALCL',
+        units: 'lin',
+        color: '#a855f7',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '$B',
+    format: 'number',
+    reading: [
+      'QE(양적완화) = 자산 확대 → 유동성 증가. QT(양적긴축) = 자산 축소 → 유동성 회수.',
+      '연준 자산과 S&P500은 장기적으로 높은 상관관계. 확장 전환 시 위험자산 선호 신호.',
+      '대차대조표만으로는 실제 유동성을 오독할 수 있음 → RRP·TGA·순유동성 차트 함께 참고.',
+    ],
+  },
 
   // ──────────────────────────────────────────
   // 13. 연방기금금리 (Fed Funds Rate)
@@ -1327,32 +1466,42 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 연준 대차대조표
+  // 시카고 연준 금융여건지수 (NFCI)
   // ──────────────────────────────────────────,
   {
-    id: 'fed-balance-sheet',
-    title: '연준 대차대조표',
-    description: '연준 총자산 (주간, 십억달러)',
+    id: 'nfci',
+    title: '금융여건지수 (NFCI)',
+    description: '시카고 연준 National Financial Conditions Index (주간)',
     category: 'macro',
     series: [
       {
-        id: 'walcl',
-        label: '연준 자산',
+        id: 'nfci',
+        label: 'NFCI',
         type: 'fred',
-        seriesId: 'WALCL',
+        seriesId: 'NFCI',
         units: 'lin',
-        color: '#a855f7',
+        color: '#8b5cf6',
         areaStyle: true,
       },
     ],
     defaultNormalize: 'raw',
     updateInterval: 24 * 60 * 60 * 1000,
-    unit: '$B',
+    unit: '',
     format: 'number',
+    zeroLine: true,
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: -0.5, label: '매우 완화', color: '#60a5fa' },
+        { max: 0,    label: '완화',      color: '#22c55e' },
+        { max: 0.5,  label: '긴축',      color: '#f59e0b' },
+        {            label: '매우 긴축', color: '#ef4444' },
+      ],
+    },
     reading: [
-      'QE(양적완화) = 자산 확대 → 유동성 증가. QT(양적긴축) = 자산 축소 → 유동성 회수.',
-      '연준 자산과 S&P500은 장기적으로 높은 상관관계. 확장 전환 시 위험자산 선호 신호.',
-      '대차대조표만으로는 실제 유동성을 오독할 수 있음 → RRP·TGA·순유동성 차트 함께 참고.',
+      '105개 금융변수 종합. 양수 = 평균보다 긴축, 음수 = 평균보다 완화.',
+      '급등 = 신용 경색·유동성 위기 신호. 2008·2020년 급등 사례 참고.',
+      'HY 스프레드보다 포괄적. 신용+레버리지+리스크 전체를 반영.',
     ],
   },
 
@@ -1417,33 +1566,71 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 순유동성 (Net Liquidity)
+  // 18. M2 통화량 (전년 대비)
   // ──────────────────────────────────────────,
   {
-    id: 'net-liquidity',
-    title: '순유동성 (Net Liquidity)',
-    description: '연준 자산 - RRP - TGA (실제 시중 유동성 추정치, 십억달러)',
+    id: 'dollar-index',
+    title: '달러 지수 (Broad)',
+    description: '연준 Nominal Broad Dollar Index (DTWEXBGS)',
     category: 'macro',
     series: [
       {
-        id: 'net_liquidity',
-        label: '순유동성',
+        id: 'dxy',
+        label: '달러 지수',
         type: 'fred',
-        seriesId: 'NET_LIQUIDITY',
+        seriesId: 'DTWEXBGS',
         units: 'lin',
-        color: '#34d399',
+        color: '#22d3ee',
         areaStyle: true,
       },
     ],
     defaultNormalize: 'raw',
     updateInterval: 24 * 60 * 60 * 1000,
-    unit: '$B',
+    unit: '',
     format: 'number',
-    zeroLine: false,
     reading: [
-      '순유동성 = 연준 자산 - RRP 잔고 - TGA 잔고. 연준 대차대조표보다 실제 시중 유동성을 더 정확히 반영.',
-      '상승 전환 = 유동성 확대 → 위험자산 선호. 하락 추세 = 유동성 축소 → 시장 압력.',
-      'QT 중에도 RRP·TGA 감소로 순유동성이 증가하면 시장 충격이 제한됨 (2022~2024년 사례).',
+      '강달러 = 신흥국 자금 이탈, 원자재 하락, 미국 수출기업 실적 악화.',
+      '약달러 = 글로벌 위험자산 선호, 원자재·신흥국 주가 상승.',
+      '※ DTWEXBGS는 26개국 기준 연준 지수. 흔히 말하는 DXY(ICE 6개국)와 수치 다름.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 주택착공건수
+  // ──────────────────────────────────────────,
+  {
+    id: 'housing-starts',
+    title: '주택착공건수',
+    description: '신규 주택착공건수 (천건, 계절조정 연율, SAAR)',
+    category: 'macro',
+    series: [
+      {
+        id: 'houst',
+        label: '주택착공',
+        type: 'fred',
+        seriesId: 'HOUST',
+        units: 'lin',
+        color: '#f472b6',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '천건',
+    format: 'number',
+    statusConfig: {
+      type: 'threshold',
+      thresholds: [
+        { max: 1000, label: '위축', color: '#ef4444' },
+        { max: 1300, label: '둔화', color: '#f59e0b' },
+        { max: 1600, label: '정상', color: '#22c55e' },
+        {            label: '과열', color: '#60a5fa' },
+      ],
+    },
+    reading: [
+      '금리에 가장 민감한 경기선행지표. 경기를 9~12개월 선행.',
+      '100만건 이하 지속 = 주택 침체. 150만건 이상 = 활황.',
+      'Case-Shiller(가격)와 함께 보면 주택시장 가격·물량 전체 그림 파악.',
     ],
   },
 
@@ -1476,7 +1663,6 @@ const CHART_CONFIGS = [
       '지수 고점 대비 -15% 이상 = 주택 시장 조정 신호.',
     ],
   },
-
 
   // ══════════════════════════════════════════
   // ▶ S&P 비교 (spcomparison)
