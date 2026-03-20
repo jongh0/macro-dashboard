@@ -147,9 +147,11 @@ const CHART_CONFIGS = [
     statusConfig: {
       type: 'threshold',
       thresholds: [
+        { max: 12, label: '안일', color: '#60a5fa' },
         { max: 20, label: '안정', color: '#22c55e' },
         { max: 30, label: '불안', color: '#f59e0b' },
-        {          label: '공포', color: '#ef4444' },
+        { max: 50, label: '공포', color: '#ef4444' },
+        {          label: '극도공포', color: '#991b1b' },
       ],
     },
     refLines: [
@@ -157,7 +159,7 @@ const CHART_CONFIGS = [
       { value: 30, label: '공포', color: '#ef4444' },
     ],
     reading: [
-      '20 미만 = 안정, 20~30 = 불안, 30 이상 = 공포 구간.',
+      '12 미만 = 과도한 안일(급반전 주의). 20~30 = 불안. 30+ = 공포. 50+ = 극도 공포(2008·2020급).',
       'VIX 급등 + 주가 급락 동반 = 공포 절정으로 역발상 매수 신호일 수 있음.',
       '낮은 VIX 장기 유지(과신) → 급등 전환 시 변동성 충격 주의.',
     ],
@@ -740,18 +742,20 @@ const CHART_CONFIGS = [
     statusConfig: {
       type: 'threshold',
       thresholds: [
-        { max: 4, label: '안정', color: '#22c55e' },
-        { max: 7, label: '주의', color: '#f59e0b' },
-        {         label: '위기', color: '#ef4444' },
+        { max: 3, label: '과열(안일)', color: '#60a5fa' },
+        { max: 5, label: '안정',       color: '#22c55e' },
+        { max: 7, label: '주의',       color: '#f59e0b' },
+        {         label: '위기',       color: '#ef4444' },
       ],
     },
     refLines: [
-      { value: 4,  label: '주의(4%)',  color: '#fbbf24' },
+      { value: 3,  label: '안일(3%)',  color: '#60a5fa' },
+      { value: 5,  label: '주의(5%)',  color: '#fbbf24' },
       { value: 7,  label: '위기(7%)',  color: '#ef4444' },
     ],
     reading: [
       '국채 대비 정크본드 금리 차이. 확대 = 투자자들이 리스크 회피 중.',
-      '4% 이상 = 신용 경계. 7% 이상 = 금융 위기 수준(2008, 2020 참고).',
+      '3% 이하 = 과도한 안일(complacency). 5% 이상 = 신용 경계. 7% 이상 = 금융 위기 수준.',
       '주가 하락 선행하는 경우 많음. S&P 500 vs HY 스프레드 차트와 함께 볼 것.',
     ],
   },
@@ -784,6 +788,9 @@ const CHART_CONFIGS = [
     unit: '%',
     format: 'percent',
     zeroLine: true,
+    refLines: [
+      { value: 2, label: '잠재성장률 ~2%', color: '#22c55e' },
+    ],
     statusConfig: {
       type: 'threshold',
       thresholds: [
@@ -831,13 +838,17 @@ const CHART_CONFIGS = [
     unit: '%',
     format: 'percent',
     zeroLine: true,
+    refLines: [
+      { value: 2, label: 'Fed 목표 2%', color: '#22c55e' },
+    ],
     normalizeModes: ['raw', 'zscore'],
     statusConfig: {
       type: 'threshold',
       thresholds: [
         { max: 1.5, label: '디플레 우려', color: '#60a5fa' },
         { max: 2.5, label: '목표 근접',   color: '#22c55e' },
-        { max: 4.0, label: '과열',        color: '#f59e0b' },
+        { max: 3.5, label: '주의',        color: '#f59e0b' },
+        { max: 5.0, label: '과열',        color: '#f97316' },
         {           label: '고물가',      color: '#ef4444' },
       ],
     },
@@ -878,13 +889,17 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '%',
     format: 'percent',
+    refLines: [
+      { value: 2, label: 'Fed 목표 2%', color: '#22c55e' },
+    ],
     normalizeModes: ['raw', 'zscore'],
     statusConfig: {
       type: 'threshold',
       thresholds: [
         { max: 1.5, label: '디플레 우려', color: '#60a5fa' },
         { max: 2.5, label: '목표 근접',   color: '#22c55e' },
-        { max: 4.0, label: '과열',        color: '#f59e0b' },
+        { max: 3.5, label: '주의',        color: '#f59e0b' },
+        { max: 5.0, label: '과열',        color: '#f97316' },
         {           label: '고물가',      color: '#ef4444' },
       ],
     },
@@ -959,17 +974,20 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '%',
     format: 'percent',
+    refLines: [
+      { value: 4.3, label: 'NAIRU ~4.3%', color: '#f59e0b' },
+    ],
     statusConfig: {
       type: 'threshold',
       thresholds: [
-        { max: 4,   label: '완전고용', color: '#22c55e' },
-        { max: 5,   label: '정상',     color: '#f59e0b' },
+        { max: 4.4, label: '완전고용', color: '#22c55e' },
+        { max: 5.5, label: '정상',     color: '#f59e0b' },
         {           label: '약화',     color: '#ef4444' },
       ],
     },
     reading: [
       '상승 추세 전환 시 주목. 최저점 대비 +0.5%p 이상 = Sahm Rule 침체 신호.',
-      '4% 이하 = 완전고용. 5% 이상 지속 = 노동시장 약화 신호.',
+      '4.4% 이하 = 완전고용(현 NAIRU 4.1~4.3%). 5.5% 이상 지속 = 노동시장 약화 신호.',
       '급등 구간(코로나 등) 이후 정상화 속도가 경기 회복력을 보여줌.',
     ],
   },
@@ -1002,8 +1020,8 @@ const CHART_CONFIGS = [
       type: 'threshold',
       thresholds: [
         { max: 0, label: '위축', color: '#ef4444' },
-        { max: 3, label: '둔화', color: '#f59e0b' },
-        { max: 6, label: '성장', color: '#22c55e' },
+        { max: 2, label: '둔화', color: '#f59e0b' },
+        { max: 5, label: '성장', color: '#22c55e' },
         {         label: '과열', color: '#60a5fa' },
       ],
     },
@@ -1114,19 +1132,22 @@ const CHART_CONFIGS = [
     updateInterval: 24 * 60 * 60 * 1000,
     unit: '%',
     format: 'percent',
+    refLines: [
+      { value: 77.5, label: '장기 평균 77.5%', color: '#f59e0b' },
+    ],
     statusConfig: {
       type: 'threshold',
       thresholds: [
-        { max: 72, label: '침체', color: '#ef4444' },
-        { max: 76, label: '둔화', color: '#f59e0b' },
-        { max: 80, label: '정상', color: '#22c55e' },
+        { max: 73, label: '침체', color: '#ef4444' },
+        { max: 77, label: '둔화', color: '#f59e0b' },
+        { max: 82, label: '정상', color: '#22c55e' },
         {          label: '과열', color: '#60a5fa' },
       ],
     },
     reading: [
-      '80% 이상 = 인플레이션 압력(공급 병목). 75% 이하 = 유휴 설비(경기 약화).',
-      '산업생산(INDPRO)과 쌍으로 해석. 생산량 ↑ + 가동률 ↑ = 과열 경고.',
-      '72% 이하 급락 = 역사적으로 경기침체 구간(2008·2020 참고).',
+      '82% 이상 = 인플레이션 압력(공급 병목). 77% 이하 = 유휴 설비(경기 약화).',
+      '산업생산(INDPRO)과 쌍으로 해석. 장기 평균 77.5%.',
+      '73% 이하 급락 = 역사적으로 경기침체 구간(2008·2020 참고).',
     ],
   },
 
@@ -1236,18 +1257,21 @@ const CHART_CONFIGS = [
     unit: '%',
     format: 'percent',
     zeroLine: true,
+    refLines: [
+      { value: 3.5, label: '물가 목표 부합 ~3.5%', color: '#22c55e' },
+    ],
     statusConfig: {
       type: 'threshold',
       thresholds: [
-        { max: 2, label: '정체', color: '#60a5fa' },
-        { max: 3.5, label: '안정', color: '#22c55e' },
-        { max: 5, label: '과열', color: '#f59e0b' },
-        {         label: '급등', color: '#ef4444' },
+        { max: 2.5, label: '정체', color: '#60a5fa' },
+        { max: 4.0, label: '안정', color: '#22c55e' },
+        { max: 5.5, label: '과열', color: '#f59e0b' },
+        {           label: '급등', color: '#ef4444' },
       ],
     },
     reading: [
       '임금 상승 > 생산성 증가 = 서비스 인플레이션 지속 → 연준 긴축 유지.',
-      '3~3.5% = 2% 물가 목표와 양립 가능한 수준. 5% 이상 = 임금-물가 스파이럴 우려.',
+      '3.5~4% = 2% 물가 목표와 양립 가능한 수준. 5.5% 이상 = 임금-물가 스파이럴 우려.',
       'CPI/PCE(물가 결과)와 함께 보면 연준 정책 방향 판단에 핵심.',
     ],
   },
@@ -1311,13 +1335,13 @@ const CHART_CONFIGS = [
     statusConfig: {
       type: 'threshold',
       thresholds: [
-        { max: 220000, label: '견조', color: '#22c55e' },
-        { max: 280000, label: '주의', color: '#f59e0b' },
+        { max: 250000, label: '견조', color: '#22c55e' },
+        { max: 300000, label: '주의', color: '#f59e0b' },
         {              label: '악화', color: '#ef4444' },
       ],
     },
     reading: [
-      '25만건 이상 지속 = 노동시장 약화 신호. 급등 = 해고 증가.',
+      '25만건 이상 = 주의 구간. 30만건 이상 지속 = 노동시장 약화 신호.',
       '주별 발표라 경기 변화를 가장 빠르게 감지하는 지표 중 하나.',
       '4주 이동평균으로 노이즈를 제거해 추세를 파악하는 것이 효과적.',
     ],
@@ -1489,6 +1513,9 @@ const CHART_CONFIGS = [
     unit: '',
     format: 'number',
     zeroLine: true,
+    refLines: [
+      { value: 0, label: '평균(0)', color: '#f59e0b' },
+    ],
     statusConfig: {
       type: 'threshold',
       thresholds: [
@@ -1622,8 +1649,8 @@ const CHART_CONFIGS = [
       type: 'threshold',
       thresholds: [
         { max: 1000, label: '위축', color: '#ef4444' },
-        { max: 1300, label: '둔화', color: '#f59e0b' },
-        { max: 1600, label: '정상', color: '#22c55e' },
+        { max: 1200, label: '둔화', color: '#f59e0b' },
+        { max: 1500, label: '정상', color: '#22c55e' },
         {            label: '과열', color: '#60a5fa' },
       ],
     },
