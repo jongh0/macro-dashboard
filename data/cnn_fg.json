@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-31T22:02:00",
+  "updated": "2026-03-31T23:55:00",
   "dates": [
     "2025-03-31",
     "2025-04-01",
@@ -506,12 +506,12 @@
     18.2,
     14.9,
     14.5,
-    13.6,
-    13.6,
-    13.6
+    13.7,
+    13.3,
+    13.3
   ],
   "current": {
-    "score": 13.6,
+    "score": 13.3,
     "rating": "extreme fear"
   },
   "source": "CNN Fear & Greed Index (Stock Market)"
