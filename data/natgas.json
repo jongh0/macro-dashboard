@@ -1,5 +1,5 @@
 {
-  "updated": "2026-04-15T22:10:00",
+  "updated": "2026-04-16T00:01:00",
   "dates": [
     "2000-08-30",
     "2000-08-31",
@@ -12872,7 +12872,7 @@
     2.648,
     2.627,
     2.599,
-    2.615
+    2.616
   ],
   "source": "Yahoo Finance NG=F (Henry Hub Natural Gas Futures)"
 }
