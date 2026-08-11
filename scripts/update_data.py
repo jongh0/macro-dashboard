@@ -388,6 +388,25 @@ def download_forex_yahoo():
         }, "krwjpy.json")
         print(f"  -> KRW/JPY (100엔): {len(dates_out)}개 ({dates_out[-1]}까지)")
 
+    # EUR/KRW 교차 계산 (EURUSD × USDKRW = EURKRW, 1유로당 원화)
+    if "eurusd" in fetched and "usdkrw" in fetched:
+        eur_map  = dict(zip(fetched["eurusd"]["dates"],  fetched["eurusd"]["values"]))
+        krw_map2 = dict(zip(fetched["usdkrw"]["dates"], fetched["usdkrw"]["values"]))
+        common2  = sorted(set(eur_map) & set(krw_map2))
+        dates_eur, vals_eur = [], []
+        for d in common2:
+            e, k = eur_map[d], krw_map2[d]
+            if e and k:
+                dates_eur.append(d)
+                vals_eur.append(round(e * k, 2))
+        save_json({
+            "updated": TODAY,
+            "dates":   dates_eur,
+            "values":  vals_eur,
+            "source":  "Yahoo Finance EURUSD=X × USDKRW=X (1유로당 원화)",
+        }, "yahoo_eurkrw.json")
+        print(f"  -> EUR/KRW (원/유로): {len(dates_eur)}개 ({dates_eur[-1]}까지)")
+
     return True
 
 

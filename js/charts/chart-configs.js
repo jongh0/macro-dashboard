@@ -361,6 +361,37 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
+  // 원/EUR 환율
+  // ──────────────────────────────────────────,
+  {
+    id: 'eur-krw',
+    title: '원/EUR 환율',
+    description: '유로 대비 원화 환율 (1유로당 원화)',
+    category: 'forex',
+    series: [
+      {
+        id: 'eurkrw',
+        label: '원/EUR',
+        type: 'static',
+        file: 'yahoo_eurkrw.json',
+        color: '#a78bfa',
+        areaStyle: true,
+      },
+    ],
+    defaultNormalize: 'raw',
+    avg1Y: true,
+    avg3Y: true,
+    updateInterval: 24 * 60 * 60 * 1000,
+    unit: '₩/€',
+    format: 'number',
+    reading: [
+      '원화 약세(수치↑) = 유로 물가·여행 비용 상승. 원화 강세(수치↓) = 수입 유럽 상품 가격 하락.',
+      'ECB 금리 인상 → 유로 강세 → 원/EUR 상승 압력.',
+      'EUR/USD와 원/달러 환율 동향을 함께 보면 유로화 강약 판단에 효과적.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
   // EUR/USD 환율
   // ──────────────────────────────────────────,
   {
@@ -647,44 +678,6 @@ const CHART_CONFIGS = [
     ],
   },
 
-  // ──────────────────────────────────────────
-  // 16. 장단기 금리차 (10Y-3M) – 경기침체 최고 예측 지표
-  // ──────────────────────────────────────────,
-  {
-    id: 'yield-spread-10y3m',
-    title: '금리차 (10Y-3M)',
-    description: '10년-3개월 국채 금리차',
-    category: 'rates',
-    series: [
-      {
-        id: 't10y3m',
-        label: '10Y-3M 스프레드',
-        type: 'fred',
-        seriesId: 'T10Y3M',
-        units: 'lin',
-        color: '#a78bfa',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%p',
-    format: 'percent',
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0,   label: '역전',      color: '#ef4444' },
-        { max: 0.5, label: '정상화 중', color: '#f59e0b' },
-        {           label: '정상',      color: '#22c55e' },
-      ],
-    },
-    reading: [
-      '뉴욕 연준 침체 예측 모델의 핵심 변수. 10Y-2Y보다 예측력 높다고 평가.',
-      '역전 후 12~18개월 내 침체 확률 급상승.',
-      '역전 해소 시점이 실제 침체 시작과 근접하는 경향.',
-    ],
-  },
 
   // ──────────────────────────────────────────
   // 17. 30년물 국채 수익률
@@ -1770,41 +1763,6 @@ const CHART_CONFIGS = [
     ],
   },
 
-  // ──────────────────────────────────────────
-  // S&P 500 vs 마진 부채
-  // ──────────────────────────────────────────,
-  {
-    id: 'sp500-vs-margin-debt',
-    title: 'S&P 500 vs 마진 부채',
-    description: 'S&P 500 지수와 FINRA 마진 부채 비교 — 레버리지 사이클 지표',
-    category: 'spcomparison',
-    series: [
-      {
-        id: 'sp500',
-        label: 'S&P 500',
-        type: 'static',
-        file: 'sp500.json',
-        color: '#3b82f6',
-        noDecimal: true,
-      },
-      {
-        id: 'margin',
-        label: '마진 부채',
-        type: 'static',
-        file: 'finra_margin.json',
-        color: '#f59e0b',
-        unit: '$M',
-        decimals: 0,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    reading: [
-      '마진 부채 급증 = 레버리지 과열 → 시장 고점 신호. 급감 = 강제 청산 → 하락 가속.',
-      '주가와 장기적으로 동행하지만 변곡점에서 선행하는 경향.',
-      '※ FINRA 데이터는 약 4~5개월 지연 발표 — 최근 구간 공백은 정상.',
-    ],
-  },
 
 ];
 
