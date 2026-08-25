@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-25T21:33:00",
+  "updated": "2026-08-25T22:42:00",
   "dates": [
     "2025-08-25",
     "2025-08-26",
@@ -502,13 +502,13 @@
     57.2,
     53.1,
     54.5,
-    54.6,
-    54.6,
-    54.6
+    56.1,
+    56.6,
+    56.1
   ],
   "current": {
-    "score": 54.6,
-    "rating": "neutral"
+    "score": 56.1,
+    "rating": "greed"
   },
   "source": "CNN Fear & Greed Index (Stock Market)"
 }
