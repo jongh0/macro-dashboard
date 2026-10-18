@@ -1,7 +1,7 @@
 @echo off
 cd /d "%~dp0"
 
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080 "') do (
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080 " ^| findstr "LISTENING"') do (
     taskkill /f /pid %%a >nul 2>&1
 )
 
@@ -11,7 +11,7 @@ echo.
 echo Press Ctrl+C to stop.
 echo.
 
-start "" /b cmd /c "timeout /t 1 >nul && start http://localhost:8080"
+start "" /b cmd /c "timeout /t 1 >nul && start http://localhost:8080/?app=macro-dashboard"
 
 where py >nul 2>&1
 if %errorlevel% == 0 (
