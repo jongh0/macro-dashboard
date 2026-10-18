@@ -105,7 +105,7 @@ const ChartFactory = {
 
         const avgLineData = {
           yAxis: avg,
-          lineStyle: { color: '#94a3b8', type: 'dashed', width: 1.2 },
+          lineStyle: { color: c.textMuted, type: 'dashed', width: 1.2 },
           label: { show: false },
         };
         if (echartsSeriesList[0].markLine) {
@@ -143,7 +143,7 @@ const ChartFactory = {
 
         const avgLineData = {
           yAxis: avg,
-          lineStyle: { color: '#64748b', type: 'dashed', width: 1.2 },
+          lineStyle: { color: c.textFaint, type: 'dashed', width: 1.2 },
           label: { show: false },
         };
         if (echartsSeriesList[0].markLine) {
@@ -179,12 +179,12 @@ const ChartFactory = {
         const items = [];
         if (avg1YLabel) items.push({
           type: 'text', right: 16, top: 8,
-          style: { text: avg1YLabel, fill: '#94a3b8', fontSize: 11, fontFamily: 'inherit' },
+          style: { text: avg1YLabel, fill: c.textMuted, fontSize: 11, fontFamily: 'inherit' },
           silent: true,
         });
         if (avg3YLabel) items.push({
           type: 'text', right: 16, top: avg1YLabel ? 22 : 8,
-          style: { text: avg3YLabel, fill: '#64748b', fontSize: 11, fontFamily: 'inherit' },
+          style: { text: avg3YLabel, fill: c.textFaint, fontSize: 11, fontFamily: 'inherit' },
           silent: true,
         });
         return items;

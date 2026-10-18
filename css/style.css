@@ -3,20 +3,20 @@
    ============================================================ */
 
 :root {
-  --bg:          #0a0f1e;
-  --surface:     #111827;
-  --surface-2:   #1e293b;
-  --border:      #1f2d40;
-  --border-2:    #2d3f55;
-  --text:        #f1f5f9;
-  --text-muted:  #94a3b8;
-  --text-faint:  #475569;
+  --bg:          #0e0e10;
+  --surface:     #161618;
+  --surface-2:   #222226;
+  --border:      #26262a;
+  --border-2:    #36363c;
+  --text:        #f4f4f5;
+  --text-muted:  #a1a1aa;
+  --text-faint:  #63636b;
   --accent:      #3b82f6;
   --positive:    #22c55e;
   --negative:    #ef4444;
   --radius:      10px;
   --radius-sm:   6px;
-  --shadow:      0 4px 24px rgba(0,0,0,0.4);
+  --shadow:      0 4px 24px rgba(0,0,0,0.5);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,7 +42,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 15, 30, 0.92);
+  background: rgba(14, 14, 16, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   padding: 0 24px;
@@ -176,7 +176,7 @@ body {
   position: sticky;
   top: 56px;           /* 헤더 높이 */
   z-index: 99;
-  background: rgba(10, 15, 30, 0.96);
+  background: rgba(14, 14, 16, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
@@ -444,7 +444,7 @@ body {
   white-space: nowrap;
 }
 
-.status-badge.loading { background: rgba(148,163,184,0.12); color: #94a3b8; }
+.status-badge.loading { background: rgba(161,161,170,0.12); color: var(--text-muted); }
 .status-badge.live    { background: rgba(34,197,94,0.12);  color: #22c55e; }
 .status-badge.cached  { background: rgba(59,130,246,0.12); color: #60a5fa; }
 .status-badge.static  { background: rgba(234,179,8,0.12);  color: #fbbf24; }
@@ -454,7 +454,7 @@ body {
 .reading-panel {
   padding: 12px 20px 14px;
   border-top: 1px solid var(--border);
-  background: rgba(15,23,42,0.6);
+  background: rgba(18, 18, 21, 0.7);
 }
 .reading-panel ul {
   margin: 0;
@@ -466,7 +466,7 @@ body {
 }
 .reading-panel li {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-muted);
   line-height: 1.6;
   padding-left: 16px;
   position: relative;
@@ -625,33 +625,33 @@ body {
   color: var(--text);
 }
 
-/* ── 라이트 테마 ────────────────────── */
+/* ── 라이트 테마 (눈부심 방지 웜 스톤/페이퍼 톤) ── */
 [data-theme="light"] {
-  --bg:         #f8fafc;
-  --surface:    #ffffff;
-  --surface-2:  #f1f5f9;
-  --border:     #e2e8f0;
-  --border-2:   #cbd5e1;
-  --text:       #0f172a;
-  --text-muted: #475569;
-  --text-faint: #94a3b8;
-  --shadow:     0 4px 24px rgba(0,0,0,0.08);
+  --bg:         #eae9e4;
+  --surface:    #f4f3ef;
+  --surface-2:  #e6e5df;
+  --border:     #d8d7d0;
+  --border-2:   #c4c3bb;
+  --text:       #1c1c1e;
+  --text-muted: #575652;
+  --text-faint: #85847e;
+  --shadow:     0 4px 20px rgba(0,0,0,0.06);
 }
 
 [data-theme="light"] .header {
-  background: rgba(248, 250, 252, 0.92);
+  background: rgba(234, 233, 228, 0.92);
 }
 
 [data-theme="light"] .controls {
-  background: rgba(248, 250, 252, 0.96);
+  background: rgba(234, 233, 228, 0.96);
 }
 
 [data-theme="light"] .reading-panel {
-  background: rgba(241, 245, 249, 0.8);
+  background: rgba(230, 229, 223, 0.75);
 }
 
-[data-theme="light"] ::-webkit-scrollbar-track { background: #f8fafc; }
-[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+[data-theme="light"] ::-webkit-scrollbar-track { background: #eae9e4; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #c4c3bb; }
 
 /* ── 푸터 ─────────────────────────── */
 .site-footer {

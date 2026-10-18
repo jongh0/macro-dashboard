@@ -118,6 +118,84 @@ const CHART_CONFIGS = [
     ],
   },
 
+  // ──────────────────────────────────────────
+  // 4. 코스피 (KOSPI)
+  // ──────────────────────────────────────────
+  {
+    id: 'kospi',
+    title: 'KOSPI',
+    description: '코스피 종합주가지수 (일별)',
+    category: 'market',
+    series: [
+      {
+        id: 'kospi',
+        label: 'KOSPI',
+        type: 'static',
+        file: 'kospi.json',
+        color: '#f43f5e',
+        noDecimal: false,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 15 * 60 * 1000,
+    unit: 'pts',
+    format: 'number',
+    statusConfig: {
+      type: 'drawdown',
+      window: 252,
+      thresholds: [
+        { max: -0.20, label: '베어마켓', color: '#ef4444' },
+        { max: -0.10, label: '조정',     color: '#f97316' },
+        { max: -0.05, label: '약세장',   color: '#fbbf24' },
+        {             label: '강세장',   color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '한국 유가증권시장 대표 지수. 반도체·수출 대형주 비중이 높아 글로벌 제조업·교역 경기 선행성이 강함.',
+      '원/달러 환율과 역상관 경향: 원화 강세(환율 하락) 시 외국인 수급 유입으로 지수 상승 압력.',
+      '고점 대비 -10% = 조정, -20% 이상 = 베어마켓 진입.',
+    ],
+  },
+
+  // ──────────────────────────────────────────
+  // 5. 코스닥 (KOSDAQ)
+  // ──────────────────────────────────────────
+  {
+    id: 'kosdaq',
+    title: 'KOSDAQ',
+    description: '코스닥 종합주가지수 (일별)',
+    category: 'market',
+    series: [
+      {
+        id: 'kosdaq',
+        label: 'KOSDAQ',
+        type: 'static',
+        file: 'kosdaq.json',
+        color: '#ec4899',
+        noDecimal: false,
+      },
+    ],
+    defaultNormalize: 'raw',
+    updateInterval: 15 * 60 * 1000,
+    unit: 'pts',
+    format: 'number',
+    statusConfig: {
+      type: 'drawdown',
+      window: 252,
+      thresholds: [
+        { max: -0.20, label: '베어마켓', color: '#ef4444' },
+        { max: -0.10, label: '조정',     color: '#f97316' },
+        { max: -0.05, label: '약세장',   color: '#fbbf24' },
+        {             label: '강세장',   color: '#22c55e' },
+      ],
+    },
+    reading: [
+      '바이오·2차전지·IT 소부장 등 중소형 성장주 중심 시장으로 개인 투자자 비중이 높음.',
+      '금리 인하 기대 및 유동성 확장 국면에서 KOSPI 대비 탄력적으로 움직이는 경향.',
+      '신용융자 반대매매 등 수급 요인에 의해 급락 시 변동성이 크게 확대될 수 있음.',
+    ],
+  },
+
   // ══════════════════════════════════════════
   // ▶ 심리/수급 (Sentiment)
   // ══════════════════════════════════════════

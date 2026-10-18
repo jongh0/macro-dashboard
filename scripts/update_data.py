@@ -278,6 +278,8 @@ MARKET_TICKERS = {
     "sp500":   ("^GSPC",  "S&P 500 Index"),
     "nasdaq":  ("^IXIC",  "NASDAQ Composite"),
     "djia":    ("^DJI",   "Dow Jones Industrial Average"),
+    "kospi":   ("^KS11",  "KOSPI Composite Index"),
+    "kosdaq":  ("^KQ11",  "KOSDAQ Composite Index"),
     "vix":     ("^VIX",   "CBOE Volatility Index"),
     "wti":     ("CL=F",   "WTI Crude Oil Futures"),
     "copper":  ("HG=F",   "Copper Futures (USD/lb → USD/mt 변환)"),
