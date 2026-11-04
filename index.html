@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Macro Dashboard - 거시경제 차트</title>
   <meta name="description" content="거시경제 지표 대시보드: 인플레이션, 금리, 시장 심리 등" />
+  <meta name="theme-color" id="meta-theme-color" content="#0e0e10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Macro Dashboard" />
+
+  <!-- PWA & 아이콘 -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
 
   <!-- ECharts (차트 라이브러리) -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
@@ -125,6 +135,8 @@
       // 다크 모드 → 라이트로 전환 버튼(태양), 라이트 모드 → 다크로 전환 버튼(달)
       btn.innerHTML = theme === 'dark' ? SUN_ICON : MOON_ICON;
       btn.title = theme === 'dark' ? '라이트 모드' : '다크 모드';
+      const metaTheme = document.getElementById('meta-theme-color');
+      if (metaTheme) metaTheme.setAttribute('content', theme === 'dark' ? '#0e0e10' : '#ffffff');
     }
 
     function toggleTheme() {
@@ -139,6 +151,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       _updateThemeBtn(document.documentElement.getAttribute('data-theme') || 'dark');
     });
+
+    // ── PWA Service Worker 등록 ─────────────────────────────────
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.warn('ServiceWorker registration failed:', err);
+        });
+      });
+    }
   </script>
 </body>
 </html>
