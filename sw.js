@@ -2,7 +2,7 @@
 // sw.js - Macro Dashboard PWA Service Worker
 // ============================================================
 
-const CACHE_VERSION = 'macro-dashboard-v1';
+const CACHE_VERSION = 'macro-dashboard-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
