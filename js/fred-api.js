@@ -58,10 +58,8 @@ const FredAPI = {
       'PCEPILFE':       { pc1: 'fred_core_pce.json' },
       'UMCSENT':        { lin: 'fred_umcsent.json' },
       'DTWEXBGS':       { lin: 'fred_dxy.json' },
-      'CSUSHPINSA':     { lin: 'fred_housing.json' },
       'BAMLH0A0HYM2':   { lin: 'fred_hyspread.json' },
       'T10Y3M':         { lin: 'fred_t10y3m.json' },
-      'T10YIE':         { lin: 'fred_t10yie.json' },
       'PAYEMS':         { chg: 'fred_payems_chg.json', lin: 'fred_payems.json' },
       'ICSA':           { lin: 'fred_icsa.json' },
       'GDPC1':          { pc1: 'fred_gdp.json' },
@@ -70,17 +68,12 @@ const FredAPI = {
       'WM2NS':          { pc1: 'fred_m2_weekly.json', lin: 'fred_m2_weekly_level.json' },
       // WM2NS 폴백: 주간 파일 없을 시 M2SL 사용
       'WM2NS_fallback': { pc1: 'fred_m2.json', lin: 'fred_m2_level.json' },
-      'PPIFIS': { pc1: 'fred_ppi.json' },
       'RSAFS':  { pc1: 'fred_rsafs.json' },
       'INDPRO': { pc1: 'fred_indpro.json' },
-      'WALCL':      { lin: 'fred_walcl.json' },
-      'RRPONTSYD':  { lin: 'fred_rrpontsyd.json' },
-      'WDTGAL':     { lin: 'fred_wdtgal.json' },
       'NET_LIQUIDITY': { lin: 'fred_net_liquidity.json' },
       'SAHMREALTIME':    { lin: 'fred_sahm.json' },
       'NFCI':            { lin: 'fred_nfci.json' },
       'HOUST':           { lin: 'fred_houst.json' },
-      'TCU':             { lin: 'fred_tcu.json' },
       'CES0500000003':   { pc1: 'fred_ahe.json' },
     };
     return map[seriesId]?.[units] || null;

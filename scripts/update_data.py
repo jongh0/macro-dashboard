@@ -423,7 +423,6 @@ FRED_SERIES = {
     "dgs2":            ("DGS2",           "lin"),   # 2년물 국채 수익률
     "dgs30":           ("DGS30",          "lin"),   # 30년물 국채 수익률
     "t10y3m":          ("T10Y3M",         "lin"),   # 10Y-3M 금리차
-    "t10yie":          ("T10YIE",         "lin"),   # 10년 기대인플레이션
     "hyspread":        ("BAMLH0A0HYM2",   "lin"),   # 하이일드 OAS 스프레드
     # ── 물가 ──────────────────────────────────
     "cpi":             ("CPIAUCSL",       "pc1"),   # CPI YoY
@@ -440,9 +439,6 @@ FRED_SERIES = {
     "rsafs":           ("RSAFS",          "pc1"),   # 소매판매 YoY
     "indpro":          ("INDPRO",         "pc1"),   # 산업생산 YoY
     "umcsent":         ("UMCSENT",        "lin"),   # 미시간대 소비자심리
-    "housing":         ("CSUSHPINSA",     "lin"),   # 케이스-실러 주택가격지수
-    # ── 물가 (추가) ───────────────────────────
-    "ppi":             ("PPIFIS",         "pc1"),   # 생산자물가 YoY
     # ── 유동성 ────────────────────────────────
     "walcl":           ("WALCL",          "lin"),   # 연준 대차대조표 (십억달러)
     "rrpontsyd":       ("RRPONTSYD",      "lin"),   # 역레포(RRP) 잔고 (십억달러)
@@ -457,7 +453,6 @@ FRED_SERIES = {
     "sahm":            ("SAHMREALTIME",   "lin"),   # Sahm Rule 침체 지표
     "nfci":            ("NFCI",           "lin"),   # 시카고 연준 금융여건지수
     "houst":           ("HOUST",          "lin"),   # 주택착공건수 (천건, SAAR)
-    "tcu":             ("TCU",            "lin"),   # 설비가동률 (%)
     "ahe":             ("CES0500000003",  "pc1"),   # 평균시간당임금 YoY
     # ── SP500·VIX·NASDAQ·DJIA·WTI·구리·천연가스 →
     #    Yahoo Finance로 이전 (download_market_tickers)

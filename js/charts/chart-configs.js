@@ -1181,130 +1181,6 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 설비가동률
-  // ──────────────────────────────────────────,
-  {
-    id: 'capacity-utilization',
-    title: '설비가동률',
-    description: '전산업 설비가동률 (Total Capacity Utilization)',
-    category: 'macro',
-    series: [
-      {
-        id: 'tcu',
-        label: '설비가동률',
-        type: 'fred',
-        seriesId: 'TCU',
-        units: 'lin',
-        color: '#14b8a6',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    refLines: [
-      { value: 77.5, label: '장기 평균 77.5%', color: '#f59e0b' },
-    ],
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 73, label: '침체', color: '#ef4444' },
-        { max: 77, label: '둔화', color: '#f59e0b' },
-        { max: 82, label: '정상', color: '#22c55e' },
-        {          label: '과열', color: '#60a5fa' },
-      ],
-    },
-    reading: [
-      '82% 이상 = 인플레이션 압력(공급 병목). 77% 이하 = 유휴 설비(경기 약화).',
-      '산업생산(INDPRO)과 쌍으로 해석. 장기 평균 77.5%.',
-      '73% 이하 급락 = 역사적으로 경기침체 구간(2008·2020 참고).',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 10. PPI / 생산자물가
-  // ──────────────────────────────────────────,
-  {
-    id: 'ppi',
-    title: 'PPI 생산자물가',
-    description: '생산자물가지수(최종수요) 전년 대비 변화율 (월별)',
-    category: 'macro',
-    series: [
-      {
-        id: 'ppi',
-        label: 'PPI YoY',
-        type: 'fred',
-        seriesId: 'PPIFIS',
-        units: 'pc1',
-        color: '#fb923c',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    zeroLine: true,
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 0, label: '디플레', color: '#60a5fa' },
-        { max: 2, label: '안정',   color: '#22c55e' },
-        { max: 4, label: '주의',   color: '#f59e0b' },
-        { max: 6, label: '상승',   color: '#f97316' },
-        {         label: '과열',   color: '#ef4444' },
-      ],
-    },
-    reading: [
-      'CPI보다 1~2개월 선행하는 인플레이션 선행지표.',
-      '원자재·중간재 비용 압력을 반영. 기업이 소비자에게 가격 전가 여부가 관건.',
-      'PPI 상승 후 CPI가 반응하는 패턴을 함께 확인.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 12. 10년 기대인플레이션 (BEI)
-  // ──────────────────────────────────────────,
-  {
-    id: 'inflation-expectation',
-    title: '10년 기대인플레이션 (BEI)',
-    description: '10년물 TIPS 손익분기 인플레이션율',
-    category: 'macro',
-    series: [
-      {
-        id: 't10yie',
-        label: '10Y 기대인플레이션',
-        type: 'fred',
-        seriesId: 'T10YIE',
-        units: 'lin',
-        color: '#fb7185',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '%',
-    format: 'percent',
-    statusConfig: {
-      type: 'threshold',
-      thresholds: [
-        { max: 1.8, label: '디플레 우려', color: '#60a5fa' },
-        { max: 2.5, label: '안정',        color: '#22c55e' },
-        {           label: '기대 고착',   color: '#f59e0b' },
-      ],
-    },
-    refLines: [
-      { value: 2, label: 'Fed 목표 2%', color: '#22c55e' },
-    ],
-    reading: [
-      '2% 근처 = 시장이 연준 목표를 신뢰. 2.5% 초과 지속 = 인플레 기대 고착화 우려.',
-      '상승 = 실질금리 하락 압력(금·주가에 우호). 하락 = 디플레이션 우려.',
-      'TIPS와 국채 수익률 차이로 계산. 연준의 신뢰도 바로미터.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
   // 평균시간당 임금 (YoY)
   // ──────────────────────────────────────────,
   {
@@ -1491,37 +1367,7 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // 연준 대차대조표
-  // ──────────────────────────────────────────,
-  {
-    id: 'fed-balance-sheet',
-    title: '연준 대차대조표',
-    description: '연준 총자산 (주간, 십억달러)',
-    category: 'macro',
-    series: [
-      {
-        id: 'walcl',
-        label: '연준 자산',
-        type: 'fred',
-        seriesId: 'WALCL',
-        units: 'lin',
-        color: '#a855f7',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '$B',
-    format: 'number',
-    reading: [
-      'QE(양적완화) = 자산 확대 → 유동성 증가. QT(양적긴축) = 자산 축소 → 유동성 회수.',
-      '연준 자산과 S&P500은 장기적으로 높은 상관관계. 확장 전환 시 위험자산 선호 신호.',
-      '대차대조표만으로는 실제 유동성을 오독할 수 있음 → RRP·TGA·순유동성 차트 함께 참고.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 13. 연방기금금리 (Fed Funds Rate)
+  // 13. M2 통화량 증가율
   // ──────────────────────────────────────────,
   {
     id: 'm2',
@@ -1604,67 +1450,7 @@ const CHART_CONFIGS = [
   },
 
   // ──────────────────────────────────────────
-  // RRP 잔고
-  // ──────────────────────────────────────────,
-  {
-    id: 'rrp',
-    title: 'RRP 잔고 (역레포)',
-    description: '연준 역레포(Reverse Repo) 잔고 — 민간이 연준에 맡긴 돈 (십억달러)',
-    category: 'macro',
-    series: [
-      {
-        id: 'rrpontsyd',
-        label: 'RRP 잔고',
-        type: 'fred',
-        seriesId: 'RRPONTSYD',
-        units: 'lin',
-        color: '#38bdf8',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '$B',
-    format: 'number',
-    reading: [
-      'RRP ↑ = 돈이 연준에 묶임 → 시중 유동성 ↓. RRP ↓ = 돈이 시장으로 나옴 → 유동성 ↑.',
-      '코로나 이후 과잉 유동성이 RRP에 쌓였다가 2022~2024년 소진 → QT 충격을 상쇄.',
-      'RRP 잔고가 0에 근접하면 이 완충재 소멸 → 이후 QT는 시장에 직접 영향.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // TGA 잔고
-  // ──────────────────────────────────────────,
-  {
-    id: 'tga',
-    title: 'TGA 잔고 (재무부 계좌)',
-    description: '미국 재무부 당좌계좌(Treasury General Account) 잔고 (십억달러)',
-    category: 'macro',
-    series: [
-      {
-        id: 'wdtgal',
-        label: 'TGA 잔고',
-        type: 'fred',
-        seriesId: 'WDTGAL',
-        units: 'lin',
-        color: '#fb923c',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '$B',
-    format: 'number',
-    reading: [
-      'TGA ↑ = 정부가 세금·국채 발행으로 돈을 흡수 → 시중 유동성 ↓.',
-      'TGA ↓ = 정부 지출로 민간에 달러 공급 → 유동성 ↑.',
-      '부채한도 협상 시 TGA가 급변동하며 단기 유동성에 큰 영향을 줌.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 18. M2 통화량 (전년 대비)
+  // 달러 지수 (Broad)
   // ──────────────────────────────────────────,
   {
     id: 'dollar-index',
@@ -1728,37 +1514,7 @@ const CHART_CONFIGS = [
     reading: [
       '금리에 가장 민감한 경기선행지표. 경기를 9~12개월 선행.',
       '100만건 이하 지속 = 주택 침체. 150만건 이상 = 활황.',
-      'Case-Shiller(가격)와 함께 보면 주택시장 가격·물량 전체 그림 파악.',
-    ],
-  },
-
-  // ──────────────────────────────────────────
-  // 주택가격지수
-  // ──────────────────────────────────────────,
-  {
-    id: 'housing-price',
-    title: '주택가격지수 (Case-Shiller)',
-    description: 'S&P 케이스-실러 미국 전국 주택가격지수',
-    category: 'macro',
-    series: [
-      {
-        id: 'housing',
-        label: '주택가격지수',
-        type: 'fred',
-        seriesId: 'CSUSHPINSA',
-        units: 'lin',
-        color: '#a78bfa',
-        areaStyle: true,
-      },
-    ],
-    defaultNormalize: 'raw',
-    updateInterval: 24 * 60 * 60 * 1000,
-    unit: '',
-    format: 'number',
-    reading: [
-      '상승 = 자산효과(가계 부 증가 → 소비 확대). 금리 인상 후 하락은 6~18개월 시차.',
-      '급락 = 담보 가치 하락 → 금융 시스템 리스크(2008 서브프라임 참고).',
-      '지수 고점 대비 -15% 이상 = 주택 시장 조정 신호.',
+      '30년물 국채 수익률(모기지 금리 연동)과 함께 보면 주택 건설 경기 흐름 파악에 효과적.',
     ],
   },
 
